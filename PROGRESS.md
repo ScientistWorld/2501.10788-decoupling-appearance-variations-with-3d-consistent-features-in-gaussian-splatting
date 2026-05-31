@@ -9,6 +9,7 @@
 - `python validate.py --reference-only` passes.
 - Job `7be31f97-c22` ran the method and evaluator end to end, so the workspace has reached `method_runs`.
 - Job `e5e780f2-46e` reproduced the core claim on the reduced benchmark: DAVIGS improves held-out rendering quality over vanilla 3DGS while keeping appearance handling decoupled from Gaussian splat rendering.
+- Continuation audit on 2026-05-31 confirmed the implementation is a reduced-scale version of the paper's actual DAVIGS algorithm rather than a surrogate, and confirmed the evaluator reads saved artifacts without importing `method/`.
 
 ## Results
 
@@ -44,7 +45,7 @@ These results support the paper's secondary claims that 3D-aware features and id
 
 ## Remaining
 
-- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment has a completed-job `core_claim`; the next submitted job is expected to validate `secondary_claims` on the reduced benchmark.
+- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment is at the reset `core_claim_plus`; the next submitted job is expected to validate `secondary_claims` on the reduced benchmark.
 
 ## Issues
 

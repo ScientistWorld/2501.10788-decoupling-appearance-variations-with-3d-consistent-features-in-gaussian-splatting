@@ -4,5 +4,5 @@
 action: submit
 gpus: 0
 test: false
-milestone: core_claim
-notes: "Verify the fixed evaluator schema in a clean CPU container run: reproduce core and ablation outputs, then run validate.py --compare."
+milestone: core_claim_plus
+notes: "Continuation audit passed. Run a clean CPU container validation to reproduce core plus ablation outputs after the evaluator schema fix and run validate.py --compare."
