@@ -5,11 +5,14 @@
       "weight": 0.7,
       "primary_metric": "psnr",
       "metrics": {
-        "psnr": {"higher_is_better": true, "coefficient": 1.0},
-        "ssim": {"higher_is_better": true, "coefficient": 0.4},
-        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4},
-        "coupled_appearance_at_splat_render": {"higher_is_better": false, "coefficient": -0.3},
-        "train_iterations": {"higher_is_better": false, "coefficient": -0.1}
+        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity."},
+        "ssim": {"higher_is_better": true, "coefficient": 0.4, "description": "Mean structural similarity on held-out right-half renders."},
+        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy combining pixel and gradient errors."},
+        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, penalizing methods that sacrifice one held-out appearance."},
+        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias, catching global appearance shortcuts."},
+        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error, catching structural blur or texture shortcuts."},
+        "coupled_appearance_at_splat_render": {"higher_is_better": false, "coefficient": -0.3, "description": "Constraint flag for methods that couple appearance correction directly into splat rendering."},
+        "train_iterations": {"higher_is_better": false, "coefficient": -0.1, "description": "Optimization-step count used to discourage gains that only spend a larger training budget."}
       },
       "results": {
         "vanilla_3dgs": {
@@ -35,11 +38,14 @@
       "weight": 0.3,
       "primary_metric": "psnr",
       "metrics": {
-        "psnr": {"higher_is_better": true, "coefficient": 1.0},
-        "ssim": {"higher_is_better": true, "coefficient": 0.4},
-        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4},
-        "uses_3d_hash_features": {"higher_is_better": true, "coefficient": 0.2},
-        "uses_identity_regularizer": {"higher_is_better": true, "coefficient": 0.2}
+        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity for component comparisons."},
+        "ssim": {"higher_is_better": true, "coefficient": 0.4, "description": "Mean structural similarity for component comparisons."},
+        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy for component comparisons."},
+        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, checking that component changes do not collapse one held-out view."},
+        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias for the ablated method outputs."},
+        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error for the ablated method outputs."},
+        "uses_3d_hash_features": {"higher_is_better": true, "coefficient": 0.2, "description": "Component flag indicating use of 3D-aware local features."},
+        "uses_identity_regularizer": {"higher_is_better": true, "coefficient": 0.2, "description": "Component flag indicating use of the identity transformation regularizer."}
       },
       "results": {
         "davigs_uv_depth": {
