@@ -4,17 +4,17 @@
       "results": {
         "davigs": {
           "coupled_appearance_at_splat_render": 0.0,
-          "lpips_proxy": 0.03989789169281721,
-          "psnr": 22.263786295682085,
-          "ssim": 0.49911585450172424,
-          "train_iterations": 1200.0
+          "lpips_proxy": 0.02372214151546359,
+          "psnr": 24.495428658727295,
+          "ssim": 0.7145592719316483,
+          "train_iterations": 2200.0
         },
         "vanilla_3dgs": {
           "coupled_appearance_at_splat_render": 0.0,
-          "lpips_proxy": 0.0420327614992857,
-          "psnr": 22.629027076804228,
-          "ssim": 0.3802901580929756,
-          "train_iterations": 1200.0
+          "lpips_proxy": 0.04205115232616663,
+          "psnr": 22.64309245702151,
+          "ssim": 0.3844997510313988,
+          "train_iterations": 2200.0
         }
       }
     }
