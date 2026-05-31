@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
 test: true
-milestone: method_runs
-notes: "Retry after DAVIGS improved SSIM/LPIPS but missed PSNR: reduce scaled identity penalty and run 2200 iterations with 400 test-adaptation steps."
+milestone: core_claim
+notes: "Core claim reproduced on the reduced synthetic GLAV benchmark: DAVIGS beats vanilla 3DGS on PSNR, SSIM, and perceptual proxy while keeping appearance handling decoupled from Gaussian splat rendering."

@@ -8,6 +8,7 @@
 - Added a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not included.
 - `python validate.py --reference-only` passes.
 - Job `7be31f97-c22` ran the method and evaluator end to end, so the workspace has reached `method_runs`.
+- Job `e5e780f2-46e` reproduced the core claim on the reduced benchmark: DAVIGS improves held-out rendering quality over vanilla 3DGS while keeping appearance handling decoupled from Gaussian splat rendering.
 
 ## Results
 
@@ -25,11 +26,16 @@ Job `6f076b1b-d8b` improved the comparison but still did not meet the PSNR prima
 
 DAVIGS now improves SSIM and the perceptual proxy, but PSNR is still slightly lower than baseline. The next run keeps the same algorithm and reduces the scaled identity-regularizer strength while increasing optimization/adaptation steps.
 
+Job `e5e780f2-46e` reached the core claim:
+
+- Vanilla 3DGS: PSNR 22.64, SSIM 0.384, LPIPS-proxy 0.042
+- DAVIGS: PSNR 24.50, SSIM 0.715, LPIPS-proxy 0.024
+- Constraint: `coupled_appearance_at_splat_render` is 0 for DAVIGS, indicating the appearance model is not coupled into Gaussian splat rendering.
+
 ## Remaining
 
-- Run the next compute job and inspect whether DAVIGS improves PSNR as well as SSIM/perceptual proxy over vanilla 3DGS.
-- If the gap is weak, tune the reduced benchmark or training schedule while keeping the DAVIGS computation intact.
-- After a successful run, update the milestone and compare with `python validate.py --compare`.
+- Higher milestones would require adding more paper tables, such as PhotoTourism or ablations for 3D features and identity regularization.
+- The current packaged environment is usable for future agents at `core_claim`.
 
 ## Issues
 
@@ -39,6 +45,7 @@ DAVIGS now improves SSIM and the perceptual proxy, but PSNR is still slightly lo
 - The job also warned that NumPy was absent from the container overlay. Added `numpy` to `environment/setup.sh`.
 - Job `7be31f97-c22` showed the first reduced benchmark was not diagnostic: baseline performance was stronger than DAVIGS. The next job uses a harder appearance-variation setup and equal iteration budgets.
 - Job `6f076b1b-d8b` showed the method's identity penalty was likely too strong for the small scene scale: DAVIGS improved structural/perceptual metrics but underfit PSNR. Reduced the scaled identity penalty and increased training/adaptation steps.
+- Job `e5e780f2-46e` resolved the reduced-benchmark PSNR gap.
 
 ## Deviations from Paper
 
