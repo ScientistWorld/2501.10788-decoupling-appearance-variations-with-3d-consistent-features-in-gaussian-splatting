@@ -2,7 +2,7 @@
   "experiments": {
     "synthetic_glav_core": {
       "description": "Reduced-scale GLAV-style appearance variation benchmark with the paper's main quality and decoupled-rendering constraint metrics. Paper reference values are from the GLAV Table 1 3DGS and DAVIGS rows, except lpips_proxy uses the paper's LPIPS scale as the closest reported perceptual target.",
-      "weight": 0.6,
+      "weight": 0.7,
       "primary_metric": "psnr",
       "metrics": {
         "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity."},
@@ -35,7 +35,7 @@
     },
     "synthetic_glav_ablation": {
       "description": "Reduced-scale counterpart of the paper's Table 4 component ablations, comparing the full system with controlled degraded variants under the same protocol.",
-      "weight": 0.2,
+      "weight": 0.3,
       "primary_metric": "psnr",
       "metrics": {
         "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity for component comparisons."},
@@ -63,48 +63,6 @@
           "psnr": 22.75,
           "ssim": 0.803,
           "lpips_proxy": 0.243
-        }
-      }
-    },
-    "synthetic_glav_cell_size": {
-      "description": "Reduced-scale counterpart of the paper's Table 5 cell-based query sweep. It checks the quality/resource tradeoff from querying fewer appearance transforms per view.",
-      "weight": 0.2,
-      "primary_metric": "psnr",
-      "metrics": {
-        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity for a query cell size."},
-        "ssim": {"higher_is_better": true, "coefficient": 0.35, "description": "Mean structural similarity for a query cell size."},
-        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.35, "description": "Deterministic perceptual proxy for a query cell size."},
-        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.25, "description": "Minimum per-view PSNR for the cell-size setting."},
-        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.2, "description": "Mean absolute RGB-channel bias for the cell-size setting."},
-        "edge_mae": {"higher_is_better": false, "coefficient": -0.2, "description": "Sobel-edge mean absolute error for the cell-size setting."},
-        "cell_size": {"higher_is_better": false, "coefficient": -0.05, "description": "2D query cell size used by the appearance module."},
-        "cell_queries_per_view": {"higher_is_better": false, "coefficient": -0.2, "description": "Machine-independent count of appearance MLP queries per rendered view."},
-        "train_iterations": {"higher_is_better": false, "coefficient": -0.1, "description": "Optimization-step count used for the cell-size setting."}
-      },
-      "results": {
-        "davigs_cell_2": {
-          "type": "proposed",
-          "psnr": 28.35,
-          "ssim": 0.861,
-          "lpips_proxy": 0.134,
-          "cell_size": 2,
-          "train_iterations": 30000
-        },
-        "davigs": {
-          "type": "proposed",
-          "psnr": 28.31,
-          "ssim": 0.861,
-          "lpips_proxy": 0.134,
-          "cell_size": 8,
-          "train_iterations": 30000
-        },
-        "davigs_cell_32": {
-          "type": "proposed",
-          "psnr": 27.76,
-          "ssim": 0.858,
-          "lpips_proxy": 0.140,
-          "cell_size": 32,
-          "train_iterations": 30000
         }
       }
     }
