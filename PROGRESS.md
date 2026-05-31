@@ -10,7 +10,7 @@
 
 ## Results
 
-No reproduced scores have been claimed yet. The next submitted job runs `scripts/reproduce.sh`, evaluates both vanilla Gaussian Splatting and DAVIGS, and writes `scoring/scores.json`.
+No reproduced scores have been claimed yet. Job `49cf5a13-8ce` generated both prediction artifacts but failed inside the evaluator before writing `scoring/scores.json`.
 
 ## Remaining
 
@@ -22,6 +22,8 @@ No reproduced scores have been claimed yet. The next submitted job runs `scripts
 
 - The previous workspace was mostly template files.
 - The original GLAV dataset and official code were not present. The project page found via web search did not expose a code repository in the visible page text.
+- Job `49cf5a13-8ce` failed because the LPIPS-proxy Sobel kernel had shape `[3, 2, 3, 3]` while grouped convolution expected one input channel per group. Fixed by constructing `[6, 1, 3, 3]` depthwise filters.
+- The job also warned that NumPy was absent from the container overlay. Added `numpy` to `environment/setup.sh`.
 
 ## Deviations from Paper
 

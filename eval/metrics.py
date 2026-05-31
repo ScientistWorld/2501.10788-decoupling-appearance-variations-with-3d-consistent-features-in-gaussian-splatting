@@ -33,7 +33,7 @@ def lpips_proxy(pred: torch.Tensor, target: torch.Tensor) -> float:
     target = target.clamp(0, 1).unsqueeze(0)
     sobel_x = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=pred.dtype, device=pred.device) / 8.0
     sobel_y = sobel_x.T
-    kernels = torch.stack([sobel_x, sobel_y]).repeat(3, 1, 1, 1)
+    kernels = torch.stack([sobel_x, sobel_y]).unsqueeze(1).repeat(3, 1, 1, 1)
     grad_p = F.conv2d(pred, kernels, padding=1, groups=3)
     grad_t = F.conv2d(target, kernels, padding=1, groups=3)
     return float((0.65 * (pred - target).abs().mean() + 0.35 * (grad_p - grad_t).abs().mean()).item())
