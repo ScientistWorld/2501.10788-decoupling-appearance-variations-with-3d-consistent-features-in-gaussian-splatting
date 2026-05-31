@@ -6,4 +6,4 @@ action: done
 gpus: 0
 test: false
 milestone: secondary_claims
-notes: "Alternating even/odd held-out artifact split; 40 train metric values, 40 test metric values; core davigs PSNR 25.18 train vs 23.81 test, vanilla 22.70 vs 22.58, so proposed remains ahead on both slices; caveat: only two views per slice."
+notes: "Packager audit passed: synthetic benchmark needs no external assets; download.sh is executable/idempotent and no shared paths are referenced."
