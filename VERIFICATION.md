@@ -2,30 +2,29 @@
 
 ## Initial Assessment
 
-The workspace entered final verification at `secondary_claims`. The claimed milestone is justified: the reduced DAVIGS implementation runs on a deterministic GLAV-style benchmark, improves held-out quality over the vanilla Gaussian Splatting baseline, and includes controlled degraded variants that score worse than the full reproduction.
+The workspace entered final verification at `secondary_claims`. The claimed milestone remains justified: the reduced reproduction implements the paper's appearance-variation procedure at small scale, beats the plain reconstruction baseline on the validated synthetic GLAV-style benchmark, and includes degraded variants that score worse than the full method.
 
-`python validate.py --compare` passed at the start of verification, and the required train/test split artifacts were present.
+`python validate.py --compare` passed at the start of verification. The active `scores.json`, `scores_train.json`, and `scores_test.json` all cover the two validated experiments: `synthetic_glav_core` and `synthetic_glav_ablation`.
 
 ## Issues Found
 
-- **Minor:** `scoring/EXPERIMENTS.md`, `scoring/TARGETS.md`, and `scoring/CONSTRAINTS.md` leaked method-component details into files that should be method-agnostic or method-safe.
-- **Minor:** `scoring/reference.json` gave positive coefficient weight to component-presence flags. Those flags reward a particular implementation choice rather than scientific output, so they were poor gym incentives.
-- **Minor:** `scoring/scores.json` did not include the diagnostic metrics declared in `reference.json`, even though the train/test score files already contained them.
-- **Minor:** `eval/evaluate_outputs.py` was tied to the current output directory names and would not automatically score a future scientist's new method artifact.
+- **Minor:** A prior commit had changed `action.yaml` back to `submit` for an extra cell-size sweep, but the committed scores did not include that experiment. The active gym docs and scores needed to stay aligned with validated results.
+- **Minor:** Generated `__pycache__` directories were present under source folders.
+- **Minor:** Some method-agnostic or method-safe docs used wording that exposed implementation-specific concepts more than necessary.
+- **Pre-existing:** `README.md`, `manifest.json`, and deleted `trajectory/*.jsonl` entries are dirty system/workflow artifacts. They were not part of the reproduction package and were left untouched.
 
 ## Fixes Applied
 
-- Reworded method-agnostic and method-safe scoring docs to describe ablations as controlled degraded variants without naming architecture or loss details.
-- Removed component-presence flags from scored metrics and score artifacts; the ablation is now scored by image quality and robustness metrics only.
-- Added `worst_view_psnr`, `mean_color_bias_mae`, and `edge_mae` to `scoring/scores.json` using the existing validated train/test artifacts.
-- Updated the standard evaluator to discover `outputs/*/predictions.pt` and use the scoring plan to group methods, so new method outputs can be evaluated without editing `eval/`.
+- Reverted the unvalidated cell-size sweep commit so the default reproduction, scoring reference, target docs, and committed scores again describe only validated experiments.
+- Removed generated `__pycache__` directories from `data/`, `eval/`, and `method/`.
+- Reworded `briefing/evaluation.md`, `scoring/EXPERIMENTS.md`, and `scoring/TARGETS.md` to describe the task and constraints without unnecessary implementation leakage.
 - Re-ran `python validate.py --compare`; all checks passed.
 
 ## Final Judgment
 
-The workspace is ready to serve as a gym, with a clear limitation: it is a reduced synthetic benchmark rather than the full captured GLAV/PhotoTourism reproduction. Problem/solution separation is acceptable, no committed code references `shared/`, `scripts/download.sh` is self-contained with no external assets, and train/test evaluators are independent and lightweight.
+The workspace is ready to serve as a research gym. Problem/solution separation is acceptable: data generation is in `data/`, evaluation reads saved artifacts without importing `method/`, and the strict problem/evaluation docs now describe the task and metrics without exposing the paper's specific computation. The scoring rubric covers benefit metrics plus constraints for final-rendering overhead and optimization budget, and the train/test split artifacts are present, independent, and lightweight.
 
 - Milestone: secondary_claims
 - Ready for gym use: yes
 - Confidence: medium
-- Key limitation: synthetic reduced-scale data only, with simplified Gaussian Splatting rather than full paper-scale 3DGS.
+- Key limitation: synthetic reduced-scale data only, with simplified Gaussian Splatting rather than full paper-scale captured GLAV/PhotoTourism experiments.

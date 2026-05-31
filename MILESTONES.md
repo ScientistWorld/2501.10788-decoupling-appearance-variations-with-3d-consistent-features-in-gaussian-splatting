@@ -22,3 +22,7 @@
 ### [2026-05-31 13:10] - secondary_claims
 - Tightened the standard evaluator to emit all diagnostics declared in `reference.json`.
 - Updated `scripts/run.sh` to regenerate the full reproduction, train/test slice scores, and run `python validate.py --compare` in the container before any done signal.
+
+### [2026-05-31 13:16] - secondary_claims
+- Final verification passed after reverting an unvalidated cell-size extension from the active scoring contract.
+- Confirmed `python validate.py --compare` passes with the validated core and ablation experiments.

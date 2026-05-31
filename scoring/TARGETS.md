@@ -10,9 +10,9 @@ Tests whether a reconstruction method improves held-out novel-view image quality
 
 ## Constraint: synthetic_glav_core
 
-Tests whether quality gains are achieved without requiring a appearance model coupled into Gaussian splat rendering.
+Tests whether quality gains are achieved without requiring persistent per-view correction machinery during final rendering.
 
-- **Metric:** `coupled_appearance_at_splat_render` is lower better; zero means appearance handling is not coupled into the Gaussian splat renderer.
+- **Metric:** `coupled_appearance_at_splat_render` is lower better; zero means final rendering does not require per-view appearance correction.
 - **Run:** `bash scripts/evaluate.sh` on method artifacts.
 
 ## Resource: synthetic_glav_core

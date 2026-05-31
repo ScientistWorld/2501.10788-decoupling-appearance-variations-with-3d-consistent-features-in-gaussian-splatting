@@ -6,4 +6,4 @@ action: done
 gpus: 0
 test: false
 milestone: secondary_claims
-notes: "Final verification passed; scoring/docs were cleaned and the workspace is ready as a reduced synthetic DAVIGS gym."
+notes: "Final verification passed; active scoring/docs match validated secondary_claims results."
