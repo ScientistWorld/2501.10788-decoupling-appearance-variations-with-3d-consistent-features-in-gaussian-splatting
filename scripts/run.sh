@@ -13,8 +13,8 @@ set -e
 
 cd /home/user
 
-export DAVIGS_STEPS="${DAVIGS_STEPS:-700}"
-export DAVIGS_ADAPT_STEPS="${DAVIGS_ADAPT_STEPS:-80}"
+export DAVIGS_STEPS="${DAVIGS_STEPS:-1200}"
+export DAVIGS_ADAPT_STEPS="${DAVIGS_ADAPT_STEPS:-200}"
 
 bash scripts/reproduce.sh
 python validate.py --compare

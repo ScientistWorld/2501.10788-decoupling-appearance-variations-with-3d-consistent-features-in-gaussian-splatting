@@ -4,5 +4,5 @@
 action: submit
 gpus: 0
 test: true
-milestone: none
-notes: "Retry after fixing evaluator Sobel kernel shape and adding NumPy; run reduced DAVIGS and vanilla 3DGS end to end, evaluate outputs, and validate scores."
+milestone: method_runs
+notes: "Follow-up CPU test after method_runs: harder interleaved synthetic appearance benchmark, equal baseline/DAVIGS iterations, and longer test-view adaptation to try to reach core_claim."

@@ -109,8 +109,8 @@ def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--steps", type=int, default=700)
-    parser.add_argument("--adapt-steps", type=int, default=80)
+    parser.add_argument("--steps", type=int, default=1200)
+    parser.add_argument("--adapt-steps", type=int, default=200)
     parser.add_argument("--out", type=Path, default=Path("outputs"))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--only", choices=["all", "baseline", "davigs"], default="all")
@@ -120,7 +120,7 @@ def main() -> None:
     torch.set_num_threads(2)
     scene = build_scene(seed=args.seed)
     if args.only in ("all", "baseline"):
-        train_baseline(scene, max(100, args.steps // 2), args.out / "vanilla_3dgs")
+        train_baseline(scene, args.steps, args.out / "vanilla_3dgs")
     if args.only in ("all", "davigs"):
         train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs")
 

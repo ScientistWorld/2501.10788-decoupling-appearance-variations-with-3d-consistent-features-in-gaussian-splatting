@@ -7,10 +7,16 @@
 - Added an independent evaluator that reads saved prediction artifacts and writes `scoring/scores.json`.
 - Added a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not included.
 - `python validate.py --reference-only` passes.
+- Job `7be31f97-c22` ran the method and evaluator end to end, so the workspace has reached `method_runs`.
 
 ## Results
 
-No reproduced scores have been claimed yet. Job `49cf5a13-8ce` generated both prediction artifacts but failed inside the evaluator before writing `scoring/scores.json`.
+Job `7be31f97-c22` produced valid scores, but not a successful core-claim result:
+
+- Vanilla 3DGS: PSNR 26.70, SSIM 0.719, LPIPS-proxy 0.025
+- DAVIGS: PSNR 24.77, SSIM 0.368, LPIPS-proxy 0.035
+
+This confirms the method runs, but DAVIGS did not beat the baseline. The benchmark/training setup has been revised for the next run: stronger appearance variation, interleaved train/test views, equal optimization iterations for baseline and DAVIGS, and more test-view adaptation steps.
 
 ## Remaining
 
@@ -24,6 +30,7 @@ No reproduced scores have been claimed yet. Job `49cf5a13-8ce` generated both pr
 - The original GLAV dataset and official code were not present. The project page found via web search did not expose a code repository in the visible page text.
 - Job `49cf5a13-8ce` failed because the LPIPS-proxy Sobel kernel had shape `[3, 2, 3, 3]` while grouped convolution expected one input channel per group. Fixed by constructing `[6, 1, 3, 3]` depthwise filters.
 - The job also warned that NumPy was absent from the container overlay. Added `numpy` to `environment/setup.sh`.
+- Job `7be31f97-c22` showed the first reduced benchmark was not diagnostic: baseline performance was stronger than DAVIGS. The next job uses a harder appearance-variation setup and equal iteration budgets.
 
 ## Deviations from Paper
 

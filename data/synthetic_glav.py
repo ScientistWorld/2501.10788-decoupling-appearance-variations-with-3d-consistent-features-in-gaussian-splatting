@@ -127,21 +127,21 @@ def backproject_grid(depth: torch.Tensor, camera: Camera) -> torch.Tensor:
 def apply_view_appearance(canonical: torch.Tensor, xyz: torch.Tensor, view_id: int, num_views: int) -> torch.Tensor:
     phase = 2.0 * math.pi * view_id / num_views
     gains = torch.tensor(
-        [1.0 + 0.22 * math.sin(phase), 1.0 + 0.18 * math.cos(phase + 0.4), 1.0 + 0.20 * math.sin(phase + 1.1)],
+        [1.0 + 0.48 * math.sin(phase), 1.0 + 0.42 * math.cos(phase + 0.4), 1.0 + 0.46 * math.sin(phase + 1.1)],
         dtype=canonical.dtype,
         device=canonical.device,
     )
     bias = torch.tensor(
-        [0.05 * math.cos(phase), -0.035 * math.sin(phase + 0.3), 0.04 * math.cos(phase + 1.2)],
+        [0.13 * math.cos(phase), -0.11 * math.sin(phase + 0.3), 0.12 * math.cos(phase + 1.2)],
         dtype=canonical.dtype,
         device=canonical.device,
     )
     spot_center = torch.tensor([0.28 * math.sin(phase), -0.18, 0.18 * math.cos(phase)], dtype=canonical.dtype, device=canonical.device)
     dist = ((xyz - spot_center) ** 2).sum(dim=-1)
     local = torch.exp(-dist / 0.16)[None]
-    tint = torch.tensor([0.32, 0.18, -0.12], dtype=canonical.dtype, device=canonical.device)[:, None, None]
+    tint = torch.tensor([0.68, 0.42, -0.32], dtype=canonical.dtype, device=canonical.device)[:, None, None]
     shadow = torch.exp(-((xyz[..., 0] + 0.35) ** 2 + (xyz[..., 2] - 0.2) ** 2) / 0.12)[None]
-    image = canonical * gains[:, None, None] + bias[:, None, None] + local * tint - 0.18 * shadow
+    image = canonical * gains[:, None, None] + bias[:, None, None] + local * tint - 0.36 * shadow
     return image.clamp(0.0, 1.0)
 
 
@@ -158,8 +158,8 @@ def build_scene(num_views: int = 16, height: int = 64, width: int = 64, seed: in
     gen = torch.Generator().manual_seed(seed + 1)
     init_points = points + 0.035 * torch.randn(points.shape, generator=gen)
     init_colors = (colors + 0.12 * torch.randn(colors.shape, generator=gen)).clamp(0.05, 0.95)
-    train_ids = list(range(0, 12))
-    test_ids = list(range(12, 16))
+    test_ids = [3, 7, 11, 15]
+    train_ids = [i for i in range(num_views) if i not in test_ids]
     return SyntheticScene(
         cameras=cameras,
         images=torch.stack(varied),
