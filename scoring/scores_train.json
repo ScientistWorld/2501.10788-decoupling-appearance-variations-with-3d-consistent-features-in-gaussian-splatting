@@ -46,26 +46,6 @@
           "train_iterations": 2200.0,
           "worst_view_psnr": 24.584913749225805
         },
-        "davigs_no_id": {
-          "coupled_appearance_at_splat_render": 0.0,
-          "edge_mae": 0.012370354495942593,
-          "lpips_proxy": 0.04376998916268349,
-          "mean_color_bias_mae": 0.0506589412689209,
-          "psnr": 21.70656234326815,
-          "ssim": 0.5081590116024017,
-          "train_iterations": 2200.0,
-          "worst_view_psnr": 21.624248335301587
-        },
-        "davigs_uv_depth": {
-          "coupled_appearance_at_splat_render": 0.0,
-          "edge_mae": 0.009221718879416585,
-          "lpips_proxy": 0.027674682438373566,
-          "mean_color_bias_mae": 0.02905922569334507,
-          "psnr": 24.629662415858682,
-          "ssim": 0.6978475749492645,
-          "train_iterations": 2200.0,
-          "worst_view_psnr": 22.224187796035263
-        },
         "vanilla_3dgs": {
           "coupled_appearance_at_splat_render": 0.0,
           "edge_mae": 0.009470611810684204,
