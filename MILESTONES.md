@@ -27,3 +27,4 @@
 - The score includes the decoupled-rendering constraint metric `coupled_appearance_at_splat_render = 0`.
 
 ## Stop Justification
+- Completed at milestone `core_claim`.
