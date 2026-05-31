@@ -1,9 +1,9 @@
-# This iteration runs the train/test split scorers.
-# Once you set action to 'submit', STOP immediately.
+# This iteration completed the train/test split scoring run.
+# Once you set action to 'done', STOP immediately.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: submit
+action: done
 gpus: 0
 test: false
 milestone: secondary_claims
-notes: "Rerun CPU split scorers after fixing train evaluator to preserve experiment-specific method sets from scoring/scores.json."
+notes: "Alternating even/odd held-out artifact split; 40 train metric values, 40 test metric values; core davigs PSNR 25.18 train vs 23.81 test, vanilla 22.70 vs 22.58, so proposed remains ahead on both slices; caveat: only two views per slice."
