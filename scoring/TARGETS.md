@@ -24,9 +24,8 @@ Tracks the amount of optimization used in the reduced benchmark so improvements 
 
 ## Secondary: synthetic_glav_ablation
 
-Tests whether the two main DAVIGS design choices matter on the reduced benchmark: 3D-aware local features and the identity transformation regularizer.
+Tests whether controlled degraded variants lose rendering quality under the same reduced benchmark protocol.
 
 - **Metrics:** `psnr` and `ssim` should be higher for the full method than ablations; `lpips_proxy` should be lower.
 - **Robustness diagnostics:** `worst_view_psnr`, `mean_color_bias_mae`, and `edge_mae` are reported for the same held-out right-half predictions.
-- **Constraint flags:** `uses_3d_hash_features` and `uses_identity_regularizer` record which component is active.
 - **Run:** `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`.

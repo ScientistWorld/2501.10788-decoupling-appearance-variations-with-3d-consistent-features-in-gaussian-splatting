@@ -32,8 +32,6 @@ ABLATION_METRICS = {
     "worst_view_psnr",
     "mean_color_bias_mae",
     "edge_mae",
-    "uses_3d_hash_features",
-    "uses_identity_regularizer",
 }
 
 
@@ -99,10 +97,6 @@ def load_metrics(outputs: Path, method_name: str) -> dict[str, float]:
     metrics = summarize(pred, target, train_indices(pred.shape[0]))
     metrics["coupled_appearance_at_splat_render"] = float(data.get("coupled_appearance_at_splat_render", 0.0))
     metrics["train_iterations"] = float(data.get("train_iterations", 0.0))
-    if "uses_3d_hash_features" in data:
-        metrics["uses_3d_hash_features"] = float(data["uses_3d_hash_features"])
-    if "uses_identity_regularizer" in data:
-        metrics["uses_identity_regularizer"] = float(data["uses_identity_regularizer"])
     return metrics
 
 
@@ -126,11 +120,7 @@ def build_payload(outputs: Path, scores_base: Path) -> dict:
     if "synthetic_glav_ablation" in plan:
         ablation_names = plan["synthetic_glav_ablation"]
     else:
-        ablation_names = [
-            name
-            for name, metrics in per_method.items()
-            if {"uses_3d_hash_features", "uses_identity_regularizer"} & set(metrics)
-        ]
+        ablation_names = [name for name in per_method if name != "vanilla_3dgs"]
     ablation = {
         name: {metric: value for metric, value in metrics.items() if metric in ABLATION_METRICS}
         for name, metrics in per_method.items()

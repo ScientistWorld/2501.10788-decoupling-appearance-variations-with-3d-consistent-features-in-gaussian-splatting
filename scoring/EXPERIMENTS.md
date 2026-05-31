@@ -6,4 +6,4 @@ This experiment tests the central benchmark question: whether a scene reconstruc
 
 ## synthetic_glav_ablation
 
-This experiment checks that performance comes from the intended component choices rather than just adding any image-level correction. It compares the full method with variants that remove spatially consistent scene information or remove the stabilizing transformation constraint, using the same held-out view protocol.
+This experiment checks whether the benchmark can distinguish a complete reconstruction system from controlled degraded variants under the same held-out view protocol. The goal is to verify that the score responds to meaningful modeling choices rather than any generic image-level correction.

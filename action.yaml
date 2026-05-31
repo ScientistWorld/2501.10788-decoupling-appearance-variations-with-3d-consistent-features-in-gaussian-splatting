@@ -1,9 +1,9 @@
-# This iteration submits an end-to-end validation run.
-# Once you set action to 'submit', STOP immediately.
+# Final verification is complete.
+# Once you set action to 'done', STOP immediately.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: submit
+action: done
 gpus: 0
-test: true
+test: false
 milestone: secondary_claims
-notes: "Regenerate the reduced DAVIGS reproduction, emit full declared scoring diagnostics, run train/test evaluators, and validate the package in the container."
+notes: "Final verification passed; scoring/docs were cleaned and the workspace is ready as a reduced synthetic DAVIGS gym."

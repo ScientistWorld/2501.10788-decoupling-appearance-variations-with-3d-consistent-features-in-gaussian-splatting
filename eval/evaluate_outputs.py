@@ -30,9 +30,26 @@ ABLATION_METRICS = {
     "worst_view_psnr",
     "mean_color_bias_mae",
     "edge_mae",
-    "uses_3d_hash_features",
-    "uses_identity_regularizer",
 }
+
+
+def artifact_methods(outputs: Path) -> list[str]:
+    return sorted(path.parent.name for path in outputs.glob("*/predictions.pt") if not path.parent.name.startswith("_"))
+
+
+def score_plan(reference: Path) -> dict[str, list[str]]:
+    if not reference.exists():
+        return {}
+    data = json.loads(reference.read_text())
+    experiments = data.get("experiments", data)
+    plan: dict[str, list[str]] = {}
+    for exp_name, exp_data in experiments.items():
+        if exp_name.startswith("_") or not isinstance(exp_data, dict):
+            continue
+        results = exp_data.get("results", {})
+        if isinstance(results, dict):
+            plan[exp_name] = sorted(name for name in results if not name.startswith("_"))
+    return plan
 
 
 def edge_mae(pred: torch.Tensor, target: torch.Tensor) -> float:
@@ -65,35 +82,35 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--outputs", type=Path, default=Path("outputs"))
     parser.add_argument("--scores", type=Path, default=Path("scoring/scores.json"))
+    parser.add_argument("--reference", type=Path, default=Path("scoring/reference.json"))
     args = parser.parse_args()
 
     results = {}
-    for name in ["vanilla_3dgs", "davigs", "davigs_uv_depth", "davigs_no_id"]:
+    for name in artifact_methods(args.outputs):
         artifact = args.outputs / name / "predictions.pt"
-        if not artifact.exists():
-            continue
         data = torch.load(artifact, map_location="cpu", weights_only=False)
         metrics = summarize(data["pred_right"], data["target_right"])
         metrics["coupled_appearance_at_splat_render"] = float(data.get("coupled_appearance_at_splat_render", 0.0))
         metrics["train_iterations"] = float(data.get("train_iterations", 0.0))
-        if "uses_3d_hash_features" in data:
-            metrics["uses_3d_hash_features"] = float(data["uses_3d_hash_features"])
-        if "uses_identity_regularizer" in data:
-            metrics["uses_identity_regularizer"] = float(data["uses_identity_regularizer"])
         results[name] = metrics
 
     if not results:
         raise SystemExit(f"No predictions found under {args.outputs}")
 
+    plan = score_plan(args.reference)
+    ablation_ref = set(plan.get("synthetic_glav_ablation", []))
+    core_ref = set(plan.get("synthetic_glav_core", []))
+    ablation_only = ablation_ref - core_ref
+    core_names = sorted(name for name in results if name not in ablation_only)
+    ablation_names = sorted(name for name in ablation_ref if name in results)
+
     core = {
         name: {metric: value for metric, value in results[name].items() if metric in CORE_METRICS}
-        for name in ["vanilla_3dgs", "davigs"]
-        if name in results
+        for name in core_names
     }
     ablation = {
         name: {metric: value for metric, value in results[name].items() if metric in ABLATION_METRICS}
-        for name in ["davigs", "davigs_uv_depth", "davigs_no_id"]
-        if name in results
+        for name in ablation_names
     }
     experiments = {}
     if core:

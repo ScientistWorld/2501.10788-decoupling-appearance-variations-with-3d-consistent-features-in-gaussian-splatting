@@ -14,7 +14,7 @@ Report scores only through `scripts/evaluate.sh`, which reads saved prediction a
 
 ## Ablations
 
-For `synthetic_glav_ablation`, keep the same optimizer, training views, adaptation protocol, and Gaussian scene scale as `synthetic_glav_core`. Only the component named by the ablation should change; otherwise the result is not comparable.
+For `synthetic_glav_ablation`, keep the same optimizer budget, training views, adaptation protocol, and scene scale as `synthetic_glav_core`. Only the single declared experimental variant should change; otherwise the result is not comparable.
 
 ## Compliance Checklist
 

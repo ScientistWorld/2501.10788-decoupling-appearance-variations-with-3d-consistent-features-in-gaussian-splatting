@@ -8,8 +8,6 @@
           "mean_color_bias_mae": 0.02374115400016308,
           "psnr": 23.809984272971953,
           "ssim": 0.6644864082336426,
-          "uses_3d_hash_features": 1.0,
-          "uses_identity_regularizer": 1.0,
           "worst_view_psnr": 22.4986264368616
         },
         "davigs_no_id": {
@@ -18,8 +16,6 @@
           "mean_color_bias_mae": 0.02493155561387539,
           "psnr": 21.989037128382616,
           "ssim": 0.659965991973877,
-          "uses_3d_hash_features": 1.0,
-          "uses_identity_regularizer": 0.0,
           "worst_view_psnr": 21.52864457775103
         },
         "davigs_uv_depth": {
@@ -28,8 +24,6 @@
           "mean_color_bias_mae": 0.06053059920668602,
           "psnr": 21.19594194254404,
           "ssim": 0.42715005576610565,
-          "uses_3d_hash_features": 0.0,
-          "uses_identity_regularizer": 1.0,
           "worst_view_psnr": 18.303369546555576
         }
       }

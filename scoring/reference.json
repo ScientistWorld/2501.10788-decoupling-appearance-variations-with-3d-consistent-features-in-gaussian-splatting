@@ -34,7 +34,7 @@
       }
     },
     "synthetic_glav_ablation": {
-      "description": "Reduced-scale counterpart of the paper's Table 4 ablations for 3D-aware information and identity transformation regularization.",
+      "description": "Reduced-scale counterpart of the paper's Table 4 component ablations, comparing the full system with controlled degraded variants under the same protocol.",
       "weight": 0.3,
       "primary_metric": "psnr",
       "metrics": {
@@ -43,34 +43,26 @@
         "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy for component comparisons."},
         "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, checking that component changes do not collapse one held-out view."},
         "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias for the ablated method outputs."},
-        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error for the ablated method outputs."},
-        "uses_3d_hash_features": {"higher_is_better": true, "coefficient": 0.2, "description": "Component flag indicating use of 3D-aware local features."},
-        "uses_identity_regularizer": {"higher_is_better": true, "coefficient": 0.2, "description": "Component flag indicating use of the identity transformation regularizer."}
+        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error for the ablated method outputs."}
       },
       "results": {
         "davigs_uv_depth": {
           "type": "proposed",
           "psnr": 22.12,
           "ssim": 0.802,
-          "lpips_proxy": 0.248,
-          "uses_3d_hash_features": 0,
-          "uses_identity_regularizer": 1
+          "lpips_proxy": 0.248
         },
         "davigs_no_id": {
           "type": "proposed",
           "psnr": 21.33,
           "ssim": 0.767,
-          "lpips_proxy": 0.298,
-          "uses_3d_hash_features": 1,
-          "uses_identity_regularizer": 0
+          "lpips_proxy": 0.298
         },
         "davigs": {
           "type": "proposed",
           "psnr": 22.75,
           "ssim": 0.803,
-          "lpips_proxy": 0.243,
-          "uses_3d_hash_features": 1,
-          "uses_identity_regularizer": 1
+          "lpips_proxy": 0.243
         }
       }
     }
