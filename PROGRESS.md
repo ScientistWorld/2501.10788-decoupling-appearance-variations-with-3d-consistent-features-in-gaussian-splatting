@@ -32,7 +32,7 @@ Job `e5e780f2-46e` reached the core claim:
 - DAVIGS: PSNR 24.50, SSIM 0.715, LPIPS-proxy 0.024
 - Constraint: `coupled_appearance_at_splat_render` is 0 for DAVIGS, indicating the appearance model is not coupled into Gaussian splat rendering.
 
-Job `bf35e825-b46` initially failed at the final validation step because the evaluator wrote diagnostic fields into experiments that did not declare those metrics in `reference.json`. The training and evaluation artifacts were valid; after filtering metrics per experiment, `python validate.py --compare` passes.
+Job `bf35e825-b46` initially failed at the final validation step because the evaluator wrote diagnostic fields into experiments that did not declare those metrics in `reference.json`. The training and evaluation artifacts were valid; after filtering metrics per experiment, `python validate.py --compare` passes locally. A clean container job is being submitted before claiming the ablation milestone.
 
 Reduced ablation results:
 
@@ -40,11 +40,11 @@ Reduced ablation results:
 - DAVIGS with uv/depth instead of 3D hash features: PSNR 22.91, SSIM 0.562, LPIPS-proxy 0.039
 - DAVIGS without identity regularization: PSNR 21.85, SSIM 0.584, LPIPS-proxy 0.038
 
-These results support the paper's secondary claims that 3D-aware features and identity regularization matter.
+These results support the paper's secondary claims that 3D-aware features and identity regularization matter, pending one clean end-to-end container validation after the evaluator fix.
 
 ## Remaining
 
-- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment reaches `secondary_claims` on the reduced benchmark.
+- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment has a completed-job `core_claim`; the next submitted job is expected to validate `secondary_claims` on the reduced benchmark.
 
 ## Issues
 
