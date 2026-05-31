@@ -10,6 +10,7 @@
 - Job `7be31f97-c22` ran the method and evaluator end to end, so the workspace has reached `method_runs`.
 - Job `e5e780f2-46e` reproduced the core claim on the reduced benchmark: DAVIGS improves held-out rendering quality over vanilla 3DGS while keeping appearance handling decoupled from Gaussian splat rendering.
 - Continuation audit on 2026-05-31 confirmed the implementation is a reduced-scale version of the paper's actual DAVIGS algorithm rather than a surrogate, and confirmed the evaluator reads saved artifacts without importing `method/`.
+- Job `d1a7d3c1-6e7` completed a clean post-fix container run for the core experiment and ablations. `python validate.py --compare` passed inside the job.
 
 ## Results
 
@@ -41,11 +42,11 @@ Reduced ablation results:
 - DAVIGS with uv/depth instead of 3D hash features: PSNR 22.91, SSIM 0.562, LPIPS-proxy 0.039
 - DAVIGS without identity regularization: PSNR 21.85, SSIM 0.584, LPIPS-proxy 0.038
 
-These results support the paper's secondary claims that 3D-aware features and identity regularization matter, pending one clean end-to-end container validation after the evaluator fix.
+These results support the paper's secondary claims that 3D-aware features and identity regularization matter. Job `d1a7d3c1-6e7` validated them end to end in the container.
 
 ## Remaining
 
-- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment is at the reset `core_claim_plus`; the next submitted job is expected to validate `secondary_claims` on the reduced benchmark.
+- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment reaches `secondary_claims` on the validated reduced benchmark; broader milestones remain out of scope because the captured GLAV data and official code are not available in this workspace.
 
 ## Issues
 
@@ -57,6 +58,7 @@ These results support the paper's secondary claims that 3D-aware features and id
 - Job `6f076b1b-d8b` showed the method's identity penalty was likely too strong for the small scene scale: DAVIGS improved structural/perceptual metrics but underfit PSNR. Reduced the scaled identity penalty and increased training/adaptation steps.
 - Job `e5e780f2-46e` resolved the reduced-benchmark PSNR gap.
 - Job `bf35e825-b46` failed only because `scores.json` contained metrics not declared for each experiment. Fixed `eval/evaluate_outputs.py` to filter metrics per experiment and regenerated `scoring/scores.json` from the job-produced artifacts.
+- Job `d1a7d3c1-6e7` confirmed the schema fix in the container.
 
 ## Deviations from Paper
 

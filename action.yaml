@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
 test: false
-milestone: core_claim_plus
-notes: "Continuation audit passed. Run a clean CPU container validation to reproduce core plus ablation outputs after the evaluator schema fix and run validate.py --compare."
+milestone: secondary_claims
+notes: "Validated DAVIGS core and ablation claims on the reduced GLAV-style benchmark; job d1a7d3c1-6e7 passed scripts/reproduce.sh and validate.py --compare in the container."
