@@ -6,4 +6,4 @@ action: submit
 gpus: 0
 test: false
 milestone: secondary_claims
-notes: "CPU post-hoc run of evaluate_train.sh and evaluate_test.sh over existing prediction artifacts; populate split score files."
+notes: "Rerun CPU split scorers after fixing train evaluator to preserve experiment-specific method sets from scoring/scores.json."
