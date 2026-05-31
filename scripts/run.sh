@@ -13,8 +13,8 @@ set -e
 
 cd /home/user
 
-# Example: train a model
-python method/train.py --epochs 10 --lr 0.001
+export DAVIGS_STEPS="${DAVIGS_STEPS:-700}"
+export DAVIGS_ADAPT_STEPS="${DAVIGS_ADAPT_STEPS:-80}"
 
-# Example: evaluate
-bash scripts/evaluate.sh checkpoints/best.pt
+bash scripts/reproduce.sh
+python validate.py --compare

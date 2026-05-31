@@ -17,4 +17,5 @@ set -e
 
 cd /home/user
 
-# TODO: run baseline
+python -m method.run_experiment --only baseline --steps "${BASELINE_STEPS:-700}" --out outputs
+bash scripts/evaluate.sh

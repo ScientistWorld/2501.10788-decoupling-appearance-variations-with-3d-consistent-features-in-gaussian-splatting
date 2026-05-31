@@ -1,15 +1,19 @@
 # Evaluation
 
-How success is measured. Describe only the metrics, targets, and evaluation procedure — do NOT describe the paper's method or how they achieved these results. Think of this as a general evaluation protocal for other scientists trying to solve the same problem, where they should not see this paper's solution.
-
 ## Metrics
 
-<!-- What metrics are used? How are they computed? What does higher/lower mean? -->
+The main quality metrics are PSNR and SSIM, where higher is better, and a perceptual distance metric, where lower is better. The original paper reports LPIPS; this reduced environment uses a deterministic gradient-weighted LPIPS proxy to avoid external pretrained metric downloads while retaining a perceptual constraint.
+
+The main constraint metric is whether extra appearance parameters are required during final rendering. A value of zero means the learned scene can be rendered without a persistent appearance module, matching the paper's decoupled-rendering claim. Training iterations are also tracked as a resource constraint.
 
 ## Baselines and Targets
 
-<!-- What performance levels exist as reference points? Include the paper's reported numbers as targets, and any standard baselines. A scientist agent should know what "good" looks like. -->
+The primary baseline is vanilla Gaussian Splatting optimized directly against appearance-varying images. The target method should outperform that baseline on the held-out right halves of test images while keeping final rendering decoupled from the appearance module.
+
+Paper reference values in `scoring/reference.json` come from the GLAV dataset results reported in Table 1. The local reproduction uses a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not distributed in this workspace.
 
 ## Evaluation Protocol
 
-<!-- How should evaluation be run? What data split, what conditions? Any important details about how to compare fairly (e.g., fixed seeds, specific test sets, averaging over runs). -->
+Evaluation reads prediction artifacts from `outputs/<method>/predictions.pt` and computes metrics independently in `eval/`. The evaluator never imports from `method/`.
+
+For the reduced benchmark, methods train on a fixed procedural multi-view scene with global and local appearance variation. Test-view appearance fitting may use the left half of each test image, and metrics are computed only on the held-out right half, following the paper's half-image test adaptation protocol.

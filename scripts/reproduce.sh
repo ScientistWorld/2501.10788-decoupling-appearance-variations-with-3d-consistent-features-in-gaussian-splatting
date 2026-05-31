@@ -18,7 +18,6 @@ set -e
 
 cd /home/user
 
-# TODO: implement full reproduction pipeline
-# e.g.:
-#   bash scripts/baseline.sh
-#   bash scripts/method.sh
+rm -rf outputs
+python -m method.run_experiment --only all --steps "${DAVIGS_STEPS:-700}" --adapt-steps "${DAVIGS_ADAPT_STEPS:-80}" --out outputs
+bash scripts/evaluate.sh

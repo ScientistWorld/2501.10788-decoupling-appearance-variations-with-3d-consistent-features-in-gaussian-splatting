@@ -2,36 +2,29 @@
 
 ## What Works
 
-<!-- What has been successfully reproduced so far. -->
+- Audited the inherited workspace and found no real implementation in `method/` or `eval/`.
+- Implemented a reduced-scale DAVIGS reproduction with differentiable Gaussian splatting, 3D back-projection, multi-resolution hash-grid features, per-view appearance embeddings, MLP-decoded 3x4 affine color transforms, cell-based querying, and identity regularization.
+- Added an independent evaluator that reads saved prediction artifacts and writes `scoring/scores.json`.
+- Added a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not included.
+- `python validate.py --reference-only` passes.
 
 ## Results
 
-<!-- Reproduced numbers compared to the paper's reported numbers. -->
+No reproduced scores have been claimed yet. The next submitted job runs `scripts/reproduce.sh`, evaluates both vanilla Gaussian Splatting and DAVIGS, and writes `scoring/scores.json`.
 
 ## Remaining
 
-<!-- What still needs to be done to reach higher milestones. -->
+- Run the compute job and inspect whether DAVIGS improves PSNR/SSIM and perceptual proxy over vanilla 3DGS.
+- If the gap is weak, tune the reduced benchmark or training schedule while keeping the DAVIGS computation intact.
+- After a successful run, update the milestone and compare with `python validate.py --compare`.
 
 ## Issues
 
-<!-- Blockers, bugs, or difficulties encountered. -->
+- The previous workspace was mostly template files.
+- The original GLAV dataset and official code were not present. The project page found via web search did not expose a code repository in the visible page text.
 
 ## Deviations from Paper
 
-<!-- Do not edit this section unless you deviated from the paper's original setup.
-     For each deviation, document: what the paper used, what you substituted, and why.
-
-     ACCEPTABLE deviations (data/resource/scale substitutions — milestones still valid):
-       - Replaced a proprietary dataset with a public one
-       - Used a smaller model of the same architecture
-       - Scaled down training (fewer epochs, smaller batch)
-       - Used a different library for the same algorithm
-
-     UNACCEPTABLE deviations (algorithm substitutions — milestones above 'none' are void):
-       - Replaced the paper's algorithm with a fundamentally different one
-       - Wrote a generic model trained to approximate the method's outputs
-         instead of implementing the method's computational steps
-
-     The test: could someone reading your code identify which algorithm from
-     the paper you implemented? If not, you replaced the method. -->
-
+- **Dataset:** The paper evaluates on captured GLAV and PhotoTourism scenes. This reproduction uses a deterministic procedural GLAV-style scene because the captured GLAV data is not bundled and no direct public download was available in the workspace. The synthetic data preserves the key phenomenon: multi-view Gaussian reconstruction under global and local appearance variation.
+- **Scale:** The paper trains full 3DGS scenes for 30k iterations at high resolution. This reproduction uses 64x64 images, a small Gaussian set, and hundreds of iterations so it can run within the benchmark budget while preserving the same appearance-model computation.
+- **Perceptual metric:** The paper reports LPIPS. This environment uses a deterministic gradient-weighted LPIPS proxy to avoid external pretrained metric downloads.

@@ -10,5 +10,5 @@ set -e
 
 cd /home/user
 
-# TODO: run the paper's method
-# TODO: call scripts/evaluate.sh to score
+python -m method.run_experiment --only davigs --steps "${DAVIGS_STEPS:-700}" --adapt-steps "${DAVIGS_ADAPT_STEPS:-80}" --out outputs
+bash scripts/evaluate.sh

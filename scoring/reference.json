@@ -1,0 +1,34 @@
+{
+  "experiments": {
+    "synthetic_glav_core": {
+      "description": "Reduced-scale GLAV-style appearance variation benchmark with the paper's main quality and decoupled-rendering constraint metrics. Paper reference values are from the GLAV Table 1 3DGS and DAVIGS rows, except lpips_proxy uses the paper's LPIPS scale as the closest reported perceptual target.",
+      "weight": 1.0,
+      "primary_metric": "psnr",
+      "metrics": {
+        "psnr": {"higher_is_better": true, "coefficient": 1.0},
+        "ssim": {"higher_is_better": true, "coefficient": 0.4},
+        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4},
+        "coupled_appearance_at_splat_render": {"higher_is_better": false, "coefficient": -0.3},
+        "train_iterations": {"higher_is_better": false, "coefficient": -0.1}
+      },
+      "results": {
+        "vanilla_3dgs": {
+          "type": "baseline",
+          "psnr": 22.8,
+          "ssim": 0.753,
+          "lpips_proxy": 0.221,
+          "coupled_appearance_at_splat_render": 0,
+          "train_iterations": 30000
+        },
+        "davigs": {
+          "type": "proposed",
+          "psnr": 28.31,
+          "ssim": 0.861,
+          "lpips_proxy": 0.134,
+          "coupled_appearance_at_splat_render": 0,
+          "train_iterations": 30000
+        }
+      }
+    }
+  }
+}
