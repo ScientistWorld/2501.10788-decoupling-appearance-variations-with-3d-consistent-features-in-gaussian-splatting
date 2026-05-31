@@ -165,4 +165,7 @@ For the reduced benchmark, methods train on a fixed procedural multi-view scene 
 
 # Reproduction Milestones
 
-**Current: secondary_claims**
+**Current: core_claim_plus**
+
+## Stop Justification
+- Completed at milestone `core_claim_plus`.

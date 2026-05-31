@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
-gpus: 0
+action: pending
+gpus: 1
 test: false
-milestone: secondary_claims
-notes: "Core claim and reduced ablation secondary claims reproduced. Fixed evaluator schema filtering after job bf35e825-b46 and validation now passes."
+milestone: core_claim_plus
+notes: ""
