@@ -7,3 +7,7 @@ This experiment tests the central benchmark question: whether a scene reconstruc
 ## synthetic_glav_ablation
 
 This experiment checks whether the benchmark can distinguish a complete reconstruction system from controlled degraded variants under the same held-out view protocol. The goal is to verify that the score responds to meaningful modeling choices rather than any generic image-level correction.
+
+## synthetic_glav_cell_size
+
+This experiment compares different query-cell sizes under the same reconstruction and held-out view protocol. It is meant to expose the tradeoff between fine-grained appearance correction and the number of appearance queries required per rendered view.

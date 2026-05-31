@@ -22,3 +22,7 @@
 ### [2026-05-31 13:10] - secondary_claims
 - Tightened the standard evaluator to emit all diagnostics declared in `reference.json`.
 - Updated `scripts/run.sh` to regenerate the full reproduction, train/test slice scores, and run `python validate.py --compare` in the container before any done signal.
+
+### [2026-05-31 13:35] - secondary_claims
+- Added a reduced cell-size sweep for the paper's cell-based query ablation.
+- Submitting a container job to regenerate the full reproduction, including cell sizes 2, 8, and 32, before claiming any broader result.

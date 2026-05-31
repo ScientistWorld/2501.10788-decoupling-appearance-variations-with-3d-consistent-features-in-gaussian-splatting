@@ -31,6 +31,17 @@ ABLATION_METRICS = {
     "mean_color_bias_mae",
     "edge_mae",
 }
+CELL_METRICS = {
+    "psnr",
+    "ssim",
+    "lpips_proxy",
+    "worst_view_psnr",
+    "mean_color_bias_mae",
+    "edge_mae",
+    "cell_size",
+    "cell_queries_per_view",
+    "train_iterations",
+}
 
 
 def artifact_methods(outputs: Path) -> list[str]:
@@ -92,6 +103,10 @@ def main() -> None:
         metrics = summarize(data["pred_right"], data["target_right"])
         metrics["coupled_appearance_at_splat_render"] = float(data.get("coupled_appearance_at_splat_render", 0.0))
         metrics["train_iterations"] = float(data.get("train_iterations", 0.0))
+        if "cell_size" in data:
+            metrics["cell_size"] = float(data["cell_size"])
+        if "cell_queries_per_view" in data:
+            metrics["cell_queries_per_view"] = float(data["cell_queries_per_view"])
         results[name] = metrics
 
     if not results:
@@ -100,9 +115,12 @@ def main() -> None:
     plan = score_plan(args.reference)
     ablation_ref = set(plan.get("synthetic_glav_ablation", []))
     core_ref = set(plan.get("synthetic_glav_core", []))
+    cell_ref = set(plan.get("synthetic_glav_cell_size", []))
     ablation_only = ablation_ref - core_ref
-    core_names = sorted(name for name in results if name not in ablation_only)
+    cell_only = cell_ref - core_ref - ablation_ref
+    core_names = sorted(name for name in results if name not in ablation_only and name not in cell_only)
     ablation_names = sorted(name for name in ablation_ref if name in results)
+    cell_names = sorted(name for name in cell_ref if name in results)
 
     core = {
         name: {metric: value for metric, value in results[name].items() if metric in CORE_METRICS}
@@ -112,11 +130,17 @@ def main() -> None:
         name: {metric: value for metric, value in results[name].items() if metric in ABLATION_METRICS}
         for name in ablation_names
     }
+    cell_size = {
+        name: {metric: value for metric, value in results[name].items() if metric in CELL_METRICS}
+        for name in cell_names
+    }
     experiments = {}
     if core:
         experiments["synthetic_glav_core"] = {"results": core}
     if len(ablation) > 1:
         experiments["synthetic_glav_ablation"] = {"results": ablation}
+    if len(cell_size) > 1:
+        experiments["synthetic_glav_cell_size"] = {"results": cell_size}
     payload = {"experiments": experiments}
     args.scores.parent.mkdir(parents=True, exist_ok=True)
     args.scores.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")

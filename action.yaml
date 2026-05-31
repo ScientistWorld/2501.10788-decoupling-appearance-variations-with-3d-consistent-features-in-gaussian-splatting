@@ -1,9 +1,7 @@
-# Final verification is complete.
-# Once you set action to 'done', STOP immediately.
-# Do NOT sleep, poll, or wait. The system reads this file
-# only after your turn ends.
-action: done
+# Submitting a validation job for the added cell-size sweep.
+# Once this is written, stop immediately so the scheduler can run it.
+action: submit
 gpus: 0
 test: false
 milestone: secondary_claims
-notes: "Final verification passed; scoring/docs were cleaned and the workspace is ready as a reduced synthetic DAVIGS gym."
+notes: "Regenerate the full DAVIGS reduced benchmark with the added cell-size sweep and run compare validation."

@@ -33,6 +33,17 @@ ABLATION_METRICS = {
     "mean_color_bias_mae",
     "edge_mae",
 }
+CELL_METRICS = {
+    "psnr",
+    "ssim",
+    "lpips_proxy",
+    "worst_view_psnr",
+    "mean_color_bias_mae",
+    "edge_mae",
+    "cell_size",
+    "cell_queries_per_view",
+    "train_iterations",
+}
 
 
 def artifact_methods(outputs: Path) -> list[str]:
@@ -97,6 +108,10 @@ def load_metrics(outputs: Path, method_name: str) -> dict[str, float]:
     metrics = summarize(pred, target, test_indices(pred.shape[0]))
     metrics["coupled_appearance_at_splat_render"] = float(data.get("coupled_appearance_at_splat_render", 0.0))
     metrics["train_iterations"] = float(data.get("train_iterations", 0.0))
+    if "cell_size" in data:
+        metrics["cell_size"] = float(data["cell_size"])
+    if "cell_queries_per_view" in data:
+        metrics["cell_queries_per_view"] = float(data["cell_queries_per_view"])
     return metrics
 
 
@@ -131,6 +146,16 @@ def build_payload(outputs: Path, scores_train: Path) -> dict:
     }
     if ablation:
         experiments["synthetic_glav_ablation"] = {"results": ablation}
+
+    if "synthetic_glav_cell_size" in plan:
+        cell_names = plan["synthetic_glav_cell_size"]
+        cell_size = {
+            name: {metric: value for metric, value in per_method[name].items() if metric in CELL_METRICS}
+            for name in cell_names
+            if name in per_method
+        }
+        if cell_size:
+            experiments["synthetic_glav_cell_size"] = {"results": cell_size}
 
     return {"slice": SLICE, "experiments": experiments}
 

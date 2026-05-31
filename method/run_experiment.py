@@ -62,6 +62,7 @@ def train_davigs(
     out_dir: Path,
     feature_mode: str = "xyz",
     use_identity_regularizer: bool = True,
+    cell_size: int = 8,
 ) -> None:
     gs = GaussianSplatScene(scene.init_points, scene.init_colors)
     app = AppearanceModule(num_views=len(scene.cameras), feature_mode=feature_mode)
@@ -69,7 +70,7 @@ def train_davigs(
     for step in range(steps):
         vid = scene.train_ids[step % len(scene.train_ids)]
         raw, depth = gs(scene.cameras[vid])
-        pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
+        pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=cell_size)
         loss = reconstruction_loss(pred, scene.images[vid])
         if use_identity_regularizer:
             loss = loss + lambda_id(step, steps) * identity_regularizer(mats)
@@ -93,7 +94,7 @@ def train_davigs(
         opt_emb = torch.optim.Adam([emb_param], lr=0.03)
         for _ in range(adapt_steps):
             raw, depth = gs(scene.cameras[vid])
-            pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
+            pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=cell_size)
             loss = reconstruction_loss(left_half(pred), left_half(scene.images[vid]))
             if use_identity_regularizer:
                 loss = loss + 0.01 * identity_regularizer(mats)
@@ -103,11 +104,14 @@ def train_davigs(
             opt_emb.step()
         with torch.no_grad():
             raw, depth = gs(scene.cameras[vid])
-            pred, _ = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
+            pred, _ = app(raw, depth, scene.cameras[vid], vid, cell_size=cell_size)
             preds.append(right_half(pred))
             targets.append(right_half(scene.images[vid]))
 
     out_dir.mkdir(parents=True, exist_ok=True)
+    height, width = scene.images.shape[-2:]
+    cell_rows = (height + cell_size - 1) // cell_size
+    cell_cols = (width + cell_size - 1) // cell_size
     torch.save(
         {
             "pred_right": torch.stack(preds).cpu(),
@@ -116,6 +120,8 @@ def train_davigs(
             "train_iterations": float(steps),
             "uses_3d_hash_features": 1.0 if feature_mode == "xyz" else 0.0,
             "uses_identity_regularizer": 1.0 if use_identity_regularizer else 0.0,
+            "cell_size": float(cell_size),
+            "cell_queries_per_view": float(cell_rows * cell_cols),
         },
         out_dir / "predictions.pt",
     )
@@ -127,7 +133,7 @@ def main() -> None:
     parser.add_argument("--adapt-steps", type=int, default=400)
     parser.add_argument("--out", type=Path, default=Path("outputs"))
     parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--only", choices=["all", "baseline", "davigs", "ablations"], default="all")
+    parser.add_argument("--only", choices=["all", "baseline", "davigs", "ablations", "cell_sweep"], default="all")
     args = parser.parse_args()
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -140,6 +146,9 @@ def main() -> None:
     if args.only in ("all", "ablations"):
         train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_uv_depth", feature_mode="uv_depth")
         train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_no_id", use_identity_regularizer=False)
+    if args.only in ("all", "cell_sweep"):
+        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_cell_2", cell_size=2)
+        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_cell_32", cell_size=32)
 
 
 if __name__ == "__main__":

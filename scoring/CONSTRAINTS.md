@@ -16,6 +16,10 @@ Report scores only through `scripts/evaluate.sh`, which reads saved prediction a
 
 For `synthetic_glav_ablation`, keep the same optimizer budget, training views, adaptation protocol, and scene scale as `synthetic_glav_core`. Only the single declared experimental variant should change; otherwise the result is not comparable.
 
+## Cell Size Sweep
+
+For `synthetic_glav_cell_size`, keep the same optimizer budget, training views, adaptation protocol, scene scale, and appearance module settings. Only the query cell size should change. Compare query cost through `cell_queries_per_view`, not wall-clock runtime.
+
 ## Compliance Checklist
 
 - [ ] Uses the fixed procedural scene from `data/synthetic_glav.py`

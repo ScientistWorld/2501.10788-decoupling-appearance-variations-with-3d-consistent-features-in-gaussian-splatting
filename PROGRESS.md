@@ -12,6 +12,7 @@
 - Continuation audit on 2026-05-31 confirmed the implementation is a reduced-scale version of the paper's actual DAVIGS algorithm rather than a surrogate, and confirmed the evaluator reads saved artifacts without importing `method/`.
 - Job `d1a7d3c1-6e7` completed a clean post-fix container run for the core experiment and ablations. `python validate.py --compare` passed inside the job.
 - Iteration 8 tightened the main evaluator so the next standard `scripts/evaluate.sh` run writes the diagnostic metrics declared in `scoring/reference.json`: worst-view PSNR, mean color-bias MAE, and edge MAE.
+- Iteration 9 added a reduced cell-size sweep corresponding to the paper's Table 5. The code now trains DAVIGS with cell sizes 2 and 32 in addition to the default cell size 8, and the evaluator reports `cell_queries_per_view` as a machine-independent replacement for wall-clock query speed.
 
 ## Results
 
@@ -45,9 +46,11 @@ Reduced ablation results:
 
 These results support the paper's secondary claims that 3D-aware features and identity regularization matter. Job `d1a7d3c1-6e7` validated them end to end in the container.
 
+Cell-size sweep validation is being submitted in Iteration 9. The new experiment will compare cell size 2, the default cell size 8, and cell size 32 under the same reduced training and held-out evaluation protocol.
+
 ## Remaining
 
-- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment reaches `secondary_claims` on the validated reduced benchmark; broader milestones remain out of scope because the captured GLAV data and official code are not available in this workspace.
+- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism or plug-and-play baselines. The current environment reaches `secondary_claims` on the validated reduced benchmark; broader milestones remain out of scope because the captured GLAV data and official code are not available in this workspace.
 - The paper reports wall-clock training time, VRAM, and FPS. This benchmark uses `train_iterations` and a decoupled-rendering flag instead of wall-clock speed because the scoring protocol forbids hardware-dependent speed metrics.
 
 ## Issues
@@ -62,6 +65,7 @@ These results support the paper's secondary claims that 3D-aware features and id
 - Job `bf35e825-b46` failed only because `scores.json` contained metrics not declared for each experiment. Fixed `eval/evaluate_outputs.py` to filter metrics per experiment and regenerated `scoring/scores.json` from the job-produced artifacts.
 - Job `d1a7d3c1-6e7` confirmed the schema fix in the container.
 - Local verification of the updated evaluator could not run because the login-node Python environment lacks `torch`; the fix is being submitted as a container job instead of installing packages locally.
+- The cell-size sweep expands the standard reproduction from four to six training runs. It remains scaled down to 64x64 synthetic views so it can fit the benchmark budget while preserving the paper's cell-based query procedure.
 
 ## Deviations from Paper
 
