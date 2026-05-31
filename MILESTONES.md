@@ -18,3 +18,7 @@
 - Job `d1a7d3c1-6e7` completed successfully in the container and passed `python validate.py --compare`.
 - Restored `secondary_claims`: full DAVIGS outperformed vanilla 3DGS on the reduced GLAV-style core benchmark, and the full model outperformed both ablations for 3D hash features and identity regularization.
 - Stopping here because higher milestones would require substantially broader reproduction of unavailable captured GLAV/PhotoTourism experiments or additional full Gaussian Splatting baselines beyond the validated reduced benchmark.
+
+### [2026-05-31 13:10] - secondary_claims
+- Tightened the standard evaluator to emit all diagnostics declared in `reference.json`.
+- Updated `scripts/run.sh` to regenerate the full reproduction, train/test slice scores, and run `python validate.py --compare` in the container before any done signal.

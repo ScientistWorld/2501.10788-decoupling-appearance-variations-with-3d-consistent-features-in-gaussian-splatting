@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 import torch
+import torch.nn.functional as F
 
 from eval.metrics import lpips_proxy, psnr, ssim
 
@@ -16,6 +17,9 @@ CORE_METRICS = {
     "psnr",
     "ssim",
     "lpips_proxy",
+    "worst_view_psnr",
+    "mean_color_bias_mae",
+    "edge_mae",
     "coupled_appearance_at_splat_render",
     "train_iterations",
 }
@@ -23,18 +27,38 @@ ABLATION_METRICS = {
     "psnr",
     "ssim",
     "lpips_proxy",
+    "worst_view_psnr",
+    "mean_color_bias_mae",
+    "edge_mae",
     "uses_3d_hash_features",
     "uses_identity_regularizer",
 }
 
 
+def edge_mae(pred: torch.Tensor, target: torch.Tensor) -> float:
+    pred = pred.clamp(0, 1).unsqueeze(0)
+    target = target.clamp(0, 1).unsqueeze(0)
+    sobel_x = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=pred.dtype, device=pred.device) / 8.0
+    sobel_y = sobel_x.T
+    kernels = torch.stack([sobel_x, sobel_y]).unsqueeze(1).repeat(3, 1, 1, 1)
+    grad_pred = F.conv2d(pred, kernels, padding=1, groups=3)
+    grad_target = F.conv2d(target, kernels, padding=1, groups=3)
+    return float((grad_pred - grad_target).abs().mean().item())
+
+
 def summarize(pred: torch.Tensor, target: torch.Tensor) -> dict[str, float]:
-    vals = {"psnr": [], "ssim": [], "lpips_proxy": []}
+    vals = {"psnr": [], "ssim": [], "lpips_proxy": [], "edge_mae": []}
     for i in range(pred.shape[0]):
         vals["psnr"].append(psnr(pred[i], target[i]))
         vals["ssim"].append(ssim(pred[i], target[i]))
         vals["lpips_proxy"].append(lpips_proxy(pred[i], target[i]))
-    return {k: float(sum(v) / len(v)) for k, v in vals.items()}
+        vals["edge_mae"].append(edge_mae(pred[i], target[i]))
+    metrics = {k: float(sum(v) / len(v)) for k, v in vals.items()}
+    metrics["worst_view_psnr"] = float(min(vals["psnr"]))
+    pred_bias = pred.clamp(0, 1).mean(dim=(-1, -2))
+    target_bias = target.clamp(0, 1).mean(dim=(-1, -2))
+    metrics["mean_color_bias_mae"] = float((pred_bias - target_bias).abs().mean().item())
+    return metrics
 
 
 def main() -> None:

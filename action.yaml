@@ -1,9 +1,9 @@
-# This iteration completed the train/test split scoring run.
-# Once you set action to 'done', STOP immediately.
+# This iteration submits an end-to-end validation run.
+# Once you set action to 'submit', STOP immediately.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: done
+action: submit
 gpus: 0
-test: false
+test: true
 milestone: secondary_claims
-notes: "Packager audit passed: synthetic benchmark needs no external assets; download.sh is executable/idempotent and no shared paths are referenced."
+notes: "Regenerate the reduced DAVIGS reproduction, emit full declared scoring diagnostics, run train/test evaluators, and validate the package in the container."

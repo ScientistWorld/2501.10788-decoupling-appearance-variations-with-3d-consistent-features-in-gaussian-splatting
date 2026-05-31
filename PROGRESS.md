@@ -11,6 +11,7 @@
 - Job `e5e780f2-46e` reproduced the core claim on the reduced benchmark: DAVIGS improves held-out rendering quality over vanilla 3DGS while keeping appearance handling decoupled from Gaussian splat rendering.
 - Continuation audit on 2026-05-31 confirmed the implementation is a reduced-scale version of the paper's actual DAVIGS algorithm rather than a surrogate, and confirmed the evaluator reads saved artifacts without importing `method/`.
 - Job `d1a7d3c1-6e7` completed a clean post-fix container run for the core experiment and ablations. `python validate.py --compare` passed inside the job.
+- Iteration 8 tightened the main evaluator so the next standard `scripts/evaluate.sh` run writes the diagnostic metrics declared in `scoring/reference.json`: worst-view PSNR, mean color-bias MAE, and edge MAE.
 
 ## Results
 
@@ -47,6 +48,7 @@ These results support the paper's secondary claims that 3D-aware features and id
 ## Remaining
 
 - Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment reaches `secondary_claims` on the validated reduced benchmark; broader milestones remain out of scope because the captured GLAV data and official code are not available in this workspace.
+- The paper reports wall-clock training time, VRAM, and FPS. This benchmark uses `train_iterations` and a decoupled-rendering flag instead of wall-clock speed because the scoring protocol forbids hardware-dependent speed metrics.
 
 ## Issues
 
@@ -59,6 +61,7 @@ These results support the paper's secondary claims that 3D-aware features and id
 - Job `e5e780f2-46e` resolved the reduced-benchmark PSNR gap.
 - Job `bf35e825-b46` failed only because `scores.json` contained metrics not declared for each experiment. Fixed `eval/evaluate_outputs.py` to filter metrics per experiment and regenerated `scoring/scores.json` from the job-produced artifacts.
 - Job `d1a7d3c1-6e7` confirmed the schema fix in the container.
+- Local verification of the updated evaluator could not run because the login-node Python environment lacks `torch`; the fix is being submitted as a container job instead of installing packages locally.
 
 ## Deviations from Paper
 
