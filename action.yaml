@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
-gpus: 1
+action: submit
+gpus: 0
 test: false
 milestone: core_claim
-notes: "Reproduced the core claim on the reduced GLAV-style benchmark: DAVIGS improves held-out rendering quality over vanilla 3DGS while keeping appearance handling decoupled from splat rendering. Validation passes."
+notes: "Run the existing core DAVIGS reproduction plus new reduced-scale ablations for 3D-aware features and identity regularization, then validate scores."

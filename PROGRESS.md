@@ -34,8 +34,9 @@ Job `e5e780f2-46e` reached the core claim:
 
 ## Remaining
 
-- Higher milestones would require adding more paper tables, such as PhotoTourism or ablations for 3D features and identity regularization.
-- The current packaged environment is usable for future agents at `core_claim`.
+- A continuing-agent audit restored confidence in `core_claim`: the implementation contains DAVIGS-specific computation rather than a surrogate, and evaluation is independent of `method/`.
+- Added reduced-scale ablation variants for the paper's secondary component claims: replacing 3D hash features with uv/depth cues and removing the identity regularizer.
+- A new job is submitted to run the full core benchmark plus ablations. If the full method beats both ablations on held-out PSNR/SSIM or perceptual proxy, the workspace can advance toward `secondary_claims`.
 
 ## Issues
 

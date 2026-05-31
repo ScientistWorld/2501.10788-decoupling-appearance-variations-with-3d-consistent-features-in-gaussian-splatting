@@ -20,3 +20,11 @@ Tracks the amount of optimization used in the reduced benchmark so improvements 
 
 - **Metric:** `train_iterations` is lower better when quality is comparable.
 - **Run:** `bash scripts/evaluate.sh` on method artifacts.
+
+## Secondary: synthetic_glav_ablation
+
+Tests whether the two main DAVIGS design choices matter on the reduced benchmark: 3D-aware local features and the identity transformation regularizer.
+
+- **Metrics:** `psnr` and `ssim` should be higher for the full method than ablations; `lpips_proxy` should be lower.
+- **Constraint flags:** `uses_3d_hash_features` and `uses_identity_regularizer` record which component is active.
+- **Run:** `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`.

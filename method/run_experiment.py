@@ -55,15 +55,24 @@ def train_baseline(scene, steps: int, out_dir: Path) -> None:
     )
 
 
-def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
+def train_davigs(
+    scene,
+    steps: int,
+    adapt_steps: int,
+    out_dir: Path,
+    feature_mode: str = "xyz",
+    use_identity_regularizer: bool = True,
+) -> None:
     gs = GaussianSplatScene(scene.init_points, scene.init_colors)
-    app = AppearanceModule(num_views=len(scene.cameras))
+    app = AppearanceModule(num_views=len(scene.cameras), feature_mode=feature_mode)
     opt = torch.optim.Adam(list(gs.parameters()) + list(app.parameters()), lr=0.018)
     for step in range(steps):
         vid = scene.train_ids[step % len(scene.train_ids)]
         raw, depth = gs(scene.cameras[vid])
         pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
-        loss = reconstruction_loss(pred, scene.images[vid]) + lambda_id(step, steps) * identity_regularizer(mats)
+        loss = reconstruction_loss(pred, scene.images[vid])
+        if use_identity_regularizer:
+            loss = loss + lambda_id(step, steps) * identity_regularizer(mats)
         opt.zero_grad()
         loss.backward()
         opt.step()
@@ -72,8 +81,9 @@ def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
     # view's appearance embedding on the left half, then score the right half.
     for param in gs.parameters():
         param.requires_grad_(False)
-    for param in app.grid.parameters():
-        param.requires_grad_(False)
+    if app.grid is not None:
+        for param in app.grid.parameters():
+            param.requires_grad_(False)
     for param in app.mlp.parameters():
         param.requires_grad_(False)
 
@@ -84,7 +94,9 @@ def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
         for _ in range(adapt_steps):
             raw, depth = gs(scene.cameras[vid])
             pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
-            loss = reconstruction_loss(left_half(pred), left_half(scene.images[vid])) + 0.01 * identity_regularizer(mats)
+            loss = reconstruction_loss(left_half(pred), left_half(scene.images[vid]))
+            if use_identity_regularizer:
+                loss = loss + 0.01 * identity_regularizer(mats)
             opt_emb.zero_grad()
             loss.backward()
             emb_param.grad[: min(scene.test_ids)] = 0
@@ -102,6 +114,8 @@ def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
             "target_right": torch.stack(targets).cpu(),
             "coupled_appearance_at_splat_render": 0.0,
             "train_iterations": float(steps),
+            "uses_3d_hash_features": 1.0 if feature_mode == "xyz" else 0.0,
+            "uses_identity_regularizer": 1.0 if use_identity_regularizer else 0.0,
         },
         out_dir / "predictions.pt",
     )
@@ -113,7 +127,7 @@ def main() -> None:
     parser.add_argument("--adapt-steps", type=int, default=400)
     parser.add_argument("--out", type=Path, default=Path("outputs"))
     parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--only", choices=["all", "baseline", "davigs"], default="all")
+    parser.add_argument("--only", choices=["all", "baseline", "davigs", "ablations"], default="all")
     args = parser.parse_args()
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -123,6 +137,9 @@ def main() -> None:
         train_baseline(scene, args.steps, args.out / "vanilla_3dgs")
     if args.only in ("all", "davigs"):
         train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs")
+    if args.only in ("all", "ablations"):
+        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_uv_depth", feature_mode="uv_depth")
+        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_no_id", use_identity_regularizer=False)
 
 
 if __name__ == "__main__":

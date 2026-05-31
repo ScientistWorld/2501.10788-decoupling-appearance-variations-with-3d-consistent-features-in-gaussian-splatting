@@ -64,18 +64,42 @@ class MultiResHashGrid(nn.Module):
 
 
 class AppearanceModule(nn.Module):
-    def __init__(self, num_views: int, appearance_dim: int = 8, levels: int = 4, features: int = 4):
+    def __init__(
+        self,
+        num_views: int,
+        appearance_dim: int = 8,
+        levels: int = 4,
+        features: int = 4,
+        feature_mode: str = "xyz",
+    ):
         super().__init__()
+        if feature_mode not in {"xyz", "uv_depth"}:
+            raise ValueError(f"Unsupported feature_mode: {feature_mode}")
+        self.feature_mode = feature_mode
         self.embeddings = nn.Embedding(num_views, appearance_dim)
-        self.grid = MultiResHashGrid(levels=levels, features=features)
+        self.levels = levels
+        self.features = features
+        self.grid = MultiResHashGrid(levels=levels, features=features) if feature_mode == "xyz" else None
         in_dim = levels * features + appearance_dim
         self.mlp = nn.Sequential(nn.Linear(in_dim, 128), nn.ReLU(), nn.Linear(128, 64), nn.ReLU(), nn.Linear(64, 12))
         nn.init.zeros_(self.mlp[-1].weight)
         ident = torch.tensor([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0], dtype=torch.float32)
         self.mlp[-1].bias.data.copy_(ident)
 
-    def query_matrices(self, xyz: torch.Tensor, view_id: int) -> torch.Tensor:
-        feat = self.grid(xyz)
+    def degenerate_uv_depth_features(self, uv_depth: torch.Tensor) -> torch.Tensor:
+        """Paper ablation: replace 3D hash features with image-space/depth cues."""
+        freqs = torch.arange(1, self.levels * self.features // 2 + 1, dtype=uv_depth.dtype, device=uv_depth.device)
+        scalar = uv_depth.mean(dim=-1, keepdim=True)
+        pe = torch.cat([torch.sin(freqs * math.pi * scalar), torch.cos(freqs * math.pi * scalar)], dim=-1)
+        return pe[..., : self.levels * self.features]
+
+    def query_matrices(self, xyz: torch.Tensor, uv_depth: torch.Tensor, view_id: int) -> torch.Tensor:
+        if self.feature_mode == "xyz":
+            if self.grid is None:
+                raise RuntimeError("3D hash grid is unavailable")
+            feat = self.grid(xyz)
+        else:
+            feat = self.degenerate_uv_depth_features(uv_depth)
         emb = self.embeddings(torch.tensor(view_id, device=xyz.device)).expand(*feat.shape[:-1], -1)
         return self.mlp(torch.cat([feat, emb], dim=-1)).reshape(*feat.shape[:-1], 3, 4)
 
@@ -90,7 +114,8 @@ class AppearanceModule(nn.Module):
         y = -(yy - (h - 1) / 2.0) * pooled_depth / camera.focal
         cam = torch.stack([x, y, pooled_depth], dim=-1)
         xyz = (cam - camera.translation.to(depth.device)) @ camera.rotation.to(depth.device)
-        coarse = self.query_matrices(xyz, view_id).permute(2, 3, 0, 1).reshape(1, 12, ch, cw)
+        uv_depth = torch.stack([xx / max(1, w - 1), yy / max(1, h - 1), pooled_depth / pooled_depth.max().clamp_min(1e-6)], dim=-1)
+        coarse = self.query_matrices(xyz, uv_depth, view_id).permute(2, 3, 0, 1).reshape(1, 12, ch, cw)
         mats = F.interpolate(coarse, size=(h, w), mode="bilinear", align_corners=False)[0].permute(1, 2, 0).reshape(h, w, 3, 4)
         rgb1 = torch.cat([image.permute(1, 2, 0), torch.ones(h, w, 1, dtype=image.dtype, device=image.device)], dim=-1)
         transformed = torch.einsum("hwk,hwck->hwc", rgb1, mats).permute(2, 0, 1).clamp(0, 1)

@@ -2,7 +2,7 @@
   "experiments": {
     "synthetic_glav_core": {
       "description": "Reduced-scale GLAV-style appearance variation benchmark with the paper's main quality and decoupled-rendering constraint metrics. Paper reference values are from the GLAV Table 1 3DGS and DAVIGS rows, except lpips_proxy uses the paper's LPIPS scale as the closest reported perceptual target.",
-      "weight": 1.0,
+      "weight": 0.7,
       "primary_metric": "psnr",
       "metrics": {
         "psnr": {"higher_is_better": true, "coefficient": 1.0},
@@ -27,6 +27,44 @@
           "lpips_proxy": 0.134,
           "coupled_appearance_at_splat_render": 0,
           "train_iterations": 30000
+        }
+      }
+    },
+    "synthetic_glav_ablation": {
+      "description": "Reduced-scale counterpart of the paper's Table 4 ablations for 3D-aware information and identity transformation regularization.",
+      "weight": 0.3,
+      "primary_metric": "psnr",
+      "metrics": {
+        "psnr": {"higher_is_better": true, "coefficient": 1.0},
+        "ssim": {"higher_is_better": true, "coefficient": 0.4},
+        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4},
+        "uses_3d_hash_features": {"higher_is_better": true, "coefficient": 0.2},
+        "uses_identity_regularizer": {"higher_is_better": true, "coefficient": 0.2}
+      },
+      "results": {
+        "davigs_uv_depth": {
+          "type": "proposed",
+          "psnr": 22.12,
+          "ssim": 0.802,
+          "lpips_proxy": 0.248,
+          "uses_3d_hash_features": 0,
+          "uses_identity_regularizer": 1
+        },
+        "davigs_no_id": {
+          "type": "proposed",
+          "psnr": 21.33,
+          "ssim": 0.767,
+          "lpips_proxy": 0.298,
+          "uses_3d_hash_features": 1,
+          "uses_identity_regularizer": 0
+        },
+        "davigs": {
+          "type": "proposed",
+          "psnr": 22.75,
+          "ssim": 0.803,
+          "lpips_proxy": 0.243,
+          "uses_3d_hash_features": 1,
+          "uses_identity_regularizer": 1
         }
       }
     }

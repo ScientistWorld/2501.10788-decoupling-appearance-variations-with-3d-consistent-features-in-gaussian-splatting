@@ -28,7 +28,7 @@ def main() -> None:
     args = parser.parse_args()
 
     results = {}
-    for name in ["vanilla_3dgs", "davigs"]:
+    for name in ["vanilla_3dgs", "davigs", "davigs_uv_depth", "davigs_no_id"]:
         artifact = args.outputs / name / "predictions.pt"
         if not artifact.exists():
             continue
@@ -36,12 +36,23 @@ def main() -> None:
         metrics = summarize(data["pred_right"], data["target_right"])
         metrics["coupled_appearance_at_splat_render"] = float(data.get("coupled_appearance_at_splat_render", 0.0))
         metrics["train_iterations"] = float(data.get("train_iterations", 0.0))
+        if "uses_3d_hash_features" in data:
+            metrics["uses_3d_hash_features"] = float(data["uses_3d_hash_features"])
+        if "uses_identity_regularizer" in data:
+            metrics["uses_identity_regularizer"] = float(data["uses_identity_regularizer"])
         results[name] = metrics
 
     if not results:
         raise SystemExit(f"No predictions found under {args.outputs}")
 
-    payload = {"experiments": {"synthetic_glav_core": {"results": results}}}
+    core = {name: results[name] for name in ["vanilla_3dgs", "davigs"] if name in results}
+    ablation = {name: results[name] for name in ["davigs", "davigs_uv_depth", "davigs_no_id"] if name in results}
+    experiments = {}
+    if core:
+        experiments["synthetic_glav_core"] = {"results": core}
+    if len(ablation) > 1:
+        experiments["synthetic_glav_ablation"] = {"results": ablation}
+    payload = {"experiments": experiments}
     args.scores.parent.mkdir(parents=True, exist_ok=True)
     args.scores.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload, indent=2, sort_keys=True))

@@ -12,6 +12,10 @@ Use the same image resolution, camera set, and initial sparse point cloud unless
 
 Report scores only through `scripts/evaluate.sh`, which reads saved prediction artifacts. Do not write metrics directly into `scoring/scores.json`, and do not evaluate on the left half used for test-time appearance fitting.
 
+## Ablations
+
+For `synthetic_glav_ablation`, keep the same optimizer, training views, adaptation protocol, and Gaussian scene scale as `synthetic_glav_core`. Only the component named by the ablation should change; otherwise the result is not comparable.
+
 ## Compliance Checklist
 
 - [ ] Uses the fixed procedural scene from `data/synthetic_glav.py`
