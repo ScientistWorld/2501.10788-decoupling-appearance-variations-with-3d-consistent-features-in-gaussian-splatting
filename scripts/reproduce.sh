@@ -19,5 +19,5 @@ set -e
 cd /home/user
 
 rm -rf outputs
-python -m method.run_experiment --only all --steps "${DAVIGS_STEPS:-1200}" --adapt-steps "${DAVIGS_ADAPT_STEPS:-200}" --out outputs
+python -m method.run_experiment --only all --steps "${DAVIGS_STEPS:-2200}" --adapt-steps "${DAVIGS_ADAPT_STEPS:-400}" --out outputs
 bash scripts/evaluate.sh

@@ -23,7 +23,7 @@ def left_half(x: torch.Tensor) -> torch.Tensor:
 
 def lambda_id(step: int, total: int) -> float:
     warm = min(1.0, step / max(1, int(0.25 * total)))
-    decay = 0.2 + 0.1 * 0.5 * (1.0 + torch.cos(torch.tensor(step / max(1, total) * 3.14159265))).item()
+    decay = 0.03 + 0.02 * 0.5 * (1.0 + torch.cos(torch.tensor(step / max(1, total) * 3.14159265))).item()
     return warm * decay
 
 
@@ -84,7 +84,7 @@ def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
         for _ in range(adapt_steps):
             raw, depth = gs(scene.cameras[vid])
             pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
-            loss = reconstruction_loss(left_half(pred), left_half(scene.images[vid])) + 0.05 * identity_regularizer(mats)
+            loss = reconstruction_loss(left_half(pred), left_half(scene.images[vid])) + 0.01 * identity_regularizer(mats)
             opt_emb.zero_grad()
             loss.backward()
             emb_param.grad[: min(scene.test_ids)] = 0
@@ -109,8 +109,8 @@ def train_davigs(scene, steps: int, adapt_steps: int, out_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--steps", type=int, default=1200)
-    parser.add_argument("--adapt-steps", type=int, default=200)
+    parser.add_argument("--steps", type=int, default=2200)
+    parser.add_argument("--adapt-steps", type=int, default=400)
     parser.add_argument("--out", type=Path, default=Path("outputs"))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--only", choices=["all", "baseline", "davigs"], default="all")

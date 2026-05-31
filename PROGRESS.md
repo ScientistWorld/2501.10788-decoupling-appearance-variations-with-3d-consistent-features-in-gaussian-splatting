@@ -18,9 +18,16 @@ Job `7be31f97-c22` produced valid scores, but not a successful core-claim result
 
 This confirms the method runs, but DAVIGS did not beat the baseline. The benchmark/training setup has been revised for the next run: stronger appearance variation, interleaved train/test views, equal optimization iterations for baseline and DAVIGS, and more test-view adaptation steps.
 
+Job `6f076b1b-d8b` improved the comparison but still did not meet the PSNR primary metric:
+
+- Vanilla 3DGS: PSNR 22.63, SSIM 0.380, LPIPS-proxy 0.042
+- DAVIGS: PSNR 22.26, SSIM 0.499, LPIPS-proxy 0.040
+
+DAVIGS now improves SSIM and the perceptual proxy, but PSNR is still slightly lower than baseline. The next run keeps the same algorithm and reduces the scaled identity-regularizer strength while increasing optimization/adaptation steps.
+
 ## Remaining
 
-- Run the compute job and inspect whether DAVIGS improves PSNR/SSIM and perceptual proxy over vanilla 3DGS.
+- Run the next compute job and inspect whether DAVIGS improves PSNR as well as SSIM/perceptual proxy over vanilla 3DGS.
 - If the gap is weak, tune the reduced benchmark or training schedule while keeping the DAVIGS computation intact.
 - After a successful run, update the milestone and compare with `python validate.py --compare`.
 
@@ -31,6 +38,7 @@ This confirms the method runs, but DAVIGS did not beat the baseline. The benchma
 - Job `49cf5a13-8ce` failed because the LPIPS-proxy Sobel kernel had shape `[3, 2, 3, 3]` while grouped convolution expected one input channel per group. Fixed by constructing `[6, 1, 3, 3]` depthwise filters.
 - The job also warned that NumPy was absent from the container overlay. Added `numpy` to `environment/setup.sh`.
 - Job `7be31f97-c22` showed the first reduced benchmark was not diagnostic: baseline performance was stronger than DAVIGS. The next job uses a harder appearance-variation setup and equal iteration budgets.
+- Job `6f076b1b-d8b` showed the method's identity penalty was likely too strong for the small scene scale: DAVIGS improved structural/perceptual metrics but underfit PSNR. Reduced the scaled identity penalty and increased training/adaptation steps.
 
 ## Deviations from Paper
 

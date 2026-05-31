@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Follow-up CPU test after method_runs: harder interleaved synthetic appearance benchmark, equal baseline/DAVIGS iterations, and longer test-view adaptation to try to reach core_claim."
+notes: "Retry after DAVIGS improved SSIM/LPIPS but missed PSNR: reduce scaled identity penalty and run 2200 iterations with 400 test-adaptation steps."
