@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: secondary_claims**
 
 ## Progress Log
 
@@ -16,3 +16,8 @@
 ### [2026-05-31 12:10] - core_claim
 - Continuing-agent audit found the core implementation is a real reduced DAVIGS reproduction rather than an input-output surrogate.
 - Added secondary ablation targets for the paper's 3D-aware feature and identity-regularization claims; submitted a job to generate those scores.
+
+### [2026-05-31 12:25] - secondary_claims
+- Job `bf35e825-b46` ran the core benchmark plus ablations and produced valid artifacts.
+- Fixed evaluator schema filtering so each experiment writes only metrics declared in `reference.json`.
+- The full DAVIGS variant outperformed both ablations on held-out PSNR, SSIM, and LPIPS-proxy, supporting the paper's secondary claims about 3D-aware features and identity regularization.

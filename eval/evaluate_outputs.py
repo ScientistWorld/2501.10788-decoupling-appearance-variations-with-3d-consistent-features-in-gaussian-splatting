@@ -12,6 +12,22 @@ import torch
 from eval.metrics import lpips_proxy, psnr, ssim
 
 
+CORE_METRICS = {
+    "psnr",
+    "ssim",
+    "lpips_proxy",
+    "coupled_appearance_at_splat_render",
+    "train_iterations",
+}
+ABLATION_METRICS = {
+    "psnr",
+    "ssim",
+    "lpips_proxy",
+    "uses_3d_hash_features",
+    "uses_identity_regularizer",
+}
+
+
 def summarize(pred: torch.Tensor, target: torch.Tensor) -> dict[str, float]:
     vals = {"psnr": [], "ssim": [], "lpips_proxy": []}
     for i in range(pred.shape[0]):
@@ -45,8 +61,16 @@ def main() -> None:
     if not results:
         raise SystemExit(f"No predictions found under {args.outputs}")
 
-    core = {name: results[name] for name in ["vanilla_3dgs", "davigs"] if name in results}
-    ablation = {name: results[name] for name in ["davigs", "davigs_uv_depth", "davigs_no_id"] if name in results}
+    core = {
+        name: {metric: value for metric, value in results[name].items() if metric in CORE_METRICS}
+        for name in ["vanilla_3dgs", "davigs"]
+        if name in results
+    }
+    ablation = {
+        name: {metric: value for metric, value in results[name].items() if metric in ABLATION_METRICS}
+        for name in ["davigs", "davigs_uv_depth", "davigs_no_id"]
+        if name in results
+    }
     experiments = {}
     if core:
         experiments["synthetic_glav_core"] = {"results": core}

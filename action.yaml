@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
 test: false
-milestone: core_claim
-notes: "Run the existing core DAVIGS reproduction plus new reduced-scale ablations for 3D-aware features and identity regularization, then validate scores."
+milestone: secondary_claims
+notes: "Core claim and reduced ablation secondary claims reproduced. Fixed evaluator schema filtering after job bf35e825-b46 and validation now passes."

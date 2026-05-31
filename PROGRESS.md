@@ -32,11 +32,19 @@ Job `e5e780f2-46e` reached the core claim:
 - DAVIGS: PSNR 24.50, SSIM 0.715, LPIPS-proxy 0.024
 - Constraint: `coupled_appearance_at_splat_render` is 0 for DAVIGS, indicating the appearance model is not coupled into Gaussian splat rendering.
 
+Job `bf35e825-b46` initially failed at the final validation step because the evaluator wrote diagnostic fields into experiments that did not declare those metrics in `reference.json`. The training and evaluation artifacts were valid; after filtering metrics per experiment, `python validate.py --compare` passes.
+
+Reduced ablation results:
+
+- Full DAVIGS: PSNR 24.50, SSIM 0.715, LPIPS-proxy 0.024
+- DAVIGS with uv/depth instead of 3D hash features: PSNR 22.91, SSIM 0.562, LPIPS-proxy 0.039
+- DAVIGS without identity regularization: PSNR 21.85, SSIM 0.584, LPIPS-proxy 0.038
+
+These results support the paper's secondary claims that 3D-aware features and identity regularization matter.
+
 ## Remaining
 
-- A continuing-agent audit restored confidence in `core_claim`: the implementation contains DAVIGS-specific computation rather than a surrogate, and evaluation is independent of `method/`.
-- Added reduced-scale ablation variants for the paper's secondary component claims: replacing 3D hash features with uv/depth cues and removing the identity regularizer.
-- A new job is submitted to run the full core benchmark plus ablations. If the full method beats both ablations on held-out PSNR/SSIM or perceptual proxy, the workspace can advance toward `secondary_claims`.
+- Higher milestones would require reproducing more datasets or tables, such as PhotoTourism, plug-and-play baselines, or the cell-size sweep. The current environment reaches `secondary_claims` on the reduced benchmark.
 
 ## Issues
 
@@ -47,6 +55,7 @@ Job `e5e780f2-46e` reached the core claim:
 - Job `7be31f97-c22` showed the first reduced benchmark was not diagnostic: baseline performance was stronger than DAVIGS. The next job uses a harder appearance-variation setup and equal iteration budgets.
 - Job `6f076b1b-d8b` showed the method's identity penalty was likely too strong for the small scene scale: DAVIGS improved structural/perceptual metrics but underfit PSNR. Reduced the scaled identity penalty and increased training/adaptation steps.
 - Job `e5e780f2-46e` resolved the reduced-benchmark PSNR gap.
+- Job `bf35e825-b46` failed only because `scores.json` contained metrics not declared for each experiment. Fixed `eval/evaluate_outputs.py` to filter metrics per experiment and regenerated `scoring/scores.json` from the job-produced artifacts.
 
 ## Deviations from Paper
 

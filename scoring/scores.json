@@ -3,29 +3,23 @@
     "synthetic_glav_ablation": {
       "results": {
         "davigs": {
-          "coupled_appearance_at_splat_render": 0.0,
           "lpips_proxy": 0.02372214151546359,
           "psnr": 24.495428658727295,
           "ssim": 0.7145592719316483,
-          "train_iterations": 2200.0,
           "uses_3d_hash_features": 1.0,
           "uses_identity_regularizer": 1.0
         },
         "davigs_no_id": {
-          "coupled_appearance_at_splat_render": 0.0,
           "lpips_proxy": 0.03752129012718797,
           "psnr": 21.847799735825383,
           "ssim": 0.5840625017881393,
-          "train_iterations": 2200.0,
           "uses_3d_hash_features": 1.0,
           "uses_identity_regularizer": 0.0
         },
         "davigs_uv_depth": {
-          "coupled_appearance_at_splat_render": 0.0,
           "lpips_proxy": 0.03863849490880966,
           "psnr": 22.91280217920136,
           "ssim": 0.5624988153576851,
-          "train_iterations": 2200.0,
           "uses_3d_hash_features": 0.0,
           "uses_identity_regularizer": 1.0
         }
@@ -38,9 +32,7 @@
           "lpips_proxy": 0.02372214151546359,
           "psnr": 24.495428658727295,
           "ssim": 0.7145592719316483,
-          "train_iterations": 2200.0,
-          "uses_3d_hash_features": 1.0,
-          "uses_identity_regularizer": 1.0
+          "train_iterations": 2200.0
         },
         "vanilla_3dgs": {
           "coupled_appearance_at_splat_render": 0.0,
