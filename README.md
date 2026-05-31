@@ -59,11 +59,11 @@ Secondary claims are that the method adds little optimization memory/time overhe
 
 The main quality metrics are PSNR and SSIM, where higher is better, and a perceptual distance metric, where lower is better. The original paper reports LPIPS; this reduced environment uses a deterministic gradient-weighted LPIPS proxy to avoid external pretrained metric downloads while retaining a perceptual constraint.
 
-The main constraint metric is whether extra appearance parameters are required during final rendering. A value of zero means the learned scene can be rendered without a persistent appearance module, matching the paper's decoupled-rendering claim. Training iterations are also tracked as a resource constraint.
+The main constraint metric is whether extra per-view correction machinery is required during final rendering. A value of zero means the learned scene can be rendered without persistent per-image appearance state. Training iterations are also tracked as a resource constraint.
 
 ## Baselines and Targets
 
-The primary baseline is vanilla Gaussian Splatting optimized directly against appearance-varying images. The target method should outperform that baseline on the held-out right halves of test images while keeping final rendering decoupled from the appearance module.
+The primary baseline is a plain scene representation optimized directly against appearance-varying images. A successful submission should outperform that baseline on the held-out right halves of test images while avoiding persistent per-view correction at final rendering.
 
 Paper reference values in `scoring/reference.json` come from the GLAV dataset results reported in Table 1. The local reproduction uses a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not distributed in this workspace.
 
@@ -311,6 +311,39 @@ For the reduced benchmark, methods train on a fixed procedural multi-view scene 
 ### [2026-05-31 13:10] - secondary_claims
 - Tightened the standard evaluator to emit all diagnostics declared in `reference.json`.
 - Updated `scripts/run.sh` to regenerate the full reproduction, train/test slice scores, and run `python validate.py --compare` in the container before any done signal.
+
+</details>
+
+### Iteration 9: gpt-5.5 (verifier)
+- **Milestone**: `secondary_claims` | **Status**: done
+- **Working time**: 9m | **GPU**: 0.0h
+- **Jobs**: 8 total (6 completed, 2 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-05-31 12:05] - core_claim
+- Completed a reduced-scale DAVIGS run on the synthetic GLAV-style benchmark.
+- DAVIGS improved held-out PSNR, SSIM, and LPIPS-proxy over vanilla Gaussian Splatting while keeping the appearance module decoupled from final splat rendering.
+- Ablation artifacts for 3D-aware features and identity regularization exist and pass local validation after the evaluator schema fix, but a clean container job is being submitted before claiming `secondary_claims`.
+
+### [2026-05-31 12:07] - core_claim_plus
+- Audited the inherited implementation and confirmed it contains the paper's actual DAVIGS computation at reduced scale: Gaussian splat rendering, depth back-projection, 3D hash-grid features, per-view appearance embeddings, MLP affine transforms, cell-based querying, and identity regularization.
+- Confirmed `eval/` is method-independent and `python validate.py --compare` passes locally on the current artifacts.
+- Keeping the milestone at the reset `core_claim_plus` while submitting a clean post-fix container job to validate the ablation outputs before restoring `secondary_claims`.
+
+### [2026-05-31 12:46] - secondary_claims
+- Job `d1a7d3c1-6e7` completed successfully in the container and passed `python validate.py --compare`.
+- Restored `secondary_claims`: full DAVIGS outperformed vanilla 3DGS on the reduced GLAV-style core benchmark, and the full model outperformed both ablations for 3D hash features and identity regularization.
+- Stopping here because higher milestones would require substantially broader reproduction of unavailable captured GLAV/PhotoTourism experiments or additional full Gaussian Splatting baselines beyond the validated reduced benchmark.
+
+### [2026-05-31 13:10] - secondary_claims
+- Tightened the standard evaluator to emit all diagnostics declared in `reference.json`.
+- Updated `scripts/run.sh` to regenerate the full reproduction, train/test slice scores, and run `python validate.py --compare` in the container before any done signal.
+
+### [2026-05-31 13:16] - secondary_claims
+- Final verification passed after reverting an unvalidated cell-size extension from the active scoring contract.
+- Confirmed `python validate.py --compare` passes with the validated core and ablation experiments.
 
 </details>
 
