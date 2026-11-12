@@ -1,0 +1,6 @@
+.state/
+**/runtime.log
+**/train.log
+**/test.log
+**/predictions.pt
+**/training.log

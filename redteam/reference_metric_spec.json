@@ -1,0 +1,70 @@
+{
+  "experiments": {
+    "synthetic_glav_core": {
+      "description": "Reduced-scale GLAV-style appearance variation benchmark with the paper's main quality and decoupled-rendering constraint metrics. Paper reference values are from the GLAV Table 1 3DGS and DAVIGS rows, except lpips_proxy uses the paper's LPIPS scale as the closest reported perceptual target.",
+      "weight": 0.7,
+      "primary_metric": "psnr",
+      "metrics": {
+        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity."},
+        "ssim": {"higher_is_better": true, "coefficient": 0.4, "description": "Mean structural similarity on held-out right-half renders."},
+        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy combining pixel and gradient errors."},
+        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, penalizing methods that sacrifice one held-out appearance."},
+        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias, catching global appearance shortcuts."},
+        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error, catching structural blur or texture shortcuts."},
+        "coupled_appearance_at_splat_render": {"higher_is_better": false, "coefficient": -0.3, "description": "Constraint flag for methods that couple appearance correction directly into splat rendering."},
+        "train_iterations": {"higher_is_better": false, "coefficient": -0.1, "description": "Optimization-step count used to discourage gains that only spend a larger training budget."}
+      },
+      "results": {
+        "vanilla_3dgs": {
+          "type": "baseline",
+          "psnr": 22.8,
+          "ssim": 0.753,
+          "lpips_proxy": 0.221,
+          "coupled_appearance_at_splat_render": 0,
+          "train_iterations": 30000
+        },
+        "davigs": {
+          "type": "proposed",
+          "psnr": 28.31,
+          "ssim": 0.861,
+          "lpips_proxy": 0.134,
+          "coupled_appearance_at_splat_render": 0,
+          "train_iterations": 30000
+        }
+      }
+    },
+    "synthetic_glav_ablation": {
+      "description": "Reduced-scale counterpart of the paper's Table 4 component ablations, comparing the full system with controlled degraded variants under the same protocol.",
+      "weight": 0.3,
+      "primary_metric": "psnr",
+      "metrics": {
+        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity for component comparisons."},
+        "ssim": {"higher_is_better": true, "coefficient": 0.4, "description": "Mean structural similarity for component comparisons."},
+        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy for component comparisons."},
+        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, checking that component changes do not collapse one held-out view."},
+        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias for the ablated method outputs."},
+        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error for the ablated method outputs."}
+      },
+      "results": {
+        "davigs_uv_depth": {
+          "type": "proposed",
+          "psnr": 22.12,
+          "ssim": 0.802,
+          "lpips_proxy": 0.248
+        },
+        "davigs_no_id": {
+          "type": "proposed",
+          "psnr": 21.33,
+          "ssim": 0.767,
+          "lpips_proxy": 0.298
+        },
+        "davigs": {
+          "type": "proposed",
+          "psnr": 22.75,
+          "ssim": 0.803,
+          "lpips_proxy": 0.243
+        }
+      }
+    }
+  }
+}
