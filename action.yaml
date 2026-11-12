@@ -1,2 +1,8 @@
-action: done
-notes: "Completed 28-case scoring audit: honest gains below seed spread; demonstrated answer, target, membership and metadata shortcuts; restored original job script."
+# Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends.
+action: pending
+gpus: 0
+test: false
+milestone: secondary_claims
+notes: ""
