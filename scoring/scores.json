@@ -1,56 +1,62 @@
 {
+  "_diagnostics": {
+    "davigs": {
+      "constraint_threshold": 22.922511447266594,
+      "constraint_value": 23.03698493064921,
+      "status": "ok"
+    },
+    "davigs_no_id": {
+      "ignored_outputs_dir": true,
+      "status": "comparison: evaluator-owned frozen predictions"
+    },
+    "davigs_uv_depth": {
+      "ignored_outputs_dir": true,
+      "status": "comparison: evaluator-owned frozen predictions"
+    },
+    "vanilla_3dgs": {
+      "ignored_outputs_dir": true,
+      "status": "comparison: evaluator-owned frozen predictions"
+    }
+  },
   "experiments": {
-    "synthetic_glav_ablation": {
+    "glav_average_appearance": {
       "results": {
         "davigs": {
-          "edge_mae": 0.01091414294205606,
-          "lpips_proxy": 0.02372214151546359,
-          "mean_color_bias_mae": 0.01552404765971005,
-          "psnr": 24.495428658727295,
-          "ssim": 0.7145592719316483,
-          "worst_view_psnr": 22.4986264368616
+          "lpips": 0.4988718330860138,
+          "psnr": 23.03698493064921,
+          "ssim": 0.5340021487020388
         },
         "davigs_no_id": {
-          "edge_mae": 0.012208376778289676,
-          "lpips_proxy": 0.03752129012718797,
-          "mean_color_bias_mae": 0.037795248441398145,
-          "psnr": 21.847799735825383,
-          "ssim": 0.5840625017881393,
-          "worst_view_psnr": 21.52864457775103
+          "lpips": 0.5100862085819244,
+          "psnr": 22.869585296340894,
+          "ssim": 0.5214144814105626
         },
         "davigs_uv_depth": {
-          "edge_mae": 0.010621471679769457,
-          "lpips_proxy": 0.03863849490880966,
-          "mean_color_bias_mae": 0.044794912450015545,
-          "psnr": 22.91280217920136,
-          "ssim": 0.5624988153576851,
-          "worst_view_psnr": 18.303369546555576
+          "lpips": 0.5046905428171158,
+          "psnr": 23.17872737948184,
+          "ssim": 0.5601364346452935
+        },
+        "vanilla_3dgs": {
+          "lpips": 0.5768475549088584,
+          "psnr": 23.922511447266594,
+          "ssim": 0.5977861887546435
         }
       }
     },
-    "synthetic_glav_core": {
+    "glav_novel_view": {
       "results": {
         "davigs": {
-          "coupled_appearance_at_splat_render": 0.0,
-          "edge_mae": 0.01091414294205606,
-          "lpips_proxy": 0.02372214151546359,
-          "mean_color_bias_mae": 0.01552404765971005,
-          "psnr": 24.495428658727295,
-          "ssim": 0.7145592719316483,
-          "train_iterations": 2200.0,
-          "worst_view_psnr": 22.4986264368616
+          "lpips": 0.6517067088021172,
+          "psnr": 17.123135285307413,
+          "ssim": 0.4859188694657589
         },
         "vanilla_3dgs": {
-          "coupled_appearance_at_splat_render": 0.0,
-          "edge_mae": 0.010216213064268231,
-          "lpips_proxy": 0.04205115232616663,
-          "mean_color_bias_mae": 0.052883636206388475,
-          "psnr": 22.64309245702151,
-          "ssim": 0.3844997510313988,
-          "train_iterations": 2200.0,
-          "worst_view_psnr": 21.102918085758695
+          "lpips": 0.6684264772468143,
+          "psnr": 16.198947993186863,
+          "ssim": 0.4724657247614247
         }
       }
     }
-  }
+  },
+  "slice": "train"
 }

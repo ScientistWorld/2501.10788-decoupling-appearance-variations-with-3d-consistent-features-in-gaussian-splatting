@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "height": 96,
+  "width": 128,
+  "num_heldout": 6,
+  "num_train": 30,
+  "scenes": [
+    {
+      "id": "dev_00",
+      "split": "dev",
+      "file": "dev_00.pt"
+    },
+    {
+      "id": "dev_01",
+      "split": "dev",
+      "file": "dev_01.pt"
+    },
+    {
+      "id": "dev_02",
+      "split": "dev",
+      "file": "dev_02.pt"
+    },
+    {
+      "id": "test_00",
+      "split": "test",
+      "file": "test_00.pt"
+    },
+    {
+      "id": "test_01",
+      "split": "test",
+      "file": "test_01.pt"
+    },
+    {
+      "id": "test_02",
+      "split": "test",
+      "file": "test_02.pt"
+    },
+    {
+      "id": "test_03",
+      "split": "test",
+      "file": "test_03.pt"
+    },
+    {
+      "id": "test_04",
+      "split": "test",
+      "file": "test_04.pt"
+    },
+    {
+      "id": "test_05",
+      "split": "test",
+      "file": "test_05.pt"
+    }
+  ]
+}
