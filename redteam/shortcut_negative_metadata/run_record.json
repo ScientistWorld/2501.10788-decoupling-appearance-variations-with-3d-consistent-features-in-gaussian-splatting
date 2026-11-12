@@ -1,0 +1,26 @@
+{
+  "case": "shortcut_negative_metadata",
+  "started": 1794463937.7349417,
+  "method_seconds": 6.037957387976348,
+  "methods_on_disk": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+  ],
+  "train_exit_code": 0,
+  "test_exit_code": 0,
+  "test_scores_written": true,
+  "methods_in_test_results": {
+    "synthetic_glav_ablation": [
+      "davigs",
+      "davigs_no_id",
+      "davigs_uv_depth"
+    ],
+    "synthetic_glav_core": [
+      "davigs",
+      "vanilla_3dgs"
+    ]
+  },
+  "total_seconds": 19.143024682998657
+}

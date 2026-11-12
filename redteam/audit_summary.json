@@ -1,5 +1,195 @@
 {
   "cases": {
+    "better_local_ssim": {
+      "audit_rank_delta": -0.016594782100960277,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.010602266062051058,
+        "lpips_proxy": 0.027699099853634834,
+        "mean_color_bias_mae": 0.025449449196457863,
+        "psnr": 23.201797037605747,
+        "ssim": 0.6488363444805145,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 22.46974683605132
+      },
+      "davigs_rank_delta": -0.016594782100960277,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.009718057093674848,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.000791031863676508,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0007210889877538655,
+        "synthetic_glav_ablation/davigs/psnr": -0.006356752175936857,
+        "synthetic_glav_ablation/davigs/ssim": -0.008305343605683241,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.0001043388182654751,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.02267546655190798,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.0018457410152451852,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.001682540971425686,
+        "synthetic_glav_core/davigs/psnr": -0.014832421743852667,
+        "synthetic_glav_core/davigs/ssim": -0.019379135079927563,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.00024345724261944188,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "better_lr_decay_7": {
+      "audit_rank_delta": 0.39809638626669175,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.00954492762684822,
+        "lpips_proxy": 0.01825264049693942,
+        "mean_color_bias_mae": 0.00688383961096406,
+        "psnr": 26.161831395189843,
+        "ssim": 0.7449941635131836,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 25.738396725327085
+      },
+      "davigs_rank_delta": 0.39809638626669175,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.022740009977065385,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.010562182299211065,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.007115645934918737,
+        "synthetic_glav_ablation/davigs/psnr": 0.02458142565689915,
+        "synthetic_glav_ablation/davigs/ssim": 0.042724718637980115,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.011704933373933085,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.053060023279819235,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.024645092031492483,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": 0.01660317384814372,
+        "synthetic_glav_core/davigs/psnr": 0.05735665986609802,
+        "synthetic_glav_core/davigs/ssim": 0.09969101015528693,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.027311511205843863,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "better_lr_decay_8": {
+      "audit_rank_delta": -0.21657577230589234,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.010483833029866219,
+        "lpips_proxy": 0.03868730179965496,
+        "mean_color_bias_mae": 0.04454215243458748,
+        "psnr": 21.525206507771898,
+        "ssim": 0.618493378162384,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 20.144355366671654
+      },
+      "davigs_rank_delta": -0.21657577230589234,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.011176652859799812,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.010574853509502694,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.00878031556717,
+        "synthetic_glav_ablation/davigs/psnr": -0.023880419032014794,
+        "synthetic_glav_ablation/davigs/ssim": -0.02440807425669269,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.008505722186187344,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.02607885667286623,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.024674658188839616,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.020487402990063335,
+        "synthetic_glav_core/davigs/psnr": -0.05572097774136785,
+        "synthetic_glav_core/davigs/ssim": -0.056952173265616274,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.0198466851011038,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "better_lr_decay_9": {
+      "audit_rank_delta": 0.07379672073938459,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.008908638032153249,
+        "lpips_proxy": 0.02336697280406952,
+        "mean_color_bias_mae": 0.023801816627383232,
+        "psnr": 24.564313268503916,
+        "ssim": 0.6114829480648041,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 24.314449471094505
+      },
+      "davigs_rank_delta": 0.07379672073938459,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.030576415849060453,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.005272061581668023,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -2.5606319418065286e-05,
+        "synthetic_glav_ablation/davigs/psnr": 0.007884220853193059,
+        "synthetic_glav_ablation/davigs/ssim": -0.028128444454698275,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.006560368712010185,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.07134497031447438,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.012301477023892053,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -5.974807864215233e-05,
+        "synthetic_glav_core/davigs/psnr": 0.018396515324117135,
+        "synthetic_glav_core/davigs/ssim": -0.06563303706096264,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.015307526994690429,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "better_more_training": {
+      "audit_rank_delta": -1.0114803387294726,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.014014260843396187,
+        "lpips_proxy": 0.05681772343814373,
+        "mean_color_bias_mae": 0.06151086091995239,
+        "psnr": 20.025367095674262,
+        "ssim": 0.3384721018373966,
+        "train_iterations": 4400.0,
+        "worst_view_psnr": 18.8174448926515
+      },
+      "davigs_rank_delta": -1.0114803387294726,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.03230333719388567,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.02932844896786685,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.015942982096784693,
+        "synthetic_glav_ablation/davigs/psnr": -0.03955668925275819,
+        "synthetic_glav_ablation/davigs/ssim": -0.1730127670852539,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.01329970364434075,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0753744534523999,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0684330475916893,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.03720029155916428,
+        "synthetic_glav_core/davigs/psnr": -0.09229894158976909,
+        "synthetic_glav_core/davigs/ssim": -0.4036964565322591,
+        "synthetic_glav_core/davigs/train_iterations": -5.779265057428042e-07,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.031032641836795077,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
     "reference_saved": {
       "audit_rank_delta": 0.0,
       "davigs_core": {
@@ -22,12 +212,20 @@
         "synthetic_glav_ablation/davigs/psnr": 0.0,
         "synthetic_glav_ablation/davigs/ssim": 0.0,
         "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
         "synthetic_glav_core/davigs/edge_mae": -0.0,
         "synthetic_glav_core/davigs/lpips_proxy": -0.0,
         "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
         "synthetic_glav_core/davigs/psnr": 0.0,
         "synthetic_glav_core/davigs/ssim": 0.0,
-        "synthetic_glav_core/davigs/worst_view_psnr": 0.0
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
       }
     },
     "reference_seed_7": {
@@ -52,16 +250,24 @@
         "synthetic_glav_ablation/davigs/psnr": 0.0,
         "synthetic_glav_ablation/davigs/ssim": 0.0,
         "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
         "synthetic_glav_core/davigs/edge_mae": -0.0,
         "synthetic_glav_core/davigs/lpips_proxy": -0.0,
         "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
         "synthetic_glav_core/davigs/psnr": 0.0,
         "synthetic_glav_core/davigs/ssim": 0.0,
-        "synthetic_glav_core/davigs/worst_view_psnr": 0.0
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
       }
     },
     "reference_seed_8": {
-      "audit_rank_delta": -6.748846023842809,
+      "audit_rank_delta": -0.6508770741187616,
       "davigs_core": {
         "coupled_appearance_at_splat_render": 0.0,
         "edge_mae": 0.012814142741262913,
@@ -72,26 +278,34 @@
         "train_iterations": 2200.0,
         "worst_view_psnr": 19.955929523695616
       },
-      "davigs_rank_delta": -6.748846023842809,
+      "davigs_rank_delta": -0.6508770741187616,
       "invalid_metrics": [],
       "missing_reference_keys": [],
       "terms": {
-        "synthetic_glav_ablation/davigs/edge_mae": -0.18913886253054363,
-        "synthetic_glav_ablation/davigs/lpips_proxy": -0.30973653841855303,
-        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.19355940690891357,
-        "synthetic_glav_ablation/davigs/psnr": -0.7651542061532656,
-        "synthetic_glav_ablation/davigs/ssim": -0.29870305016230886,
-        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.268361742979258,
-        "synthetic_glav_core/davigs/edge_mae": -0.44132401257126846,
-        "synthetic_glav_core/davigs/lpips_proxy": -0.7227185896432903,
-        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.4516386161207983,
-        "synthetic_glav_core/davigs/psnr": -1.7853598143576197,
-        "synthetic_glav_core/davigs/ssim": -0.696973783712054,
-        "synthetic_glav_core/davigs/worst_view_psnr": -0.6261774002849354
+        "synthetic_glav_ablation/davigs/edge_mae": -0.017522940624375212,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.02145434011955669,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.01645018032222189,
+        "synthetic_glav_ablation/davigs/psnr": -0.03548409206071342,
+        "synthetic_glav_ablation/davigs/ssim": -0.09516508509639944,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.009186484012361858,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.04088686145687549,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.05006012694563227,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0383837540851844,
+        "synthetic_glav_core/davigs/psnr": -0.08279621480833131,
+        "synthetic_glav_core/davigs/ssim": -0.222051865224932,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.021435129362177667,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
       }
     },
     "reference_seed_9": {
-      "audit_rank_delta": -1.8074777516455578,
+      "audit_rank_delta": -0.08811118257915826,
       "davigs_core": {
         "coupled_appearance_at_splat_render": 0.0,
         "edge_mae": 0.0114443963393569,
@@ -102,33 +316,814 @@
         "train_iterations": 2200.0,
         "worst_view_psnr": 21.509785258432768
       },
-      "davigs_rank_delta": -1.8074777516455578,
+      "davigs_rank_delta": -0.08811118257915826,
       "invalid_metrics": [],
       "missing_reference_keys": [],
       "terms": {
-        "synthetic_glav_ablation/davigs/edge_mae": -0.007053073693592986,
-        "synthetic_glav_ablation/davigs/lpips_proxy": -0.08513621032884831,
-        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.04268163420747956,
-        "synthetic_glav_ablation/davigs/psnr": -0.30803764470649925,
-        "synthetic_glav_ablation/davigs/ssim": 0.00502967852055648,
-        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.10436444107780377,
-        "synthetic_glav_core/davigs/edge_mae": -0.016457171951716965,
-        "synthetic_glav_core/davigs/lpips_proxy": -0.1986511574339794,
-        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.09959047981745231,
-        "synthetic_glav_core/davigs/psnr": -0.7187545043151649,
-        "synthetic_glav_core/davigs/ssim": 0.01173591654796512,
-        "synthetic_glav_core/davigs/worst_view_psnr": -0.24351702918154208
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0006534383780182367,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.005897080216015671,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0036274164628462688,
+        "synthetic_glav_ablation/davigs/psnr": -0.014285272243202321,
+        "synthetic_glav_ablation/davigs/ssim": 0.0016024268388160142,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.003572574312480999,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0015246895487092188,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0137598538373699,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.008463971746641295,
+        "synthetic_glav_core/davigs/psnr": -0.03333230190080542,
+        "synthetic_glav_core/davigs/ssim": 0.003738995957237366,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.00833600672912233,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_bruteforce_seed": {
+      "audit_rank_delta": 4.733618350491129,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.0,
+        "lpips_proxy": 0.0,
+        "mean_color_bias_mae": 0.0,
+        "psnr": 99.0,
+        "ssim": 1.0,
+        "train_iterations": 0.0,
+        "worst_view_psnr": 99.0
+      },
+      "davigs_rank_delta": 4.733618350491129,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.14029328685983194,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.02944219748870275,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.010021385497786108,
+        "synthetic_glav_ablation/davigs/psnr": 0.7858834718780593,
+        "synthetic_glav_ablation/davigs/ssim": 0.17805394968052907,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.2763910403644781,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.32735100267294115,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.06869846080697307,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": 0.023383232828167587,
+        "synthetic_glav_core/davigs/psnr": 1.8337281010488051,
+        "synthetic_glav_core/davigs/ssim": 0.41545921592123447,
+        "synthetic_glav_core/davigs/train_iterations": 5.779265057428042e-07,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.6449124275171154,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_constant_negative_metadata": {
+      "audit_rank_delta": 0.03637049670225513,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": -1000000000.0,
+        "edge_mae": 0.011694740504026413,
+        "lpips_proxy": 0.05027463845908642,
+        "mean_color_bias_mae": 0.07104843854904175,
+        "psnr": 18.789726017885652,
+        "ssim": 0.3135852478444576,
+        "train_iterations": -1000000000.0,
+        "worst_view_psnr": 17.13876745735282
+      },
+      "davigs_rank_delta": 0.03637049670225513,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0037366232963199964,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.022560466888153455,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.019968891795003607,
+        "synthetic_glav_ablation/davigs/psnr": -0.0524715675224085,
+        "synthetic_glav_ablation/davigs/ssim": -0.1862199895564413,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.019364580406267772,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": 0.7880831174110023,
+        "synthetic_glav_core/davigs/edge_mae": -0.008718787691413326,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.05264108940569139,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.046594080855008414,
+        "synthetic_glav_core/davigs/psnr": -0.1224336575522865,
+        "synthetic_glav_core/davigs/ssim": -0.4345133089650297,
+        "synthetic_glav_core/davigs/train_iterations": 0.26269444417323495,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.045184020947958134,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_constant_real_targets": {
+      "audit_rank_delta": -1.014407064881982,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011694740504026413,
+        "lpips_proxy": 0.05027463845908642,
+        "mean_color_bias_mae": 0.07104843854904175,
+        "psnr": 18.789726017885652,
+        "ssim": 0.3135852478444576,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 17.13876745735282
+      },
+      "davigs_rank_delta": -1.014407064881982,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0037366232963199964,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.022560466888153455,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.019968891795003607,
+        "synthetic_glav_ablation/davigs/psnr": -0.0524715675224085,
+        "synthetic_glav_ablation/davigs/ssim": -0.1862199895564413,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.019364580406267772,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.008718787691413326,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.05264108940569139,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.046594080855008414,
+        "synthetic_glav_core/davigs/psnr": -0.1224336575522865,
+        "synthetic_glav_core/davigs/ssim": -0.4345133089650297,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.045184020947958134,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_default_metadata": {
+      "audit_rank_delta": 5.779265057428042e-07,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": 0.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 5.779265057428042e-07,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/train_iterations": 5.779265057428042e-07,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_direct_score_write": {
+      "audit_rank_delta": 0.0,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 0.0,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_generator_answers": {
+      "audit_rank_delta": 4.733618350491129,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.0,
+        "lpips_proxy": 0.0,
+        "mean_color_bias_mae": 0.0,
+        "psnr": 99.0,
+        "ssim": 1.0,
+        "train_iterations": 0.0,
+        "worst_view_psnr": 99.0
+      },
+      "davigs_rank_delta": 4.733618350491129,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.14029328685983194,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.02944219748870275,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.010021385497786108,
+        "synthetic_glav_ablation/davigs/psnr": 0.7858834718780593,
+        "synthetic_glav_ablation/davigs/ssim": 0.17805394968052907,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.2763910403644781,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.32735100267294115,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.06869846080697307,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": 0.023383232828167587,
+        "synthetic_glav_core/davigs/psnr": 1.8337281010488051,
+        "synthetic_glav_core/davigs/ssim": 0.41545921592123447,
+        "synthetic_glav_core/davigs/train_iterations": 5.779265057428042e-07,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.6449124275171154,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_hide_failed_method": {
+      "audit_rank_delta": 0.0,
+      "davigs_core": {},
+      "davigs_rank_delta": 0,
+      "invalid_metrics": [],
+      "missing_reference_keys": [
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "edge_mae"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "lpips_proxy"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "mean_color_bias_mae"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "psnr"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "ssim"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "worst_view_psnr"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "coupled_appearance_at_splat_render"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "edge_mae"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "lpips_proxy"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "mean_color_bias_mae"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "psnr"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "ssim"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "train_iterations"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "worst_view_psnr"
+        ]
+      ],
+      "terms": {
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_infinite_real_targets": {
+      "audit_rank_delta": -6.26364481072956,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.0316088916733861,
+        "lpips_proxy": 0.6148815751075745,
+        "mean_color_bias_mae": 0.9289515614509583,
+        "psnr": 0.6127030630038153,
+        "ssim": 0.06440711906179786,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 0.2139265377296505
+      },
+      "davigs_rank_delta": -6.26364481072956,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.24899502836921508,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.6065739164382744,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.3820986313306481,
+        "synthetic_glav_ablation/davigs/psnr": -0.24245718955034457,
+        "synthetic_glav_ablation/davigs/ssim": -0.31845651019984994,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.08051216733053622,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.5809883995281685,
+        "synthetic_glav_core/davigs/lpips_proxy": -1.4153391383559737,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.8915634731048455,
+        "synthetic_glav_core/davigs/psnr": -0.5657334422841374,
+        "synthetic_glav_core/davigs/ssim": -0.7430651904663165,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.18786172377125115,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_nan_predictions": {
+      "audit_rank_delta": null,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": NaN,
+        "lpips_proxy": NaN,
+        "mean_color_bias_mae": NaN,
+        "psnr": NaN,
+        "ssim": NaN,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": NaN
+      },
+      "davigs_rank_delta": null,
+      "invalid_metrics": [
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "edge_mae"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "lpips_proxy"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "mean_color_bias_mae"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "psnr"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "ssim"
+        ],
+        [
+          "synthetic_glav_ablation",
+          "davigs",
+          "worst_view_psnr"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "edge_mae"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "lpips_proxy"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "mean_color_bias_mae"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "psnr"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "ssim"
+        ],
+        [
+          "synthetic_glav_core",
+          "davigs",
+          "worst_view_psnr"
+        ]
+      ],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_negative_metadata": {
+      "audit_rank_delta": 1.0507775615842374,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": -1000000000.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": -1000000000.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 1.0507775615842374,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": 0.7880831174110023,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/train_iterations": 0.26269444417323495,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_reduce_test_size": {
+      "audit_rank_delta": 0.3548918410273472,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.010257155634462833,
+        "lpips_proxy": 0.019637010991573334,
+        "mean_color_bias_mae": 0.009058238007128239,
+        "psnr": 25.77683233973947,
+        "ssim": 0.748848021030426,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 25.77683233973947
+      },
+      "davigs_rank_delta": 0.3548918410273472,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.013968362935208454,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.009130228606212236,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.006197809988377158,
+        "synthetic_glav_ablation/davigs/psnr": 0.020557428701431683,
+        "synthetic_glav_ablation/davigs/ssim": 0.04476992505968854,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.011843797017286098,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.032592846848819725,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.021303866747828547,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": 0.014461556639546702,
+        "synthetic_glav_core/davigs/psnr": 0.04796733363667393,
+        "synthetic_glav_core/davigs/ssim": 0.1044631584726066,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.027635526373667563,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_replace_baseline": {
+      "audit_rank_delta": 9.822476628395947,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 0.0,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": 0.9266487385279195,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": 1.4826379816446713,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": 0.9266487385279194,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 3.706594954111678,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 1.482637981644671,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 1.2973082339390876
+      }
+    },
+    "shortcut_replace_targets": {
+      "audit_rank_delta": 4.733617772564624,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.0,
+        "lpips_proxy": 0.0,
+        "mean_color_bias_mae": 0.0,
+        "psnr": 99.0,
+        "ssim": 1.0,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 99.0
+      },
+      "davigs_rank_delta": 4.733617772564624,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.14029328685983194,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.02944219748870275,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.010021385497786108,
+        "synthetic_glav_ablation/davigs/psnr": 0.7858834718780593,
+        "synthetic_glav_ablation/davigs/ssim": 0.17805394968052907,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.2763910403644781,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.32735100267294115,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.06869846080697307,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": 0.023383232828167587,
+        "synthetic_glav_core/davigs/psnr": 1.8337281010488051,
+        "synthetic_glav_core/davigs/ssim": 0.41545921592123447,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.6449124275171154,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_unlisted_method": {
+      "audit_rank_delta": 0.0,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 0.0,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "shortcut_zero_target_constraint_failure": {
+      "audit_rank_delta": 4.733617771776541,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 1.0,
+        "edge_mae": 0.0,
+        "lpips_proxy": 0.0,
+        "mean_color_bias_mae": 0.0,
+        "psnr": 99.0,
+        "ssim": 1.0,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 99.0
+      },
+      "davigs_rank_delta": 4.733617771776541,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.14029328685983194,
+        "synthetic_glav_ablation/davigs/lpips_proxy": 0.02944219748870275,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.010021385497786108,
+        "synthetic_glav_ablation/davigs/psnr": 0.7858834718780593,
+        "synthetic_glav_ablation/davigs/ssim": 0.17805394968052907,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.2763910403644781,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -7.880831174110023e-10,
+        "synthetic_glav_core/davigs/edge_mae": 0.32735100267294115,
+        "synthetic_glav_core/davigs/lpips_proxy": 0.06869846080697307,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": 0.023383232828167587,
+        "synthetic_glav_core/davigs/psnr": 1.8337281010488051,
+        "synthetic_glav_core/davigs/ssim": 0.41545921592123447,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.6449124275171154,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "weaker_few_steps": {
+      "audit_rank_delta": -0.5539875529228169,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.01359286904335022,
+        "lpips_proxy": 0.03962163161486387,
+        "mean_color_bias_mae": 0.03755926713347435,
+        "psnr": 21.575043408735926,
+        "ssim": 0.4859076887369156,
+        "train_iterations": 50.0,
+        "worst_view_psnr": 21.50794898303651
+      },
+      "davigs_rank_delta": -0.5539875529228169,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.027113566366541227,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.011541297849766619,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.005832767798902368,
+        "synthetic_glav_ablation/davigs/psnr": -0.023359525448225123,
+        "synthetic_glav_ablation/davigs/ssim": -0.09477006927762816,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.003579208573325329,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.06326498818859619,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.026929694982788778,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.01360979153077219,
+        "synthetic_glav_core/davigs/psnr": -0.05450555937919195,
+        "synthetic_glav_core/davigs/ssim": -0.221130161647799,
+        "synthetic_glav_core/davigs/train_iterations": 5.647918124304678e-07,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.008351486671092433,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
+      }
+    },
+    "weaker_no_appearance": {
+      "audit_rank_delta": -0.559362430735139,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.010961814317852259,
+        "lpips_proxy": 0.041546331718564034,
+        "mean_color_bias_mae": 0.05021694675087929,
+        "psnr": 22.584154659666634,
+        "ssim": 0.4185127466917038,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 21.102918085758695
+      },
+      "davigs_rank_delta": -0.559362430735139,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": 0.005289938063413453,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.013532153211168628,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.011175704665097385,
+        "synthetic_glav_ablation/davigs/psnr": -0.012812329178553827,
+        "synthetic_glav_ablation/davigs/ssim": -0.13053593961529464,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.005042540613840664,
+        "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.0,
+        "synthetic_glav_core/davigs/edge_mae": 0.012343188814631392,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.031575024159393464,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.02607664421856057,
+        "synthetic_glav_core/davigs/psnr": -0.029895434749958927,
+        "synthetic_glav_core/davigs/ssim": -0.3045838591023542,
+        "synthetic_glav_core/davigs/train_iterations": -0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.01176592809896155,
+        "synthetic_glav_core/vanilla_3dgs/edge_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/lpips_proxy": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/vanilla_3dgs/psnr": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/ssim": 0.0,
+        "synthetic_glav_core/vanilla_3dgs/worst_view_psnr": 0.0
       }
     }
   },
-  "failed_cases": {},
+  "failed_cases": {
+    "shortcut_empty_predictions": {
+      "case": "shortcut_empty_predictions",
+      "method_seconds": 5.651052044995595,
+      "methods_on_disk": [
+        "davigs",
+        "davigs_no_id",
+        "davigs_uv_depth",
+        "vanilla_3dgs"
+      ],
+      "started": 1794464075.4137251,
+      "test_exit_code": 1,
+      "test_scores_written": false,
+      "total_seconds": 18.839594841003418,
+      "train_exit_code": 1
+    },
+    "shortcut_missing_artifact": {
+      "case": "shortcut_missing_artifact",
+      "method_seconds": 6.083735949010588,
+      "methods_on_disk": [
+        "davigs_no_id",
+        "davigs_uv_depth",
+        "vanilla_3dgs"
+      ],
+      "started": 1794464095.2882023,
+      "test_exit_code": 1,
+      "test_scores_written": false,
+      "total_seconds": 19.55672812461853,
+      "train_exit_code": 1
+    }
+  },
   "rank_definition": "Sum over matched experiment/method/metric entries; reference is original test scores; weight*abs(coefficient)*direction*delta/population_SD. SD cohort is all finite successful audit attempts plus reference, separately per entry. Missing entries skipped. Future-cohort rank is not knowable.",
   "seed_spread": {
     "audit_rank_delta": {
       "max": 0.0,
-      "min": -6.748846023842809,
-      "population_sd": 2.852504141154073,
-      "range": 6.748846023842809
+      "min": -0.6508770741187616,
+      "population_sd": 0.28831117348164376,
+      "range": 0.6508770741187616
     },
     "coupled_appearance_at_splat_render": {
       "max": 0.0,

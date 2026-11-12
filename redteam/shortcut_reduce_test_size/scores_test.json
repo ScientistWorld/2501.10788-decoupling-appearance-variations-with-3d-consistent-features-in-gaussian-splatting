@@ -1,0 +1,57 @@
+{
+  "experiments": {
+    "synthetic_glav_ablation": {
+      "results": {
+        "davigs": {
+          "edge_mae": 0.010257155634462833,
+          "lpips_proxy": 0.019637010991573334,
+          "mean_color_bias_mae": 0.009058238007128239,
+          "psnr": 25.77683233973947,
+          "ssim": 0.748848021030426,
+          "worst_view_psnr": 25.77683233973947
+        },
+        "davigs_no_id": {
+          "edge_mae": 0.012046399060636759,
+          "lpips_proxy": 0.03127259109169245,
+          "mean_color_bias_mae": 0.02493155561387539,
+          "psnr": 21.989037128382616,
+          "ssim": 0.659965991973877,
+          "worst_view_psnr": 21.52864457775103
+        },
+        "davigs_uv_depth": {
+          "edge_mae": 0.012021224480122328,
+          "lpips_proxy": 0.04960230737924576,
+          "mean_color_bias_mae": 0.06053059920668602,
+          "psnr": 21.19594194254404,
+          "ssim": 0.42715005576610565,
+          "worst_view_psnr": 18.303369546555576
+        }
+      }
+    },
+    "synthetic_glav_core": {
+      "results": {
+        "davigs": {
+          "coupled_appearance_at_splat_render": 0.0,
+          "edge_mae": 0.010257155634462833,
+          "lpips_proxy": 0.019637010991573334,
+          "mean_color_bias_mae": 0.009058238007128239,
+          "psnr": 25.77683233973947,
+          "ssim": 0.748848021030426,
+          "train_iterations": 2200.0,
+          "worst_view_psnr": 25.77683233973947
+        },
+        "vanilla_3dgs": {
+          "coupled_appearance_at_splat_render": 0.0,
+          "edge_mae": 0.010961814317852259,
+          "lpips_proxy": 0.041546331718564034,
+          "mean_color_bias_mae": 0.05021694675087929,
+          "psnr": 22.584154659666634,
+          "ssim": 0.4185127466917038,
+          "train_iterations": 2200.0,
+          "worst_view_psnr": 21.102918085758695
+        }
+      }
+    }
+  },
+  "slice": "test"
+}

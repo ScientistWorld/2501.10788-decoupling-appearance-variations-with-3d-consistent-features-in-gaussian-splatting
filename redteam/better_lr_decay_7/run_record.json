@@ -1,0 +1,28 @@
+{
+  "case": "better_lr_decay_7",
+  "started": 1794464327.121422,
+  "optimization_seed": 7,
+  "dataset_seed": 7,
+  "method_seconds": 78.08448245399632,
+  "methods_on_disk": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+  ],
+  "train_exit_code": 0,
+  "test_exit_code": 0,
+  "test_scores_written": true,
+  "methods_in_test_results": {
+    "synthetic_glav_ablation": [
+      "davigs",
+      "davigs_no_id",
+      "davigs_uv_depth"
+    ],
+    "synthetic_glav_core": [
+      "davigs",
+      "vanilla_3dgs"
+    ]
+  },
+  "total_seconds": 91.90818190574646
+}

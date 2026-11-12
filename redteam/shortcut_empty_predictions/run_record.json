@@ -1,0 +1,15 @@
+{
+  "case": "shortcut_empty_predictions",
+  "started": 1794464075.4137251,
+  "method_seconds": 5.651052044995595,
+  "methods_on_disk": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+  ],
+  "train_exit_code": 1,
+  "test_exit_code": 1,
+  "test_scores_written": false,
+  "total_seconds": 18.839594841003418
+}

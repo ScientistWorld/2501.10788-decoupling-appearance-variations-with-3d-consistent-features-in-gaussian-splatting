@@ -1,0 +1,14 @@
+{
+  "case": "shortcut_missing_artifact",
+  "started": 1794464095.2882023,
+  "method_seconds": 6.083735949010588,
+  "methods_on_disk": [
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+  ],
+  "train_exit_code": 1,
+  "test_exit_code": 1,
+  "test_scores_written": false,
+  "total_seconds": 19.55672812461853
+}
