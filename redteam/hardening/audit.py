@@ -122,7 +122,7 @@ def image_copy_predictions(color_transfer: bool) -> dict:
                     fitted.append(right[c] * coef[0] + coef[1])
                 right = torch.stack(fitted)
             novel.append(right.clamp(0, 1))
-            canon.append(src)
+            canon.append(src[..., w // 2:])
         nv[sid], aa[sid] = torch.stack(novel), torch.stack(canon)
     return {"novel_view": nv, "average_appearance": aa}
 
@@ -189,18 +189,9 @@ def build_cases() -> dict:
         d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": {sid: torch.full_like(t, 0.5) for sid, t in ref["average_appearance"].items()}}
     )
 
-    def canonical_from_adapted(d):
-        canon = {}
-        for sid in ref["novel_view"]:
-            s = load_scene(sid) if sid in test_ids else None
-            if s is None:
-                canon[sid] = ref["average_appearance"][sid]
-                continue
-            left = s["heldout_left"].float() / 255.0
-            canon[sid] = torch.cat([left, ref["novel_view"][sid]], dim=-1)
-        save(d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": canon})
-
-    cases["canonical_from_adapted"] = canonical_from_adapted
+    cases["canonical_from_adapted"] = lambda d: save(
+        d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": ref["novel_view"]}
+    )
     cases["canonical_from_vanilla"] = lambda d: save(
         d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": van["average_appearance"]}
     )

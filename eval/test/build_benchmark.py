@@ -9,7 +9,8 @@ It writes
     method may see (training images, cameras, left halves of held-out captures,
     and a sparse SfM-like point cloud),
   * ``eval/train/answers.pt``: ground truth for the visible development scenes,
-  * ``eval/test/answers.pt``: ground truth for the hidden test scenes.
+  * ``eval/test/answers.pt``: ground truth for the hidden test scenes (right halves of
+    the held-out captures and their average appearance over the training captures).
 
 Scenes are ray-traced from analytic, procedurally textured geometry (boxes and
 spheres inside a walled courtyard), not from Gaussians, and supersampled 2x2.
@@ -558,7 +559,7 @@ def build_scene(sid, split, seed):
     }
     answers = {
         "right": torch.stack([observed[h][:, :, W // 2:] for h in HELDOUT_IDX]).contiguous(),
-        "avg": torch.stack([avg[h] for h in HELDOUT_IDX]).to(torch.float16),
+        "avg": torch.stack([avg[h][:, :, W // 2:] for h in HELDOUT_IDX]).to(torch.float16).contiguous(),
     }
     means = [float(observed[v].float().mean() / 255.0) for v in range(N_VIEWS)]
     print(

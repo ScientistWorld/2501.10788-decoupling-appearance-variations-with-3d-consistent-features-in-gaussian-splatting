@@ -5,7 +5,8 @@
 # SMOKE=1 runs every stage with a tiny optimisation budget (pipeline check).
 set -uo pipefail
 cd /home/user
-SMOKE="${SMOKE:-1}"
+BUILD_ARGS="${BUILD_ARGS:---force}"  # one-time rebuild: answers now store right halves only
+SMOKE="${SMOKE:-0}"
 STEPS_ARG=""
 if [ "$SMOKE" = "1" ]; then STEPS_ARG="--steps 150"; fi
 
@@ -14,9 +15,9 @@ python -c "import torch, os; print('torch', torch.__version__, 'cuda', torch.cud
 nvidia-smi --query-gpu=name,memory.total --format=csv 2>/dev/null || true
 
 set -e
-echo "== build benchmark"
-python -m eval.test.build_benchmark
-echo "== reference methods"
+echo "== build benchmark $(date)"
+python -m eval.test.build_benchmark ${BUILD_ARGS:-}
+echo "== reference methods $(date)"
 python -m method.run_experiment --plan reference $STEPS_ARG --strict
 echo "== freeze comparison methods"
 python -m eval.test.freeze
@@ -26,10 +27,10 @@ bash scripts/evaluate.sh > /dev/null
 bash scripts/evaluate_train.sh > /dev/null
 bash scripts/evaluate_test.sh
 set +e
-echo "== audit runs (seeds and honest variants on the test scenes)"
+echo "== audit runs (seeds and honest variants on the test scenes) $(date)"
 python -m method.run_experiment --plan audit $STEPS_ARG
-echo "== audit evaluation"
+echo "== audit evaluation $(date)"
 python -m redteam.hardening.audit all
-echo "== validate"
+echo "== validate $(date)"
 python validate.py
 exit 0

@@ -23,7 +23,7 @@
       }
     },
     "glav_average_appearance": {
-      "description": "Quality of the scene rendered without any per-capture appearance state (paper Table 4 protocol: colour correction before metrics to evaluate the average appearance). The appearance-free render of each held-out camera is colour-corrected (mip-NeRF 360 quadratic warp) to that camera's average appearance over the training captures and scored on the full image. It doubles as the decoupling constraint: a method more than 1 dB below the frozen vanilla 3DGS render here fails the run.",
+      "description": "Quality of the scene rendered without any per-capture appearance state (paper Table 4 protocol: colour correction before metrics to evaluate the average appearance). The appearance-free render of each held-out camera is colour-corrected (mip-NeRF 360 quadratic warp) to that camera's average appearance over the training captures and scored on the right half (the left half is a visible input). It doubles as the decoupling constraint: a method more than 1 dB below the frozen vanilla 3DGS render here fails the run.",
       "weight": 0.3,
       "primary_metric": "psnr",
       "metrics": {

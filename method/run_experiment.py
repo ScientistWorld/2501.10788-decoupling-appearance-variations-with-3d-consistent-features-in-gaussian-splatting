@@ -94,8 +94,17 @@ def resolve(method: str, variant: str, steps_override: int | None) -> dict:
     return cfg
 
 
+def code_version() -> str:
+    h = hashlib.sha1()
+    for f in sorted(Path(__file__).resolve().parent.glob("*.py")):
+        h.update(f.read_bytes())
+    return h.hexdigest()[:10]
+
+
 def cfg_hash(cfg: dict, seed: int) -> str:
-    return hashlib.sha1(json.dumps({"cfg": cfg, "seed": seed}, sort_keys=True).encode()).hexdigest()[:10]
+    """Cache key: configuration, seed and the method source code."""
+    key = {"cfg": cfg, "seed": seed, "code": code_version()}
+    return hashlib.sha1(json.dumps(key, sort_keys=True).encode()).hexdigest()[:10]
 
 
 def main() -> None:
@@ -119,11 +128,19 @@ def main() -> None:
                 label = f"{run['method']}/{run['variant']}/s{run['seed']}"
                 tasks.append(dict(cache=str(cache), cfg=cfg, seed=run["seed"], sid=sid, label=label))
 
-    ngpu = torch.cuda.device_count() if torch.cuda.is_available() else 0
     ncpu = len(os.sched_getaffinity(0))
+    devices = []
+    if torch.cuda.is_available():
+        # The container may expose GPUs that belong to other jobs; use only
+        # devices that are mostly free.
+        for i in range(torch.cuda.device_count()):
+            free, total = torch.cuda.mem_get_info(i)
+            print(f"[run] cuda:{i} free {free / 2**30:.1f} / {total / 2**30:.1f} GiB", flush=True)
+            if free >= 0.6 * total:
+                devices.append(f"cuda:{i}")
+    ngpu = len(devices)
     if ngpu:
-        devices = [f"cuda:{i}" for i in range(ngpu)]
-        per_gpu = int(os.environ.get("GLAV_WORKERS_PER_GPU", "4"))
+        per_gpu = int(os.environ.get("GLAV_WORKERS_PER_GPU", "6"))
         n_workers = args.workers or max(1, min(len(tasks), per_gpu * ngpu, max(ncpu, ngpu)))
         threads = 1
     else:

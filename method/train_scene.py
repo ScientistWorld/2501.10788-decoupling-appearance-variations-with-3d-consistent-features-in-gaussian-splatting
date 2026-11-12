@@ -66,7 +66,7 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
         lo, hi = torch.quantile(pts, 0.01, dim=0), torch.quantile(pts, 0.99, dim=0)
         pad = 0.1 * (hi - lo)
         app = AppearanceModule(
-            n_tr + n_ho,
+            n_tr,
             lo - pad,
             hi + pad,
             depth_scale=2.0 * extent,
@@ -76,14 +76,20 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
         ).to(device)
         app_opt = torch.optim.Adam(app.param_groups(cfg["lr_emb"], cfg["lr_mlp"], cfg["lr_grid"]), betas=(0.9, 0.99), eps=1e-15)
         base_lrs = [g["lr"] for g in app_opt.param_groups]
+        # Held-out captures get their own embeddings, optimised on their left
+        # halves only (each a separate parameter, so untouched rows never move).
+        ho_embs = [torch.nn.Parameter(torch.randn(cfg["emb_dim"], device=device)) for _ in range(n_ho)]
+        ho_opt = torch.optim.Adam(ho_embs, lr=cfg["lr_emb"], betas=(0.9, 0.99), eps=1e-15)
     use_id = davigs and cfg["use_id"]
     win = _gauss_window(device)
     bg = torch.zeros(3, device=device)
 
-    densify_from = max(1, int(0.05 * steps))
+    # 3DGS schedule (30k iterations: densify from 500 to 15k every 100, opacity
+    # reset every 3k), scaled proportionally to the step budget.
+    densify_from = max(1, round(steps * 500 / 30000))
     densify_until = steps // 2
-    densify_every = max(10, round(steps / 60))
-    reset_every = max(50, int(0.2 * steps))
+    densify_every = max(10, round(steps * 100 / 30000))
+    reset_every = max(50, round(steps * 3000 / 30000))
     sh_every = max(1, steps // 30)
     heldout_every = max(1, round(n_tr / n_ho)) if (davigs and cfg["heldout_adapt"]) else 0
 
@@ -97,6 +103,8 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
             factor = 0.1 + 0.9 * 0.5 * (1.0 + math.cos(math.pi * step / steps))
             for g, lr in zip(app_opt.param_groups, base_lrs):
                 g["lr"] = lr * factor
+            for g in ho_opt.param_groups:
+                g["lr"] = cfg["lr_emb"] * factor
         sh_degree = min(3, step // sh_every)
         if not order:
             order = torch.randperm(n_tr, generator=gen).tolist()
@@ -131,13 +139,13 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
             ho_count += 1
             with torch.no_grad():
                 img_h, depth_h, _, _ = gm.render(cams_ho[k], sh_degree, bg)
-            pred, mats = app(img_h, depth_h, cams_ho[k], n_tr + k)
+            pred, mats = app(img_h, depth_h, cams_ho[k], 0, embedding=ho_embs[k])
             loss_h = photometric_loss(pred[..., :half], held_left[k], win)
             if use_id:
                 loss_h = loss_h + lambda_id(step, steps) * identity_regularizer(mats)
-            loss_h.backward()
-            app_opt.step()
-            app_opt.zero_grad(set_to_none=True)
+            (ho_embs[k].grad,) = torch.autograd.grad(loss_h, [ho_embs[k]])
+            ho_opt.step()
+            ho_opt.zero_grad(set_to_none=True)
 
         if (step + 1) % max(1, steps // 6) == 0 or step + 1 == steps:
             el = time.time() - t0
@@ -145,16 +153,20 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
 
     final_degree = min(3, (steps - 1) // sh_every)
     embeddings = {}
+    if davigs:
+        for k in range(n_ho):
+            # Without held-out adaptation the capture gets the mean training embedding.
+            embeddings[k] = ho_embs[k].detach() if cfg["heldout_adapt"] else app.emb.weight.detach().mean(0)
     if davigs and cfg["post_adapt_steps"] > 0:
         for p in app.parameters():
             p.requires_grad_(False)
         for k in range(n_ho):
             with torch.no_grad():
                 img_h, depth_h, _, _ = gm.render(cams_ho[k], final_degree, bg)
-            emb = app.emb.weight[n_tr + k].detach().clone().requires_grad_(True)
+            emb = embeddings[k].clone().requires_grad_(True)
             opt = torch.optim.Adam([emb], lr=cfg["lr_emb"])
             for _ in range(int(cfg["post_adapt_steps"])):
-                pred, mats = app(img_h, depth_h, cams_ho[k], n_tr + k, embedding=emb)
+                pred, mats = app(img_h, depth_h, cams_ho[k], 0, embedding=emb)
                 loss_h = photometric_loss(pred[..., :half], held_left[k], win)
                 if use_id:
                     loss_h = loss_h + lambda_id(steps, steps) * identity_regularizer(mats)
@@ -168,11 +180,11 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
         for k in range(n_ho):
             img_h, depth_h, _, _ = gm.render(cams_ho[k], final_degree, bg)
             if davigs:
-                out, _ = app(img_h, depth_h, cams_ho[k], n_tr + k, embedding=embeddings.get(k))
+                out, _ = app(img_h, depth_h, cams_ho[k], 0, embedding=embeddings[k])
             else:
                 out = img_h
             novel.append(out.clamp(0, 1)[..., half:].cpu())
-            canonical.append(img_h.clamp(0, 1).cpu())
+            canonical.append(img_h.clamp(0, 1)[..., half:].cpu())
         train_psnr = []
         for i in range(0, n_tr, max(1, n_tr // 6)):
             img, depth, _, _ = gm.render(cams_tr[i], final_degree, bg)

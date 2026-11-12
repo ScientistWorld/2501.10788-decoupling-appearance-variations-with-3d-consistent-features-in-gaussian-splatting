@@ -7,9 +7,11 @@ by accumulated weight, as used by DAVIGS for back-projection), and adaptive
 density control (clone / split / prune, periodic opacity reset) with
 per-parameter Adam learning rates from the 3DGS reference implementation.
 
-The rasteriser is dense (every kept Gaussian against every pixel) instead of
-tile-based CUDA; at the benchmark's resolution this is exact up to 3DGS's own
-approximations and fits comfortably on one GPU.
+The rasteriser is sparse PyTorch instead of tile-based CUDA: every Gaussian is
+evaluated on the pixels of its 3-sigma footprint (as 3DGS does via tiles),
+(Gaussian, pixel) pairs are sorted per pixel by depth, and transmittance is a
+segmented exclusive cumulative product, so compositing is exact front-to-back
+alpha blending.
 """
 
 from __future__ import annotations
@@ -19,6 +21,7 @@ import math
 import torch
 from torch import nn
 
+PATCH_BUCKETS = (3, 6, 12, 24, 48, 96)  # half-widths (px) of per-Gaussian evaluation patches
 SH_C0 = 0.28209479177387814
 SH_C1 = 0.4886025119029199
 SH_C2 = (1.0925484305920792, -1.0925484305920792, 0.31539156525252005, -1.0925484305920792, 0.5462742152960396)
@@ -214,19 +217,62 @@ class GaussianModel:
         ic = (a / det)[keep][order]
         zk, rgb, opac = zk[order], rgb[order], opac[order]
 
-        dx = cam.px[None, :] - uk[:, None]
-        dy = cam.py[None, :] - vk[:, None]
-        power = -0.5 * (ia[:, None] * dx * dx + ic[:, None] * dy * dy) - ib[:, None] * dx * dy
-        alpha = (opac[:, None] * torch.exp(power.clamp_max(0.0))).clamp(max=0.99)
-        alpha = alpha * (alpha >= 1.0 / 255.0).to(alpha.dtype)
-        log1m = torch.log1p(-alpha)
-        csum = torch.cumsum(log1m, dim=0)
-        trans = torch.exp(csum - log1m)
-        w = alpha * trans
-        color = w.T @ rgb
-        acc = w.sum(dim=0)
-        depth = (w.T @ zk) / acc.clamp_min(1e-6)
-        color = color + torch.exp(csum[-1])[:, None] * bg[None, :]
+        rk = radius[keep][order]
+
+        # Sparse rasterisation: each Gaussian is evaluated only on the pixels of
+        # its 3-sigma footprint (patch sizes bucketed), then (Gaussian, pixel)
+        # pairs are sorted by pixel and depth and alpha-composited front to back
+        # with a segmented exclusive cumulative sum of log(1 - alpha).
+        need = torch.ceil(rk.detach() + 0.5)
+        cu = torch.round(uk.detach()).long()
+        cv = torch.round(vk.detach()).long()
+        assigned = torch.zeros_like(need, dtype=torch.bool)
+        g_list, p_list, a_list = [], [], []
+        for bi, rad in enumerate(PATCH_BUCKETS):
+            sel = ~assigned if bi == len(PATCH_BUCKETS) - 1 else (need <= rad) & ~assigned
+            assigned |= sel
+            gb = torch.nonzero(sel).squeeze(1)
+            if gb.numel() == 0:
+                continue
+            off = torch.arange(-rad, rad + 1, device=means.device)
+            oy, ox = torch.meshgrid(off, off, indexing="ij")
+            px = cu[gb][:, None] + ox.reshape(1, -1)
+            py = cv[gb][:, None] + oy.reshape(1, -1)
+            inb = (px >= 0) & (px < cam.W) & (py >= 0) & (py < cam.H)
+            gi = gb[:, None].expand_as(px)[inb]
+            pxv, pyv = px[inb], py[inb]
+            dx = pxv.to(uk.dtype) - uk[gi]
+            dy = pyv.to(vk.dtype) - vk[gi]
+            power = -0.5 * (ia[gi] * dx * dx + ic[gi] * dy * dy) - ib[gi] * dx * dy
+            alpha = (opac[gi] * torch.exp(power.clamp_max(0.0))).clamp(max=0.99)
+            ok = alpha.detach() >= 1.0 / 255.0
+            g_list.append(gi[ok])
+            p_list.append(pyv[ok] * cam.W + pxv[ok])
+            a_list.append(alpha[ok])
+        if not g_list:
+            return empty
+        g = torch.cat(g_list)
+        pix = torch.cat(p_list)
+        al = torch.cat(a_list)
+        if g.numel() == 0:
+            return empty
+        srt = torch.argsort(pix * uk.shape[0] + g)
+        g, pix, al = g[srt], pix[srt], al[srt]
+        log1m = torch.log1p(-al).double()
+        before = torch.cumsum(log1m, dim=0) - log1m
+        m = g.shape[0]
+        is_start = torch.ones(m, dtype=torch.bool, device=means.device)
+        is_start[1:] = pix[1:] != pix[:-1]
+        start = torch.where(is_start, torch.arange(m, device=means.device), torch.zeros_like(pix)).cummax(dim=0).values
+        trans = torch.exp(before - before[start]).to(al.dtype)
+        w = al * trans
+        n_pix = cam.H * cam.W
+        color = torch.zeros(n_pix, 3, device=means.device, dtype=w.dtype).index_add(0, pix, w[:, None] * rgb[g])
+        acc = torch.zeros(n_pix, device=means.device, dtype=w.dtype).index_add(0, pix, w)
+        dnum = torch.zeros(n_pix, device=means.device, dtype=w.dtype).index_add(0, pix, w * zk[g])
+        log_t = torch.zeros(n_pix, device=means.device, dtype=log1m.dtype).index_add(0, pix, log1m)
+        color = color + torch.exp(log_t).to(w.dtype)[:, None] * bg[None, :]
+        depth = dnum / acc.clamp_min(1e-6)
         image = color.T.reshape(3, cam.H, cam.W)
         info = {"mean2d": mean2d, "keep": keep, "vis": vis, "W": cam.W, "H": cam.H}
         return image, depth.reshape(cam.H, cam.W), acc.reshape(cam.H, cam.W), info

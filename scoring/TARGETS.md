@@ -10,7 +10,7 @@ Held-out novel-view quality under global and local appearance variation (paper T
 
 ## Constraint and secondary: glav_average_appearance
 
-The scene rendered without per-capture appearance state, colour-corrected by the evaluator to the camera's average appearance (paper Table 4 protocol). It captures the paper's claim that the appearance module can be discarded after optimisation without floaters or colour distortions.
+The scene rendered without per-capture appearance state, colour-corrected by the evaluator to the camera's average appearance over the training captures (paper Table 4 protocol), scored on the held-out right halves. It captures the paper's claim that the appearance module can be discarded after optimisation without floaters or colour distortions.
 
 - **Metrics:** `psnr` (primary), `ssim` higher-is-better; `lpips` lower-is-better.
 - **Constraint (gate):** a method more than 1.0 dB PSNR below the frozen vanilla 3DGS render here fails the run (worst values everywhere).

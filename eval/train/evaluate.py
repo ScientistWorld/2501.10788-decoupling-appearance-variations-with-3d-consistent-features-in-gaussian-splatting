@@ -7,14 +7,14 @@ in ``eval/train/answers.pt``. The only thing read from a method directory is
 ``predictions.pt``::
 
     {"novel_view":         {scene_id: [V, 3, H, W // 2] in [0, 1]},
-     "average_appearance": {scene_id: [V, 3, H, W]      in [0, 1]}}
+     "average_appearance": {scene_id: [V, 3, H, W // 2] in [0, 1]}}
 
 * ``glav_novel_view``: the paper's main protocol. Held-out captures may be
   fitted on their left half; PSNR / SSIM / LPIPS are measured on the right half.
 * ``glav_average_appearance``: the paper's ablation protocol. The render made
   without any per-capture appearance state is colour-corrected (mip-NeRF 360
   procedure) to the average appearance of the camera over the training captures,
-  then scored on the full image. It is also the decoupling constraint: a method
+  then scored on the right half (the left half is a visible input). It is also the decoupling constraint: a method
   whose appearance-free render is worse than the evaluator's frozen vanilla-3DGS
   render by more than the roster margin fails the run.
 
