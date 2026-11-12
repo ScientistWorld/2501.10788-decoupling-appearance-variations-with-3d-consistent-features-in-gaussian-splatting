@@ -10,6 +10,14 @@ No packages, network, GPUs, or background processes are needed. Method generatio
 is compute work and must run in a submitted job. The fixed-scene optimization
 seeds are 7, 8, 9; the dataset seed is always 7.
 
+The bundle resumes completed cases. Remaining training and adaptation save
+atomic checkpoints every 100 updates in ignored `.state/checkpoints/`, preserving
+optimizer state, RNG, and partially adapted views across node preemptions. The
+first job repeatedly restarted on worker drains and was cancelled to add this
+support. Its three completed reference seed results are retained. An additional
+honest variant corrects the global training SSIM to the visible scorer's local
+SSIM, without changing data, scene scale, or test adaptation access.
+
 The saved reference fixture is reusable as authorized in the audit request. It is
 stored in ignored `.state/`. For a fresh clone, first reproduce the normal outputs
 using the original reproduction script. No shortcut implementation reads the

@@ -72,7 +72,6 @@ def install(case, record):
     torch.set_num_threads(2)
     if case.startswith('reference_seed_') or case.startswith('better_') or case == 'weaker_few_steps' or case == 'weaker_no_appearance':
         from data.synthetic_glav import build_scene
-        from method.run_experiment import train_baseline, train_davigs
         seed = int(case.rsplit('_', 1)[-1]) if case.rsplit('_', 1)[-1].isdigit() else 7
         random.seed(seed)
         torch.manual_seed(seed)
@@ -80,17 +79,11 @@ def install(case, record):
         scene = build_scene(seed=7)
         dest = ROOT/'outputs/davigs'
         record.update(optimization_seed=seed, dataset_seed=7)
-        if case.startswith('better_lr_decay'):
-            from redteam.train_variant import train_decay
-            train_decay(scene, dest)
-        elif case == 'better_more_training':
-            train_davigs(scene, 4400, 800, dest)
-        elif case == 'weaker_few_steps':
-            train_davigs(scene, 50, 10, dest)
-        elif case == 'weaker_no_appearance':
-            train_baseline(scene, 2200, dest)
-        else:
-            train_davigs(scene, 2200, 400, dest)
+        from redteam.train_variant import train
+        steps, adapt = (4400, 800) if case == 'better_more_training' else (50, 10) if case == 'weaker_few_steps' else (2200, 400)
+        train(scene, dest, STATE/'checkpoints'/case/'training.pt', steps=steps, adapt_steps=adapt,
+              decay=case.startswith('better_lr_decay'), local_ssim=case=='better_local_ssim',
+              baseline=case=='weaker_no_appearance')
         return
     if case == 'reference_saved':
         return
@@ -190,15 +183,29 @@ def install(case, record):
         raise ValueError(case)
 
 
-def run(case):
+def run(case, resume=False):
     initialize()
     reset()
     folder = HERE/case
     folder.mkdir(exist_ok=True)
+    if resume and (folder/'run_record.json').exists():
+        prior = json.loads((folder/'run_record.json').read_text())
+        if 'train_exit_code' in prior and 'test_exit_code' in prior and 'harness_error' not in prior:
+            print(f'SKIP completed {case}', flush=True)
+            return
     record = dict(case=case, started=time.time())
     try:
         begin = time.monotonic()
-        install(case, record)
+        cached = STATE/'generated'/case/'predictions.pt'
+        honest = case.startswith(('reference_seed_', 'better_', 'weaker_'))
+        if resume and honest and cached.exists():
+            shutil.copy2(cached, ROOT/'outputs/davigs/predictions.pt')
+            record['reused_completed_generation'] = True
+        else:
+            install(case, record)
+            if honest:
+                cached.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT/'outputs/davigs/predictions.pt', cached)
         record['method_seconds'] = time.monotonic() - begin
         record['methods_on_disk'] = sorted(x.parent.name for x in (ROOT/'outputs').glob('*/predictions.pt'))
         # Remove previous hidden scores so failure never masquerades as success.
@@ -228,4 +235,6 @@ def run(case):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('case')
-    run(parser.parse_args().case)
+    parser.add_argument('--resume', action='store_true')
+    args = parser.parse_args()
+    run(args.case, args.resume)

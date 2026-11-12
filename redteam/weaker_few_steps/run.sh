@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 cd /home/user
-python -u -m redteam.run_case weaker_few_steps
+python -u -m redteam.run_case weaker_few_steps "${@}"

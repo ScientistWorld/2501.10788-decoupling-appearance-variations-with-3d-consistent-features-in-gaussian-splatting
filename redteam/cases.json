@@ -7,6 +7,7 @@
   "better_lr_decay_7",
   "better_lr_decay_8",
   "better_lr_decay_9",
+  "better_local_ssim",
   "weaker_few_steps",
   "weaker_no_appearance",
   "shortcut_generator_answers",

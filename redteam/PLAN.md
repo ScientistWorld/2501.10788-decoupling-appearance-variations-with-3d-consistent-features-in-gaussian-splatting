@@ -2,7 +2,7 @@
 
 Base commit: `5f64f875bd408f276c471b79f230ed6de52b942b`.
 
-The submitted job runs 27 cases in one CPU job. All generation and inference
+The resumed job runs 28 cases in one CPU job. All generation and inference
 occur there. Review `results_table.txt`, `audit_summary.json`, and per-case
 `run_record.json` after completion. All prediction/score mutations are restored
 in `finally`; no evaluator source is changed. A failed evaluator has its old
@@ -28,3 +28,11 @@ Restore `scripts/run.sh` with git from the base commit and restore any accidenta
 changed non-audit files. Do not touch pre-existing system-owned README/manifest/
 trajectory changes. Commit only intended audit files and the script restoration.
 Set action.yaml to done only when the report is finished.
+
+First job `df73767e-40f` was cancelled after repeated worker-drain preemptions
+restarted the bundle. The saved reference and seed 7/8/9 all completed. Fixed
+scene seed spread: PSNR 20.4150--23.8100 (range 3.39497 dB), much larger than
+the saved reference's 1.22583 dB improvement over the baseline. The resumed job
+skips completed cases, runs shortcuts first, saves atomic training/embedding
+optimizer checkpoints every 100 updates, and caches generated honest outputs.
+The additional honest local-SSIM variant repairs the global-SSIM training loss.

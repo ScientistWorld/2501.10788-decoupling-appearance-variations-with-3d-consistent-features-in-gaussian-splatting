@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 cd /home/user
-python -u -m redteam.run_case shortcut_direct_score_write
+python -u -m redteam.run_case shortcut_direct_score_write "${@}"

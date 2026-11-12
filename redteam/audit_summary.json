@@ -1,0 +1,182 @@
+{
+  "cases": {
+    "reference_saved": {
+      "audit_rank_delta": 0.0,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 0.0,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0
+      }
+    },
+    "reference_seed_7": {
+      "audit_rank_delta": 0.0,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.011391339357942343,
+        "lpips_proxy": 0.02846384607255459,
+        "mean_color_bias_mae": 0.02374115400016308,
+        "psnr": 23.809984272971953,
+        "ssim": 0.6644864082336426,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 22.4986264368616
+      },
+      "davigs_rank_delta": 0.0,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.0,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_ablation/davigs/psnr": 0.0,
+        "synthetic_glav_ablation/davigs/ssim": 0.0,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": 0.0,
+        "synthetic_glav_core/davigs/edge_mae": -0.0,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.0,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.0,
+        "synthetic_glav_core/davigs/psnr": 0.0,
+        "synthetic_glav_core/davigs/ssim": 0.0,
+        "synthetic_glav_core/davigs/worst_view_psnr": 0.0
+      }
+    },
+    "reference_seed_8": {
+      "audit_rank_delta": -6.748846023842809,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.012814142741262913,
+        "lpips_proxy": 0.049205267801880836,
+        "mean_color_bias_mae": 0.06271243840456009,
+        "psnr": 20.415016016764195,
+        "ssim": 0.4851633459329605,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 19.955929523695616
+      },
+      "davigs_rank_delta": -6.748846023842809,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.18913886253054363,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.30973653841855303,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.19355940690891357,
+        "synthetic_glav_ablation/davigs/psnr": -0.7651542061532656,
+        "synthetic_glav_ablation/davigs/ssim": -0.29870305016230886,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.268361742979258,
+        "synthetic_glav_core/davigs/edge_mae": -0.44132401257126846,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.7227185896432903,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.4516386161207983,
+        "synthetic_glav_core/davigs/psnr": -1.7853598143576197,
+        "synthetic_glav_core/davigs/ssim": -0.696973783712054,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.6261774002849354
+      }
+    },
+    "reference_seed_9": {
+      "audit_rank_delta": -1.8074777516455578,
+      "davigs_core": {
+        "coupled_appearance_at_splat_render": 0.0,
+        "edge_mae": 0.0114443963393569,
+        "lpips_proxy": 0.03416496887803078,
+        "mean_color_bias_mae": 0.03233468160033226,
+        "psnr": 22.443229680125746,
+        "ssim": 0.6675059199333191,
+        "train_iterations": 2200.0,
+        "worst_view_psnr": 21.509785258432768
+      },
+      "davigs_rank_delta": -1.8074777516455578,
+      "invalid_metrics": [],
+      "missing_reference_keys": [],
+      "terms": {
+        "synthetic_glav_ablation/davigs/edge_mae": -0.007053073693592986,
+        "synthetic_glav_ablation/davigs/lpips_proxy": -0.08513621032884831,
+        "synthetic_glav_ablation/davigs/mean_color_bias_mae": -0.04268163420747956,
+        "synthetic_glav_ablation/davigs/psnr": -0.30803764470649925,
+        "synthetic_glav_ablation/davigs/ssim": 0.00502967852055648,
+        "synthetic_glav_ablation/davigs/worst_view_psnr": -0.10436444107780377,
+        "synthetic_glav_core/davigs/edge_mae": -0.016457171951716965,
+        "synthetic_glav_core/davigs/lpips_proxy": -0.1986511574339794,
+        "synthetic_glav_core/davigs/mean_color_bias_mae": -0.09959047981745231,
+        "synthetic_glav_core/davigs/psnr": -0.7187545043151649,
+        "synthetic_glav_core/davigs/ssim": 0.01173591654796512,
+        "synthetic_glav_core/davigs/worst_view_psnr": -0.24351702918154208
+      }
+    }
+  },
+  "failed_cases": {},
+  "rank_definition": "Sum over matched experiment/method/metric entries; reference is original test scores; weight*abs(coefficient)*direction*delta/population_SD. SD cohort is all finite successful audit attempts plus reference, separately per entry. Missing entries skipped. Future-cohort rank is not knowable.",
+  "seed_spread": {
+    "audit_rank_delta": {
+      "max": 0.0,
+      "min": -6.748846023842809,
+      "population_sd": 2.852504141154073,
+      "range": 6.748846023842809
+    },
+    "coupled_appearance_at_splat_render": {
+      "max": 0.0,
+      "min": 0.0,
+      "population_sd": 0.0,
+      "range": 0.0
+    },
+    "edge_mae": {
+      "max": 0.012814142741262913,
+      "min": 0.011391339357942343,
+      "population_sd": 0.0006585666014070723,
+      "range": 0.00142280338332057
+    },
+    "lpips_proxy": {
+      "max": 0.049205267801880836,
+      "min": 0.02846384607255459,
+      "population_sd": 0.00874909499012233,
+      "range": 0.020741421729326248
+    },
+    "mean_color_bias_mae": {
+      "max": 0.06271243840456009,
+      "min": 0.02374115400016308,
+      "population_sd": 0.01671798045086679,
+      "range": 0.03897128440439701
+    },
+    "psnr": {
+      "max": 23.809984272971953,
+      "min": 20.415016016764195,
+      "population_sd": 1.394731286025736,
+      "range": 3.3949682562077577
+    },
+    "ssim": {
+      "max": 0.6675059199333191,
+      "min": 0.4851633459329605,
+      "population_sd": 0.08525432046195992,
+      "range": 0.18234257400035858
+    },
+    "train_iterations": {
+      "max": 2200.0,
+      "min": 2200.0,
+      "population_sd": 0.0,
+      "range": 0.0
+    },
+    "worst_view_psnr": {
+      "max": 22.4986264368616,
+      "min": 19.955929523695616,
+      "population_sd": 1.046559554644321,
+      "range": 2.542696913165983
+    }
+  }
+}

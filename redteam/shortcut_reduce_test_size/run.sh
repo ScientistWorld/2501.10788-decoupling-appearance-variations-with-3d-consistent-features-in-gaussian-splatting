@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 cd /home/user
-python -u -m redteam.run_case shortcut_reduce_test_size
+python -u -m redteam.run_case shortcut_reduce_test_size "${@}"
