@@ -24,12 +24,18 @@ using the original reproduction script. No shortcut implementation reads the
 paper, hidden code, reference metric specifications, or hidden scores. Audit
 analysis uses those files only to assess the results after evaluation.
 
-Each case keeps `scores_test.json`, `scores_train.json`, and `run_record.json`.
-Rejected cases record nonzero exit codes; their absence of scores is never
-mistaken for a successful run. Logs and prediction tensors are ignored.
+Each successful case keeps `scores_test.json`, `scores_train.json`, and
+`run_record.json`. Rejected cases record nonzero exit codes and a compact
+`failure_report.json`; their absence of test scores is never mistaken for a
+successful run. Their train score snapshot is the pre-existing restored plan,
+not a successful train evaluation. Logs and prediction tensors are ignored.
 
 `analyze.py` records an illustrative rank using exactly the directions, absolute
 coefficient weights, experiment weights, and missing-value skip rule from the
 request. Its cohort normalization is explicitly documented; unknown future
 attempts can change numerical ranks. Raw metric vectors and pool-independent
 Pareto comparisons are the primary evidence.
+
+All 28 cases completed across two submitted jobs. See `../REDTEAM.md` for the
+verdict and shortcut table, and `rank_sensitivity.json` for the explicit
+two-attempt constraint-failure counterexample.

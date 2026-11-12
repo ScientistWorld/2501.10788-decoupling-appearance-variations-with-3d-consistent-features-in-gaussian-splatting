@@ -1,0 +1,6 @@
+{
+  "test_exit_code": 1,
+  "scores_test_written": false,
+  "exception": "ValueError: train/test split requires at least two held-out prediction samples",
+  "note": "The evaluator aborted; it emitted no worst-value metrics. scores_train.json is the restored pre-existing plan, not a successful train evaluation."
+}

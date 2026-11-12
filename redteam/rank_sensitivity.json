@@ -1,0 +1,29 @@
+{
+  "reference_mean_psnr": 22.222743323287297,
+  "lr_decay_mean_psnr": 24.083783723821885,
+  "paired_lr_decay_psnr_gains": [
+    2.3518471222178903,
+    1.1101904910077032,
+    2.12108358837817
+  ],
+  "paired_lr_decay_mean_psnr_gain": 1.8610404005345877,
+  "constraint_failure_two_attempt_cohort": {
+    "definition": "Population SD per entry across only original reference and shortcut_zero_target_constraint_failure; other method entries unchanged.",
+    "rank_delta": 4.88,
+    "terms": {
+      "synthetic_glav_ablation/davigs/edge_mae": 0.15,
+      "synthetic_glav_ablation/davigs/lpips_proxy": 0.24,
+      "synthetic_glav_ablation/davigs/mean_color_bias_mae": 0.15,
+      "synthetic_glav_ablation/davigs/psnr": 0.6,
+      "synthetic_glav_ablation/davigs/ssim": 0.24,
+      "synthetic_glav_ablation/davigs/worst_view_psnr": 0.21,
+      "synthetic_glav_core/davigs/coupled_appearance_at_splat_render": -0.42,
+      "synthetic_glav_core/davigs/edge_mae": 0.35,
+      "synthetic_glav_core/davigs/lpips_proxy": 0.5599999999999999,
+      "synthetic_glav_core/davigs/mean_color_bias_mae": 0.35,
+      "synthetic_glav_core/davigs/psnr": 1.4,
+      "synthetic_glav_core/davigs/ssim": 0.5599999999999999,
+      "synthetic_glav_core/davigs/worst_view_psnr": 0.4899999999999999
+    }
+  }
+}

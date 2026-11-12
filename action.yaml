@@ -1,4 +1,2 @@
-action: submit
-gpus: 0
-test: false
-notes: "Resume 28-case audit with completed cases skipped and atomic training/adaptation checkpoints; run shortcut checks first, then remaining honest variants."
+action: done
+notes: "Completed 28-case scoring audit: honest gains below seed spread; demonstrated answer, target, membership and metadata shortcuts; restored original job script."

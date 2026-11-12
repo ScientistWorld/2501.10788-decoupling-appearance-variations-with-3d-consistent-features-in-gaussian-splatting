@@ -1,10 +1,10 @@
-# Audit plan and continuation
+# Audit record
 
 Base commit: `5f64f875bd408f276c471b79f230ed6de52b942b`.
 
-The resumed job runs 28 cases in one CPU job. All generation and inference
-occur there. Review `results_table.txt`, `audit_summary.json`, and per-case
-`run_record.json` after completion. All prediction/score mutations are restored
+The resumed job completed all 28 cases with exit 0. All generation and inference
+occurred in submitted jobs. `results_table.txt`, `audit_summary.json`, and per-case
+`run_record.json` retain the results. All prediction/score mutations are restored
 in `finally`; no evaluator source is changed. A failed evaluator has its old
 test-score file removed first, except the explicitly tested direct-score-write
 case, which verifies that prewritten scores get overwritten.
@@ -20,14 +20,12 @@ replacement, missing and negative metadata, failed-method omission through a
 visible score plan, an unlisted method on disk, shrinking/reordering the split,
 direct score writing, NaNs, empty/missing artifacts, constants and infinities.
 
-After the job, diagnose any failed harness/quality checks and iterate as needed.
-Write final `REDTEAM.md` with quality/rank first, seed spread and reproduction
-check second, shortcut table third. Numeric ranks are cohort dependent; always
-retain raw metric values and distinguish reference test scores from paper values.
-Restore `scripts/run.sh` with git from the base commit and restore any accidentally
-changed non-audit files. Do not touch pre-existing system-owned README/manifest/
-trajectory changes. Commit only intended audit files and the script restoration.
-Set action.yaml to done only when the report is finished.
+The final `REDTEAM.md` records quality/rank first, seed spread and reproduction
+second, then one row per shortcut. Numeric ranks are cohort dependent; raw metric
+vectors are retained and distinct from paper targets. Failed empty/missing cases
+have `failure_report.json` because no test score was emitted. The job script is
+restored from the base commit. Pre-existing system-owned README/manifest/
+trajectory changes are outside the audit and are not touched.
 
 First job `df73767e-40f` was cancelled after repeated worker-drain preemptions
 restarted the bundle. The saved reference and seed 7/8/9 all completed. Fixed
