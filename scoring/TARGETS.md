@@ -1,31 +1,21 @@
 # Evaluation Targets
 
-## Primary: synthetic_glav_core
+## Primary: glav_novel_view
 
-Tests whether a reconstruction method improves held-out novel-view image quality in the presence of global and local appearance variation.
+Held-out novel-view quality under global and local appearance variation (paper Table 1 protocol: fit appearance on the left half of a held-out capture, score the right half).
 
-- **Metrics:** `psnr` and `ssim` are higher better; `lpips_proxy` is lower better.
-- **Robustness diagnostics:** `worst_view_psnr` is higher better; `mean_color_bias_mae` and `edge_mae` are lower better. These discourage methods that improve the mean by sacrificing one view, shifting global color, or blurring structure.
-- **Run:** `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`.
+- **Metrics:** `psnr` (primary) and `ssim` are higher-is-better; `lpips` (v0.1, AlexNet) is lower-is-better.
+- **Paper direction reproduced:** the method beats vanilla 3DGS on all three metrics (see `scoring/scores_test.json`).
+- **Run:** `bash scripts/reproduce.sh`, then `bash scripts/evaluate_train.sh` (development scenes) / `bash scripts/evaluate_test.sh` (hidden scenes).
 
-## Constraint: synthetic_glav_core
+## Constraint and secondary: glav_average_appearance
 
-Tests whether quality gains are achieved without requiring persistent per-view correction machinery during final rendering.
+The scene rendered without per-capture appearance state, colour-corrected by the evaluator to the camera's average appearance (paper Table 4 protocol). It captures the paper's claim that the appearance module can be discarded after optimisation without floaters or colour distortions.
 
-- **Metric:** `coupled_appearance_at_splat_render` is lower better; zero means final rendering does not require per-view appearance correction.
-- **Run:** `bash scripts/evaluate.sh` on method artifacts.
+- **Metrics:** `psnr` (primary), `ssim` higher-is-better; `lpips` lower-is-better.
+- **Constraint (gate):** a method more than 1.0 dB PSNR below the frozen vanilla 3DGS render here fails the run (worst values everywhere).
+- **Ablations:** `davigs_uv_depth` (3D hash features → positional encoding of pixel coordinates and depth) and `davigs_no_id` (no identity regulariser) are frozen comparison points, following paper Table 4.
 
-## Resource: synthetic_glav_core
+## Not scored
 
-Tracks the amount of optimization used in the reduced benchmark so improvements cannot be claimed solely by increasing training budget.
-
-- **Metric:** `train_iterations` is lower better when quality is comparable.
-- **Run:** `bash scripts/evaluate.sh` on method artifacts.
-
-## Secondary: synthetic_glav_ablation
-
-Tests whether controlled degraded variants lose rendering quality under the same reduced benchmark protocol.
-
-- **Metrics:** `psnr` and `ssim` should be higher for the full method than ablations; `lpips_proxy` should be lower.
-- **Robustness diagnostics:** `worst_view_psnr`, `mean_color_bias_mae`, and `edge_mae` are reported for the same held-out right-half predictions.
-- **Run:** `bash scripts/reproduce.sh`, then `bash scripts/evaluate.sh`.
+The paper's efficiency claims (training time, VRAM, FPS) depend on hardware and wall-clock time, and the PhotoTourism and plug-and-play experiments (Tables 2 and 3) need real captures and other renderers. None of these is scored. Their reported values are kept under `_paper_reported_unscored` in `scoring/reference.json`.

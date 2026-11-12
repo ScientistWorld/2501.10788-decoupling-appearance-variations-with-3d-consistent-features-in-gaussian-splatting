@@ -1,145 +1,177 @@
 #!/usr/bin/env python3
-"""Run the reduced-scale DAVIGS reproduction and save predictions."""
+"""Run vanilla 3DGS, DAVIGS and its ablations/variants on the benchmark scenes.
+
+Each run writes ``<out>/predictions.pt`` with
+  {"novel_view": {scene_id: [V, 3, H, W // 2]},           # held-out right halves
+   "average_appearance": {scene_id: [V, 3, H, W]}}       # appearance-free renders
+in [0, 1]; per-scene results are cached under ``<out>/scenes/`` so interrupted
+jobs resume. Tasks are spread over all visible GPUs (several workers per GPU).
+
+Examples
+  python -m method.run_experiment --plan reference
+  python -m method.run_experiment --plan proposed --steps 600
+"""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
+import multiprocessing as mp
+import os
+import sys
 from pathlib import Path
-import random
 
 import torch
 
-from data.synthetic_glav import build_scene
-from method.davigs_model import AppearanceModule, GaussianSplatScene, identity_regularizer, reconstruction_loss
+from data.glav_data import scene_ids
+
+METHODS = {
+    "vanilla_3dgs": {"kind": "vanilla"},
+    "davigs": {"kind": "davigs", "feature_mode": "xyz", "use_id": True},
+    "davigs_uv_depth": {"kind": "davigs", "feature_mode": "uv_depth", "use_id": True},
+    "davigs_no_id": {"kind": "davigs", "feature_mode": "xyz", "use_id": False},
+}
+DEFAULTS = {
+    "steps": 6000,
+    "max_gaussians": 6000,
+    "feature_mode": "xyz",
+    "use_id": True,
+    "cell_size": 2,
+    "emb_dim": 32,
+    "lr_emb": 5e-3,
+    "lr_mlp": 1e-3,
+    "lr_grid": 5e-3,
+    "module_cosine": False,
+    "post_adapt_steps": 0,
+    "heldout_adapt": True,
+}
+VARIANTS = {
+    "reference": {},
+    "module_cosine": {"module_cosine": True, "post_adapt_steps": 200},
+    "cell1": {"cell_size": 1},
+    "long": {"steps_mult": 1.5},
+    "short": {"steps_mult": 0.25},
+    "noadapt": {"heldout_adapt": False},
+}
+AUDIT = [
+    ("reference", [1, 2]),
+    ("module_cosine", [0, 1, 2]),
+    ("cell1", [0, 1, 2]),
+    ("long", [0, 1, 2]),
+    ("short", [0, 1, 2]),
+    ("noadapt", [0]),
+]
 
 
-def right_half(x: torch.Tensor) -> torch.Tensor:
-    return x[..., x.shape[-1] // 2 :]
+def plan(name: str) -> list[dict]:
+    if name == "reference":
+        return [dict(out=f"outputs/{m}", method=m, variant="reference", seed=0, scenes="all") for m in METHODS]
+    if name == "baseline":
+        return [dict(out="outputs/vanilla_3dgs", method="vanilla_3dgs", variant="reference", seed=0, scenes="all")]
+    if name == "proposed":
+        return [dict(out="outputs/davigs", method="davigs", variant="reference", seed=0, scenes="all")]
+    if name == "ablations":
+        return [dict(out=f"outputs/{m}", method=m, variant="reference", seed=0, scenes="all") for m in ("davigs_uv_depth", "davigs_no_id")]
+    if name == "audit":
+        return [
+            dict(out=f"outputs/_audit/{v}_s{s}/davigs", method="davigs", variant=v, seed=s, scenes="test")
+            for v, seeds in AUDIT
+            for s in seeds
+        ]
+    raise SystemExit(f"unknown plan {name}")
 
 
-def left_half(x: torch.Tensor) -> torch.Tensor:
-    return x[..., : x.shape[-1] // 2]
+def resolve(method: str, variant: str, steps_override: int | None) -> dict:
+    cfg = dict(DEFAULTS)
+    cfg.update(METHODS[method])
+    var = dict(VARIANTS[variant])
+    mult = var.pop("steps_mult", 1.0)
+    cfg.update(var)
+    if steps_override:
+        cfg["steps"] = int(steps_override)
+    cfg["steps"] = max(10, int(round(cfg["steps"] * mult)))
+    return cfg
 
 
-def lambda_id(step: int, total: int) -> float:
-    warm = min(1.0, step / max(1, int(0.25 * total)))
-    decay = 0.03 + 0.02 * 0.5 * (1.0 + torch.cos(torch.tensor(step / max(1, total) * 3.14159265))).item()
-    return warm * decay
-
-
-def train_baseline(scene, steps: int, out_dir: Path) -> None:
-    model = GaussianSplatScene(scene.init_points, scene.init_colors)
-    opt = torch.optim.Adam(model.parameters(), lr=0.025)
-    for step in range(steps):
-        vid = scene.train_ids[step % len(scene.train_ids)]
-        pred, _ = model(scene.cameras[vid])
-        loss = reconstruction_loss(pred, scene.images[vid])
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-    preds, targets = [], []
-    with torch.no_grad():
-        for vid in scene.test_ids:
-            pred, _ = model(scene.cameras[vid])
-            preds.append(right_half(pred))
-            targets.append(right_half(scene.images[vid]))
-    out_dir.mkdir(parents=True, exist_ok=True)
-    torch.save(
-        {
-            "pred_right": torch.stack(preds).cpu(),
-            "target_right": torch.stack(targets).cpu(),
-            "coupled_appearance_at_splat_render": 0.0,
-            "train_iterations": float(steps),
-        },
-        out_dir / "predictions.pt",
-    )
-
-
-def train_davigs(
-    scene,
-    steps: int,
-    adapt_steps: int,
-    out_dir: Path,
-    feature_mode: str = "xyz",
-    use_identity_regularizer: bool = True,
-) -> None:
-    gs = GaussianSplatScene(scene.init_points, scene.init_colors)
-    app = AppearanceModule(num_views=len(scene.cameras), feature_mode=feature_mode)
-    opt = torch.optim.Adam(list(gs.parameters()) + list(app.parameters()), lr=0.018)
-    for step in range(steps):
-        vid = scene.train_ids[step % len(scene.train_ids)]
-        raw, depth = gs(scene.cameras[vid])
-        pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
-        loss = reconstruction_loss(pred, scene.images[vid])
-        if use_identity_regularizer:
-            loss = loss + lambda_id(step, steps) * identity_regularizer(mats)
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-
-    # Match the paper's test protocol at small scale: optimize only the test
-    # view's appearance embedding on the left half, then score the right half.
-    for param in gs.parameters():
-        param.requires_grad_(False)
-    if app.grid is not None:
-        for param in app.grid.parameters():
-            param.requires_grad_(False)
-    for param in app.mlp.parameters():
-        param.requires_grad_(False)
-
-    preds, targets = [], []
-    for vid in scene.test_ids:
-        emb_param = app.embeddings.weight
-        opt_emb = torch.optim.Adam([emb_param], lr=0.03)
-        for _ in range(adapt_steps):
-            raw, depth = gs(scene.cameras[vid])
-            pred, mats = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
-            loss = reconstruction_loss(left_half(pred), left_half(scene.images[vid]))
-            if use_identity_regularizer:
-                loss = loss + 0.01 * identity_regularizer(mats)
-            opt_emb.zero_grad()
-            loss.backward()
-            emb_param.grad[: min(scene.test_ids)] = 0
-            opt_emb.step()
-        with torch.no_grad():
-            raw, depth = gs(scene.cameras[vid])
-            pred, _ = app(raw, depth, scene.cameras[vid], vid, cell_size=8)
-            preds.append(right_half(pred))
-            targets.append(right_half(scene.images[vid]))
-
-    out_dir.mkdir(parents=True, exist_ok=True)
-    torch.save(
-        {
-            "pred_right": torch.stack(preds).cpu(),
-            "target_right": torch.stack(targets).cpu(),
-            "coupled_appearance_at_splat_render": 0.0,
-            "train_iterations": float(steps),
-            "uses_3d_hash_features": 1.0 if feature_mode == "xyz" else 0.0,
-            "uses_identity_regularizer": 1.0 if use_identity_regularizer else 0.0,
-        },
-        out_dir / "predictions.pt",
-    )
+def cfg_hash(cfg: dict, seed: int) -> str:
+    return hashlib.sha1(json.dumps({"cfg": cfg, "seed": seed}, sort_keys=True).encode()).hexdigest()[:10]
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--steps", type=int, default=2200)
-    parser.add_argument("--adapt-steps", type=int, default=400)
-    parser.add_argument("--out", type=Path, default=Path("outputs"))
-    parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--only", choices=["all", "baseline", "davigs", "ablations"], default="all")
-    args = parser.parse_args()
-    random.seed(args.seed)
-    torch.manual_seed(args.seed)
-    torch.set_num_threads(2)
-    scene = build_scene(seed=args.seed)
-    if args.only in ("all", "baseline"):
-        train_baseline(scene, args.steps, args.out / "vanilla_3dgs")
-    if args.only in ("all", "davigs"):
-        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs")
-    if args.only in ("all", "ablations"):
-        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_uv_depth", feature_mode="uv_depth")
-        train_davigs(scene, args.steps, args.adapt_steps, args.out / "davigs_no_id", use_identity_regularizer=False)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--plan", default="reference")
+    ap.add_argument("--steps", type=int, default=None, help="override optimisation steps (smoke tests)")
+    ap.add_argument("--workers", type=int, default=None)
+    ap.add_argument("--strict", action="store_true", help="exit non-zero if any run is incomplete")
+    args = ap.parse_args()
+
+    runs = plan(args.plan)
+    tasks = []
+    for run in runs:
+        cfg = resolve(run["method"], run["variant"], args.steps)
+        run["cfg"] = cfg
+        run["hash"] = cfg_hash(cfg, run["seed"])
+        run["sids"] = scene_ids(run["scenes"])
+        for sid in run["sids"]:
+            cache = Path(run["out"]) / "scenes" / f"{sid}-{run['hash']}.pt"
+            if not cache.exists():
+                label = f"{run['method']}/{run['variant']}/s{run['seed']}"
+                tasks.append(dict(cache=str(cache), cfg=cfg, seed=run["seed"], sid=sid, label=label))
+
+    ngpu = torch.cuda.device_count() if torch.cuda.is_available() else 0
+    ncpu = len(os.sched_getaffinity(0))
+    if ngpu:
+        devices = [f"cuda:{i}" for i in range(ngpu)]
+        per_gpu = int(os.environ.get("GLAV_WORKERS_PER_GPU", "4"))
+        n_workers = args.workers or max(1, min(len(tasks), per_gpu * ngpu, max(ncpu, ngpu)))
+        threads = 1
+    else:
+        devices = ["cpu"]
+        n_workers = args.workers or max(1, min(len(tasks), ncpu))
+        threads = max(1, ncpu // max(1, n_workers))
+    print(f"[run] plan={args.plan} runs={len(runs)} pending_tasks={len(tasks)} gpus={ngpu} cpus={ncpu} workers={n_workers}", flush=True)
+
+    if tasks:
+        from method.worker import worker
+
+        ctx = mp.get_context("spawn")
+        queue = ctx.Queue()
+        for t in tasks:
+            queue.put(t)
+        for _ in range(n_workers):
+            queue.put(None)
+        procs = [ctx.Process(target=worker, args=(i, devices[i % len(devices)], threads, queue)) for i in range(n_workers)]
+        for p in procs:
+            p.start()
+        for p in procs:
+            p.join()
+
+    incomplete = []
+    for run in runs:
+        out = Path(run["out"])
+        caches = {sid: out / "scenes" / f"{sid}-{run['hash']}.pt" for sid in run["sids"]}
+        missing = [sid for sid, c in caches.items() if not c.exists()]
+        if missing:
+            incomplete.append((run["out"], missing))
+            continue
+        preds = {"novel_view": {}, "average_appearance": {}}
+        logs = {}
+        for sid, c in caches.items():
+            r = torch.load(c, map_location="cpu", weights_only=True)
+            preds["novel_view"][sid] = r["novel_view"]
+            preds["average_appearance"][sid] = r["average_appearance"]
+            logs[sid] = r["log"]
+        torch.save(preds, out / "predictions.pt")
+        (out / "run_info.json").write_text(
+            json.dumps({"method": run["method"], "variant": run["variant"], "seed": run["seed"], "config": run["cfg"], "scenes": logs}, indent=2)
+            + "\n"
+        )
+        print(f"[run] wrote {out / 'predictions.pt'}", flush=True)
+    for out, missing in incomplete:
+        print(f"[run] INCOMPLETE {out}: missing {missing}", flush=True)
+    if incomplete and args.strict:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

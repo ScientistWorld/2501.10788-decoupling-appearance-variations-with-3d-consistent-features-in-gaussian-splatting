@@ -9,12 +9,12 @@
 # Only use container.def for the base Docker image and apt-get packages.
 #
 # IMPORTANT: Install into the SYSTEM Python, not a virtual environment.
-# The overlay may be recreated on container rebuilds — a venv inside
-# it will be lost and all subsequent jobs will fail.
 # Use: uv pip install --system <packages>
-# Do NOT create a venv (python -m venv, virtualenv, etc.).
+#
+# CUDA build of PyTorch: the Gaussian-splatting optimisation runs on GPU
+# (evaluation is CPU-only and also works with this build).
 
 set -e
 
-uv pip install --system --index-url https://download.pytorch.org/whl/cpu torch
+uv pip install --system --index-url https://download.pytorch.org/whl/cu121 "torch==2.5.1+cu121"
 uv pip install --system numpy

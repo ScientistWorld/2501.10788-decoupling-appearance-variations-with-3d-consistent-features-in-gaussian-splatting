@@ -2,16 +2,23 @@
 
 ## Research Problem
 
-This benchmark is about novel-view synthesis under inconsistent image appearance. The research question is how to reconstruct a stable 3D scene when training views contain global and local color/illumination changes that violate strict photometric consistency.
+Novel-view synthesis under inconsistent image appearance. How should a stable 3D scene be reconstructed when training captures contain global and local colour/illumination changes that violate photometric consistency, so that held-out captures can be rendered once their appearance is inferred, while the scene itself stays clean?
 
 ## Core Contribution
 
-The relevant contribution family is appearance variation modeling for Gaussian Splatting-style scene representations. Improvements should focus on separating scene appearance from per-image capture variation while preserving 3D consistency and decoupled final rendering.
+The relevant contribution family is appearance-variation modelling for Gaussian-splatting scene representations. Improvements should better separate scene content from per-capture variation, preserve 3D consistency across captures, and keep final rendering free of per-capture appearance state.
 
 ## Approach Scope
 
-Scientist agents may redesign the appearance conditioning, feature representation, regularization, optimization schedule, or how test-view appearance is adapted. They may also improve the Gaussian splat optimizer as long as the task remains appearance-robust Gaussian-based reconstruction under the fixed benchmark protocol.
+Scientist agents may redesign the appearance conditioning, feature representation, regularisation, test-time appearance inference, the optimisation schedule and density control, as long as the scene is a Gaussian-based representation optimised on the provided captures.
 
 ## Out of Bounds
 
-Replacing the task with a 2D image-to-image translation system, using a non-Gaussian renderer as the main representation, training directly on the held-out right halves, adding external supervision, or requiring a persistent heavy rendering-time network is out of scope for this paper's claim.
+The following are out of scope:
+
+- replacing the task with 2D image-to-image translation or copying training images;
+- training scene geometry or colour on held-out left halves;
+- submitting anything other than an appearance-free render as `average_appearance`;
+- using a non-Gaussian renderer as the main representation;
+- adding external data;
+- requiring a persistent per-capture network at final render time.

@@ -1,19 +1,35 @@
 #!/bin/bash
-# Example job script submitted via the end-of-turn YAML block.
-#
-# This runs inside the compute container with:
-#   - Your workspace mounted at /home/user
-#   - GPU(s) available
-#   - No internet access
-#
-# Make sure all data, code, and dependencies are already in the
-# workspace or baked into the container before submitting.
+# Job script: rebuild-if-needed, reference reproduction, frozen comparisons,
+# both evaluation slices, then the hardening audit (seeds, honest variants,
+# shortcut cases through the hidden-test evaluator) and validation.
+# SMOKE=1 runs every stage with a tiny optimisation budget (pipeline check).
+set -uo pipefail
+cd /home/user
+SMOKE="${SMOKE:-1}"
+STEPS_ARG=""
+if [ "$SMOKE" = "1" ]; then STEPS_ARG="--steps 150"; fi
+
+echo "== environment"
+python -c "import torch, os; print('torch', torch.__version__, 'cuda', torch.cuda.is_available(), torch.cuda.device_count(), 'cpus', len(os.sched_getaffinity(0)))"
+nvidia-smi --query-gpu=name,memory.total --format=csv 2>/dev/null || true
 
 set -e
-
-cd /home/user
-
-bash scripts/reproduce.sh
-bash scripts/evaluate_train.sh
+echo "== build benchmark"
+python -m eval.test.build_benchmark
+echo "== reference methods"
+python -m method.run_experiment --plan reference $STEPS_ARG --strict
+echo "== freeze comparison methods"
+python -m eval.test.freeze
+python -m eval.train.freeze
+echo "== evaluate"
+bash scripts/evaluate.sh > /dev/null
+bash scripts/evaluate_train.sh > /dev/null
 bash scripts/evaluate_test.sh
-python validate.py --compare
+set +e
+echo "== audit runs (seeds and honest variants on the test scenes)"
+python -m method.run_experiment --plan audit $STEPS_ARG
+echo "== audit evaluation"
+python -m redteam.hardening.audit all
+echo "== validate"
+python validate.py
+exit 0

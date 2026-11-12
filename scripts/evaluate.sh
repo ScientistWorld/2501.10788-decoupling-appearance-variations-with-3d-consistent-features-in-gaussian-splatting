@@ -1,29 +1,14 @@
 #!/bin/bash
-# Evaluation script — the standard way to evaluate work in this environment.
+# Standard evaluation entry point: scores every method under outputs/ on the
+# visible development scenes and writes scoring/scores.json (same content as
+# the train slice). It reads only outputs/<method>/predictions.pt and
+# evaluator-owned targets; nothing in method/ is imported.
 #
-# This script must be SELF-CONTAINED using only code in eval/.
-# Do NOT import from method/ — evaluate.sh must work even when the
-# paper's method code is hidden from a scientist agent.
-#
-# Design it so that anyone following the same output format can run
-# this script to evaluate their results.
-#
-# OUTPUT CONTRACT: This script MUST write scoring/scores.json containing
-# a JSON dict nested by experiment, e.g.:
-#   {"imagenet_classification": {"top1_accuracy": 82.1, "top5_accuracy": 94.8}}
-# Experiment and metric names must match the keys in scoring/reference.json.
-# This file is read by the system for automated comparison.
-#
-# Example usage:
-#   ./evaluate.sh <method_and_run_name>                             # evaluate with defaults
-#   ./evaluate.sh <method_and_run_name> checkpoints/epoch_10.pt     # evaluate a specific checkpoint
-#
-# Called from run.sh after training, or independently.
-
+# Prediction contract (outputs/<method>/predictions.pt, torch.save of a dict):
+#   {"novel_view":         {scene_id: float [6, 3, 96, 64]  right halves of held-out captures},
+#    "average_appearance": {scene_id: float [6, 3, 96, 128] render without per-capture appearance state}}
+# for every scene in data/glav_syn/manifest.json, values in [0, 1].
 set -e
-
 cd /home/user
-
 mkdir -p scoring
-
-python -m eval.evaluate_outputs --outputs outputs --scores scoring/scores.json
+python -m eval.train.evaluate --outputs outputs --scores scoring/scores.json

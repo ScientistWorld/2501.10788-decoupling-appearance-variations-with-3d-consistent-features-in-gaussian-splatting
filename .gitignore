@@ -230,3 +230,9 @@ tmp/
 protocol.md
 *.egg-info
 core.[0-9]*
+# Benchmark tensors that ARE tracked (agent-authored, small):
+!data/glav_syn/*.pt
+!eval/train/answers.pt
+!eval/test/answers.pt
+!eval/train/frozen/*.pt
+!eval/test/frozen/*.pt

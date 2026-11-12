@@ -1,69 +1,45 @@
 {
   "experiments": {
-    "synthetic_glav_core": {
-      "description": "Reduced-scale GLAV-style appearance variation benchmark with the paper's main quality and decoupled-rendering constraint metrics. Paper reference values are from the GLAV Table 1 3DGS and DAVIGS rows, except lpips_proxy uses the paper's LPIPS scale as the closest reported perceptual target.",
+    "glav_novel_view": {
+      "description": "Held-out novel-view synthesis under global and local appearance variation (paper Table 1 protocol): each held-out capture's appearance may be fitted on its left half only; quality is measured on its right half. Scored on the 6 hidden test scenes x 6 held-out captures.",
       "weight": 0.7,
       "primary_metric": "psnr",
       "metrics": {
-        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity."},
-        "ssim": {"higher_is_better": true, "coefficient": 0.4, "description": "Mean structural similarity on held-out right-half renders."},
-        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy combining pixel and gradient errors."},
-        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, penalizing methods that sacrifice one held-out appearance."},
-        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias, catching global appearance shortcuts."},
-        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error, catching structural blur or texture shortcuts."},
-        "coupled_appearance_at_splat_render": {"higher_is_better": false, "coefficient": -0.3, "description": "Constraint flag for methods that couple appearance correction directly into splat rendering."},
-        "train_iterations": {"higher_is_better": false, "coefficient": -0.1, "description": "Optimization-step count used to discourage gains that only spend a larger training budget."}
+        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean PSNR (dB) over held-out right halves."},
+        "ssim": {"higher_is_better": true, "coefficient": 0.5, "description": "Mean SSIM (11x11 Gaussian window) over held-out right halves."},
+        "lpips": {"higher_is_better": false, "coefficient": 0.5, "description": "Mean LPIPS (v0.1, AlexNet) over held-out right halves."}
       },
       "results": {
-        "vanilla_3dgs": {
-          "type": "baseline",
-          "psnr": 22.8,
-          "ssim": 0.753,
-          "lpips_proxy": 0.221,
-          "coupled_appearance_at_splat_render": 0,
-          "train_iterations": 30000
-        },
-        "davigs": {
-          "type": "proposed",
-          "psnr": 28.31,
-          "ssim": 0.861,
-          "lpips_proxy": 0.134,
-          "coupled_appearance_at_splat_render": 0,
-          "train_iterations": 30000
-        }
+        "vanilla_3dgs": {"type": "baseline", "psnr": 22.80, "ssim": 0.753, "lpips": 0.221},
+        "davigs": {"type": "proposed", "psnr": 28.31, "ssim": 0.861, "lpips": 0.134}
+      },
+      "_scale_note": "Result values are the paper's GLAV Table 1 numbers (seven real 1080p captures, 30k iterations). This gym uses procedurally generated, ray-traced 96x128 scenes with 30 training and 6 held-out captures each and 6k iterations, so absolute values are not targets; the reference run in scoring/scores_test.json is what attempts are ranked against.",
+      "_paper_reported_unscored": {
+        "table1_glav": {"NeRF-W": [14.13, 0.470, 0.496], "Ha-NeRF": [21.09, 0.613, 0.381], "GS-W": [27.23, 0.839, 0.141], "WildGS": [24.68, 0.764, 0.244], "VastGS": [23.21, 0.782, 0.186]},
+        "table1_efficiency_3dgs_vs_davigs": {"training": ["16min", "19min"], "vram_gb": [3.8, 3.4], "fps": [134, 151]},
+        "table2_phototourism_3dgs_vs_davigs": {"3DGS": [22.39, 0.789, 0.232], "DAVIGS": [23.95, 0.838, 0.148]},
+        "table3_plug_and_play": {"Mip-Splatting": [22.46, 0.748, 0.295], "Mip-Splatting+Ours": [28.31, 0.870, 0.130], "GOF": [22.38, 0.737, 0.231], "GOF+Ours": [28.21, 0.861, 0.139], "2DGS": [22.70, 0.746, 0.229], "2DGS+Ours": [27.76, 0.842, 0.158]},
+        "table5_cell_size": {"1": [28.24, 0.858, 0.134], "2": [28.35, 0.861, 0.134], "4": [28.33, 0.861, 0.135], "8": [28.31, 0.861, 0.134], "16": [28.18, 0.862, 0.136], "32": [27.76, 0.858, 0.140]}
       }
     },
-    "synthetic_glav_ablation": {
-      "description": "Reduced-scale counterpart of the paper's Table 4 component ablations, comparing the full system with controlled degraded variants under the same protocol.",
+    "glav_average_appearance": {
+      "description": "Quality of the scene rendered without any per-capture appearance state (paper Table 4 protocol: colour correction before metrics to evaluate the average appearance). The appearance-free render of each held-out camera is colour-corrected (mip-NeRF 360 quadratic warp) to that camera's average appearance over the training captures and scored on the full image. It doubles as the decoupling constraint: a method more than 1 dB below the frozen vanilla 3DGS render here fails the run.",
       "weight": 0.3,
       "primary_metric": "psnr",
       "metrics": {
-        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean held-out right-half reconstruction fidelity for component comparisons."},
-        "ssim": {"higher_is_better": true, "coefficient": 0.4, "description": "Mean structural similarity for component comparisons."},
-        "lpips_proxy": {"higher_is_better": false, "coefficient": -0.4, "description": "Deterministic perceptual proxy for component comparisons."},
-        "worst_view_psnr": {"higher_is_better": true, "coefficient": 0.35, "description": "Minimum per-view PSNR, checking that component changes do not collapse one held-out view."},
-        "mean_color_bias_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Mean absolute RGB-channel bias for the ablated method outputs."},
-        "edge_mae": {"higher_is_better": false, "coefficient": -0.25, "description": "Sobel-edge mean absolute error for the ablated method outputs."}
+        "psnr": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean PSNR (dB) of colour-corrected appearance-free renders against the average-appearance target."},
+        "ssim": {"higher_is_better": true, "coefficient": 0.5, "description": "Mean SSIM of colour-corrected appearance-free renders."},
+        "lpips": {"higher_is_better": false, "coefficient": 0.5, "description": "Mean LPIPS (v0.1, AlexNet) of colour-corrected appearance-free renders."}
       },
       "results": {
-        "davigs_uv_depth": {
-          "type": "proposed",
-          "psnr": 22.12,
-          "ssim": 0.802,
-          "lpips_proxy": 0.248
-        },
-        "davigs_no_id": {
-          "type": "proposed",
-          "psnr": 21.33,
-          "ssim": 0.767,
-          "lpips_proxy": 0.298
-        },
-        "davigs": {
-          "type": "proposed",
-          "psnr": 22.75,
-          "ssim": 0.803,
-          "lpips_proxy": 0.243
-        }
+        "vanilla_3dgs": {"type": "baseline"},
+        "davigs_uv_depth": {"type": "baseline", "psnr": 22.12, "ssim": 0.802, "lpips": 0.248},
+        "davigs_no_id": {"type": "baseline", "psnr": 21.33, "ssim": 0.767, "lpips": 0.298},
+        "davigs": {"type": "proposed", "psnr": 22.75, "ssim": 0.803, "lpips": 0.243}
+      },
+      "_scale_note": "Result values are the paper's Table 4 ablation numbers on GLAV (full model, xyz -> uv + depth, w/o L_ID). The paper colour-corrects to each observed test image; this gym colour-corrects to the camera's average appearance over the training captures (an evaluator-owned target a method cannot copy from its own adapted output). Vanilla 3DGS is not reported in Table 4.",
+      "_paper_reported_unscored": {
+        "table4_other_ablations": {"xyz_to_uv": [21.76, 0.798, 0.252], "xyz_to_depth": [20.04, 0.788, 0.268], "xyz_to_color": [21.58, 0.765, 0.317]}
       }
     }
   }

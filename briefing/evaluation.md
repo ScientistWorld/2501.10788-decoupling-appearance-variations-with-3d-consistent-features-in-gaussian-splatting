@@ -1,19 +1,36 @@
 # Evaluation
 
-## Metrics
+## What a method submits
 
-The main quality metrics are PSNR and SSIM, where higher is better, and a perceptual distance metric, where lower is better. The original paper reports LPIPS; this reduced environment uses a deterministic gradient-weighted LPIPS proxy to avoid external pretrained metric downloads while retaining a perceptual constraint.
+`outputs/<method>/predictions.pt`, a `torch.save`d dict of plain tensors:
 
-The main constraint metric is whether extra per-view correction machinery is required during final rendering. A value of zero means the learned scene can be rendered without persistent per-image appearance state. Training iterations are also tracked as a resource constraint.
+```
+{"novel_view":         {scene_id: float [6, 3, 96, 64]},    # right halves of the 6 held-out captures
+ "average_appearance": {scene_id: float [6, 3, 96, 128]}}   # each held-out camera rendered without any per-capture appearance state
+```
 
-## Baselines and Targets
+for every scene in `data/glav_syn/manifest.json`, values in [0, 1], held-out captures in file order. Nothing else in the file or directory is read: no self-reported metrics, flags, targets or iteration counts.
 
-The primary baseline is a plain scene representation optimized directly against appearance-varying images. A successful submission should outperform that baseline on the held-out right halves of test images while avoiding persistent per-view correction at final rendering.
+## Experiments and metrics
 
-Paper reference values in `scoring/reference.json` come from the GLAV dataset results reported in Table 1. The local reproduction uses a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not distributed in this workspace.
+- **glav_novel_view** (weight 0.7): PSNR, SSIM (11x11 Gaussian window) and LPIPS (v0.1, AlexNet) of the predicted right halves against the captured right halves. A held-out capture's appearance may be inferred only from its left half.
+- **glav_average_appearance** (weight 0.3): the appearance-free render of each held-out camera is colour-corrected by the evaluator (the mip-NeRF 360 per-image quadratic colour warp) to that camera's average appearance over the training capture conditions, then scored with PSNR, SSIM and LPIPS on the full image. This measures whether the reconstructed scene itself is clean.
 
-## Evaluation Protocol
+Each metric is the mean over all held-out captures of the slice. Higher PSNR/SSIM and lower LPIPS are better.
 
-Evaluation reads prediction artifacts from `outputs/<method>/predictions.pt` and computes metrics independently in `eval/`. The evaluator never imports from `method/`.
+## Constraint
 
-For the reduced benchmark, methods train on a fixed procedural multi-view scene with global and local appearance variation. Test-view appearance fitting may use the left half of each test image, and metrics are computed only on the held-out right half, following the paper's half-image test adaptation protocol.
+The appearance-free render is also a gate. If a method's `glav_average_appearance` PSNR is more than 1 dB below that of the evaluator's frozen vanilla Gaussian-splatting reconstruction, the run counts as failed.
+
+## Failure handling
+
+A missing, unreadable or malformed `predictions.pt` fails the run. So does a missing scene, a wrong shape, non-finite values, values outside [0, 1] or a failed constraint. A failed run receives the worst value of every metric in every experiment: PSNR 0, SSIM −1, LPIPS 1.
+
+## Baselines and comparisons
+
+The plain Gaussian-splatting baseline (`vanilla_3dgs`) and two controlled degraded variants (`davigs_uv_depth`, `davigs_no_id`) are fixed comparison points. Their scores come from frozen predictions owned by the evaluator, so files under `outputs/` with those names are ignored.
+
+## Slices
+
+- `bash scripts/evaluate_train.sh` (and `scripts/evaluate.sh`) score the three development scenes, whose targets are visible. They write `scoring/scores_train.json` (`scoring/scores.json`).
+- The hidden test (`scripts/evaluate_test.sh`, no arguments) scores the six test scenes with the same metrics and writes `scoring/scores_test.json`. Both evaluators score every method directory under `outputs/`.
