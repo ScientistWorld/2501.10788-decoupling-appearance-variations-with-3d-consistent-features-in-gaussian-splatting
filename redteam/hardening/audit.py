@@ -247,7 +247,11 @@ def report() -> None:
     sds = {}
     for exp in EXPS:
         for m in METRICS:
-            vals = [r["davigs"][exp][m] for r in honest_runs.values() if r["davigs"][exp] is not None]
+            vals = [
+                r["davigs"][exp][m]
+                for r in honest_runs.values()
+                if r["davigs"][exp] is not None and (r.get("diagnostics") or {}).get("status") == "ok"
+            ]
             sds[(exp, m)] = statistics.pstdev(vals) if len(vals) > 1 else 0.0
 
     def delta_rank(summary: dict) -> float:
