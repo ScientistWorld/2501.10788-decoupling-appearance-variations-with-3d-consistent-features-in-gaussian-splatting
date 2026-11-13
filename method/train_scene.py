@@ -3,8 +3,9 @@
 Protocol (paper, "Metrics"): the left half of every held-out capture is used
 during training to optimise appearance-related parameters only (embedding,
 hash grids, MLP); Gaussians never receive gradients from held-out captures.
-The right half is predicted; the appearance-free render is also returned for
-the average-appearance (colour-corrected) evaluation.
+The right half is predicted. The appearance-free render (Gaussians only, the
+appearance module discarded) of the canonical-only cameras is returned for the
+average-appearance (colour-corrected) evaluation.
 """
 
 from __future__ import annotations
@@ -54,6 +55,8 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
     n_tr, n_ho = train_imgs.shape[0], held_left.shape[0]
     cams_tr = [Camera(scene["train_R"][i], scene["train_t"][i], scene["train_K"][i], h, w, device) for i in range(n_tr)]
     cams_ho = [Camera(scene["heldout_R"][i], scene["heldout_t"][i], scene["heldout_K"][i], h, w, device) for i in range(n_ho)]
+    n_ca = scene["canonical_R"].shape[0]
+    cams_ca = [Camera(scene["canonical_R"][i], scene["canonical_t"][i], scene["canonical_K"][i], h, w, device) for i in range(n_ca)]
     centers = torch.stack([c.center for c in cams_tr])
     extent = float((centers - centers.mean(0)).norm(dim=1).max()) * 1.1
 
@@ -73,13 +76,18 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
             feature_mode=cfg["feature_mode"],
             emb_dim=cfg["emb_dim"],
             cell=cfg["cell_size"],
+            hash_max_res=cfg["hash_max_res"],
         ).to(device)
-        app_opt = torch.optim.Adam(app.param_groups(cfg["lr_emb"], cfg["lr_mlp"], cfg["lr_grid"]), betas=(0.9, 0.99), eps=1e-15)
+        lr_scale = float(cfg["module_lr_scale"])
+        lr_emb = cfg["lr_emb"] * lr_scale
+        app_opt = torch.optim.Adam(
+            app.param_groups(lr_emb, cfg["lr_mlp"] * lr_scale, cfg["lr_grid"] * lr_scale), betas=(0.9, 0.99), eps=1e-15
+        )
         base_lrs = [g["lr"] for g in app_opt.param_groups]
         # Held-out captures get their own embeddings, optimised on their left
         # halves only (each a separate parameter, so untouched rows never move).
         ho_embs = [torch.nn.Parameter(torch.randn(cfg["emb_dim"], device=device)) for _ in range(n_ho)]
-        ho_opt = torch.optim.Adam(ho_embs, lr=cfg["lr_emb"], betas=(0.9, 0.99), eps=1e-15)
+        ho_opt = torch.optim.Adam(ho_embs, lr=lr_emb, betas=(0.9, 0.99), eps=1e-15)
     use_id = davigs and cfg["use_id"]
     win = _gauss_window(device)
     bg = torch.zeros(3, device=device)
@@ -104,7 +112,7 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
             for g, lr in zip(app_opt.param_groups, base_lrs):
                 g["lr"] = lr * factor
             for g in ho_opt.param_groups:
-                g["lr"] = cfg["lr_emb"] * factor
+                g["lr"] = lr_emb * factor
         sh_degree = min(3, step // sh_every)
         if not order:
             order = torch.randperm(n_tr, generator=gen).tolist()
@@ -164,7 +172,7 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
             with torch.no_grad():
                 img_h, depth_h, _, _ = gm.render(cams_ho[k], final_degree, bg)
             emb = embeddings[k].clone().requires_grad_(True)
-            opt = torch.optim.Adam([emb], lr=cfg["lr_emb"])
+            opt = torch.optim.Adam([emb], lr=lr_emb)
             for _ in range(int(cfg["post_adapt_steps"])):
                 pred, mats = app(img_h, depth_h, cams_ho[k], 0, embedding=emb)
                 loss_h = photometric_loss(pred[..., :half], held_left[k], win)
@@ -184,7 +192,13 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
             else:
                 out = img_h
             novel.append(out.clamp(0, 1)[..., half:].cpu())
-            canonical.append(img_h.clamp(0, 1)[..., half:].cpu())
+        via_module = []  # audit only: a coupled render (module kept, mean training embedding)
+        for cam in cams_ca:  # appearance-free: the module is discarded
+            img_c, depth_c, _, _ = gm.render(cam, final_degree, bg)
+            canonical.append(img_c.clamp(0, 1).cpu())
+            if davigs:
+                out_c, _ = app(img_c, depth_c, cam, 0, embedding=app.emb.weight.detach().mean(0))
+                via_module.append(out_c.clamp(0, 1).cpu())
         train_psnr = []
         for i in range(0, n_tr, max(1, n_tr // 6)):
             img, depth, _, _ = gm.render(cams_tr[i], final_degree, bg)
@@ -195,6 +209,7 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
     return {
         "novel_view": torch.stack(novel).float(),
         "average_appearance": torch.stack(canonical).float(),
+        "audit_canonical_via_module": torch.stack(via_module).float() if via_module else None,
         "log": {
             "seconds": time.time() - t0,
             "gaussians": gm.n,

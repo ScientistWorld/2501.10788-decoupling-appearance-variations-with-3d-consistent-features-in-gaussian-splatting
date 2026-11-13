@@ -10,7 +10,8 @@ It writes
     and a sparse SfM-like point cloud),
   * ``eval/train/answers.pt``: ground truth for the visible development scenes,
   * ``eval/test/answers.pt``: ground truth for the hidden test scenes (right halves of
-    the held-out captures and their average appearance over the training captures).
+    the held-out captures, and the average appearance over the training capture
+    conditions seen from six canonical-only cameras that have no capture at all).
 
 Scenes are ray-traced from analytic, procedurally textured geometry (boxes and
 spheres inside a walled courtyard), not from Gaussians, and supersampled 2x2.
@@ -44,6 +45,9 @@ FOCAL = (W / 2.0) / math.tan(math.radians(30.0))  # 60 degree horizontal field o
 CX, CY = (W - 1) / 2.0, (H - 1) / 2.0
 N_VIEWS = 36
 HELDOUT_IDX = [2, 8, 14, 20, 26, 32]
+N_CANON = 6  # canonical-only cameras: appearance-free evaluation, no capture exists there
+CANON_SALT = 0x5EEDCA7015ED
+FORMAT_VERSION = 2
 N_INIT = 3000
 EPS = 1e-6
 DT = torch.float64
@@ -322,6 +326,26 @@ def make_cameras(g, prims, look):
     return cams
 
 
+def make_canon_cameras(g, prims, look):
+    """Viewpoints on the same arc, between the captured ones, that no capture uses."""
+    az = torch.linspace(-62.5, 62.5, N_CANON, dtype=DT) + uv(g, -2.0, 2.0, N_CANON)
+    cams = []
+    for i in range(N_CANON):
+        a = math.radians(float(az[i]))
+        center = None
+        for _attempt in range(100):
+            r, h = uf(g, 3.6, 4.8), uf(g, 0.9, 2.4)
+            cand = vec(float(look[0]) + r * math.sin(a), h, float(look[2]) - r * math.cos(a))
+            if not inside_any(prims, cand, 0.6):
+                center = cand
+                break
+        if center is None:
+            center = cand
+        rot, t = look_at(center, look + nv(g, 3) * 0.25)
+        cams.append({"R": rot, "t": t, "C": center})
+    return cams
+
+
 # --------------------------------------------------------------------------- appearance
 SESSION_TYPES = ["day", "golden", "overcast", "night"]
 
@@ -489,19 +513,22 @@ def build_scene(sid, split, seed):
         observed[v] = quantize(isp(lin, caps[v]))
         zmaps[v] = geo["z"].reshape(H * SS, W * SS)
         sky_frac.append(1.0 - float(geo["hit"].to(DT).mean()))
-        if v in HELDOUT_IDX:
-            geos[v] = geo
-        else:
-            geos[v] = {"hit": geo["hit"], "x": geo["x"]}
+        geos[v] = {"hit": geo["hit"], "x": geo["x"]}
 
-    # Average appearance of each held-out camera over every training capture condition.
-    avg = {}
-    for h in HELDOUT_IDX:
+    # Canonical-only cameras (separate random stream, so every visible input above is
+    # unchanged by them): their target is the average appearance over every training
+    # capture condition. No capture exists at these cameras, so nothing a method sees
+    # can tell it the appearance to render there.
+    gc = torch.Generator().manual_seed((int(seed) ^ CANON_SALT) & ((1 << 62) - 1))
+    canon_cams = make_canon_cameras(gc, prims, look)
+    canon = []
+    for cam in canon_cams:
+        geo = trace_camera(prims, lamps, cam)
         acc = torch.zeros(3, H, W, dtype=DT)
         for v in train_idx:
-            sun_t = sun_term(prims, geos[h], caps[v]["sun_dir"]) if caps[v]["sun_on"] else None
-            acc += isp(shade(geos[h], lamps, caps[v], sun_t), caps[v])
-        avg[h] = acc / len(train_idx)
+            sun_t = sun_term(prims, geo, caps[v]["sun_dir"]) if caps[v]["sun_on"] else None
+            acc += isp(shade(geo, lamps, caps[v], sun_t), caps[v])
+        canon.append(acc / len(train_idx))
 
     # Sparse SfM-like point cloud: surface samples seen by the training views,
     # coloured by the mean observed colour over the training views that see them.
@@ -533,14 +560,15 @@ def build_scene(sid, split, seed):
     colors = torch.where(col_cnt[:, None] > 0, col_sum / col_cnt.clamp_min(1)[:, None], torch.full_like(col_sum, 0.5))
     pts_noisy = pts + 0.02 * nv(g, *pts.shape)
 
-    def pack(ids):
-        rs = torch.stack([cams[v]["R"] for v in ids]).float()
-        ts = torch.stack([cams[v]["t"] for v in ids]).float()
+    def pack(cam_list):
+        rs = torch.stack([c["R"] for c in cam_list]).float()
+        ts = torch.stack([c["t"] for c in cam_list]).float()
         k = torch.tensor([[FOCAL, 0.0, CX], [0.0, FOCAL, CY], [0.0, 0.0, 1.0]], dtype=torch.float32)
-        return rs, ts, k[None].repeat(len(ids), 1, 1)
+        return rs, ts, k[None].repeat(len(cam_list), 1, 1)
 
-    tr_r, tr_t, tr_k = pack(train_idx)
-    ho_r, ho_t, ho_k = pack(HELDOUT_IDX)
+    tr_r, tr_t, tr_k = pack([cams[v] for v in train_idx])
+    ho_r, ho_t, ho_k = pack([cams[v] for v in HELDOUT_IDX])
+    ca_r, ca_t, ca_k = pack(canon_cams)
     visible = {
         "scene_id": sid,
         "split": split,
@@ -554,12 +582,15 @@ def build_scene(sid, split, seed):
         "heldout_R": ho_r,
         "heldout_t": ho_t,
         "heldout_K": ho_k,
+        "canonical_R": ca_r,
+        "canonical_t": ca_t,
+        "canonical_K": ca_k,
         "points": pts_noisy.float(),
         "colors": colors.float(),
     }
     answers = {
         "right": torch.stack([observed[h][:, :, W // 2:] for h in HELDOUT_IDX]).contiguous(),
-        "avg": torch.stack([avg[h][:, :, W // 2:] for h in HELDOUT_IDX]).to(torch.float16).contiguous(),
+        "canon": torch.stack(canon).to(torch.float16).contiguous(),
     }
     means = [float(observed[v].float().mean() / 255.0) for v in range(N_VIEWS)]
     print(
@@ -578,8 +609,11 @@ def main() -> None:
     args = ap.parse_args()
     manifest = DATA_DIR / "manifest.json"
     if manifest.exists() and TRAIN_ANSWERS.exists() and TEST_ANSWERS.exists() and not args.force:
-        print(f"[build] benchmark already present ({manifest}); use --force to rebuild")
-        return
+        version = json.loads(manifest.read_text()).get("version")
+        if version == FORMAT_VERSION:
+            print(f"[build] benchmark already present ({manifest}); use --force to rebuild")
+            return
+        print(f"[build] benchmark format {version} != {FORMAT_VERSION}; rebuilding")
     torch.set_num_threads(max(1, len(os.sched_getaffinity(0))))
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     entries, train_ans, test_ans = [], {}, {}
@@ -589,7 +623,7 @@ def main() -> None:
             torch.save(visible, DATA_DIR / f"{sid}.pt")
             (train_ans if split == "dev" else test_ans)[sid] = answers
             entries.append({"id": sid, "split": split, "file": f"{sid}.pt"})
-    meta = {"version": 1, "height": H, "width": W, "num_heldout": len(HELDOUT_IDX)}
+    meta = {"version": FORMAT_VERSION, "height": H, "width": W, "num_heldout": len(HELDOUT_IDX), "num_canonical": N_CANON}
     torch.save({**meta, "scenes": train_ans}, TRAIN_ANSWERS)
     torch.save({**meta, "scenes": test_ans}, TEST_ANSWERS)
     manifest.write_text(json.dumps({**meta, "num_train": N_VIEWS - len(HELDOUT_IDX), "scenes": entries}, indent=2) + "\n")

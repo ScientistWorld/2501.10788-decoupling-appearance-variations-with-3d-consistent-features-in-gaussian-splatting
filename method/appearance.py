@@ -67,7 +67,8 @@ class AppearanceModule(nn.Module):
         depth_scale: float,
         feature_mode: str = "xyz",
         emb_dim: int = 32,
-        cell: int = 2,
+        cell: int = 1,
+        hash_max_res: int = 512,
     ):
         super().__init__()
         if feature_mode not in ("xyz", "uv_depth"):
@@ -77,7 +78,7 @@ class AppearanceModule(nn.Module):
         self.depth_scale = float(depth_scale)
         self.emb = nn.Embedding(num_embeddings, emb_dim)
         if feature_mode == "xyz":
-            self.grid = HashGrid(bbox_min, bbox_max)
+            self.grid = HashGrid(bbox_min, bbox_max, max_res=int(hash_max_res))
             feat_dim = self.grid.out_dim
         else:
             self.grid = None

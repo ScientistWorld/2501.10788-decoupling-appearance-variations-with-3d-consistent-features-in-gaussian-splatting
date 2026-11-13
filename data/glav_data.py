@@ -7,10 +7,12 @@ Each scene file in ``data/glav_syn/`` holds only what a method may use:
   * ``heldout_left``  uint8 [V_heldout, 3, H, W // 2] left halves of the held-out
                       captures (for test-time appearance fitting only),
   * ``heldout_R/t/K`` cameras of the held-out captures,
+  * ``canonical_R/t/K`` six canonical-only cameras: viewpoints with no capture at
+                      all, where the scene is rendered without any appearance state,
   * ``points``/``colors`` a sparse, noisy SfM-like point cloud.
 
-The right halves of held-out captures and the average-appearance targets are
-owned by the evaluator and are not stored here.
+The right halves of held-out captures and the average-appearance targets at the
+canonical cameras are owned by the evaluator and are not stored here.
 """
 
 from __future__ import annotations

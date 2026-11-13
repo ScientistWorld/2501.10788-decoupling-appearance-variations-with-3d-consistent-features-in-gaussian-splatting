@@ -2,13 +2,20 @@
 """Run vanilla 3DGS, DAVIGS and its ablations/variants on the benchmark scenes.
 
 Each run writes ``<out>/predictions.pt`` with
-  {"novel_view": {scene_id: [V, 3, H, W // 2]},           # held-out right halves
-   "average_appearance": {scene_id: [V, 3, H, W]}}       # appearance-free renders
+  {"novel_view": {scene_id: [6, 3, H, W // 2]},           # held-out right halves
+   "average_appearance": {scene_id: [6, 3, H, W]}}       # appearance-free renders, canonical cameras
 in [0, 1]; per-scene results are cached under ``<out>/scenes/`` so interrupted
-jobs resume. Tasks are spread over all visible GPUs (several workers per GPU).
+jobs resume. Tasks are spread over the job's GPUs (several workers per GPU).
+
+Two appearance-module hyperparameters are not given in the paper: the hash
+grid's finest resolution and the module learning rates. ``--plan select`` runs
+the candidates below on the development scenes; ``method/select_config.py``
+scores them with the public development-scene scorer and writes
+``method/selected_config.json``, which every other plan reads.
 
 Examples
-  python -m method.run_experiment --plan reference
+  python -m method.run_experiment --plan select
+  python -m method.run_experiment --plan reference,audit
   python -m method.run_experiment --plan proposed --steps 600
 """
 
@@ -26,6 +33,9 @@ import torch
 
 from data.glav_data import scene_ids
 
+HERE = Path(__file__).resolve().parent
+SELECTED = HERE / "selected_config.json"
+
 METHODS = {
     "vanilla_3dgs": {"kind": "vanilla"},
     "davigs": {"kind": "davigs", "feature_mode": "xyz", "use_id": True},
@@ -37,34 +47,53 @@ DEFAULTS = {
     "max_gaussians": 6000,
     "feature_mode": "xyz",
     "use_id": True,
-    "cell_size": 2,
+    # Paper: 8 px cells at 1080p (0.74% of the image height). At 96 px that is
+    # below one pixel, so every pixel is queried (paper Table 5: cell 1 == cell 8).
+    "cell_size": 1,
     "emb_dim": 32,
+    "hash_max_res": 512,
     "lr_emb": 5e-3,
     "lr_mlp": 1e-3,
     "lr_grid": 5e-3,
+    "module_lr_scale": 1.0,
     "module_cosine": False,
     "post_adapt_steps": 0,
     "heldout_adapt": True,
 }
+SELECT_KEYS = ("hash_max_res", "module_lr_scale")
+CANDIDATES = {
+    "r512_lr1": {"hash_max_res": 512, "module_lr_scale": 1.0},
+    "r128_lr1": {"hash_max_res": 128, "module_lr_scale": 1.0},
+    "r512_lr02": {"hash_max_res": 512, "module_lr_scale": 0.2},
+    "r128_lr02": {"hash_max_res": 128, "module_lr_scale": 0.2},
+}
 VARIANTS = {
     "reference": {},
     "module_cosine": {"module_cosine": True, "post_adapt_steps": 200},
-    "cell1": {"cell_size": 1},
     "long": {"steps_mult": 1.5},
     "short": {"steps_mult": 0.25},
     "noadapt": {"heldout_adapt": False},
+    **{f"cand_{k}": dict(v) for k, v in CANDIDATES.items()},
 }
 AUDIT = [
+    ("long", [0]),
     ("reference", [1, 2]),
     ("module_cosine", [0, 1, 2]),
-    ("cell1", [0, 1, 2]),
-    ("long", [0, 1, 2]),
-    ("short", [0, 1, 2]),
     ("noadapt", [0]),
+    ("short", [0]),
 ]
 
 
+def selected() -> dict:
+    if SELECTED.exists():
+        sel = json.loads(SELECTED.read_text())
+        return {k: sel[k] for k in SELECT_KEYS}
+    return {}
+
+
 def plan(name: str) -> list[dict]:
+    if name == "select":
+        return [dict(out=f"outputs/_select/{c}/davigs", method="davigs", variant=f"cand_{c}", seed=0, scenes="dev") for c in CANDIDATES]
     if name == "reference":
         return [dict(out=f"outputs/{m}", method=m, variant="reference", seed=0, scenes="all") for m in METHODS]
     if name == "baseline":
@@ -84,6 +113,8 @@ def plan(name: str) -> list[dict]:
 
 def resolve(method: str, variant: str, steps_override: int | None) -> dict:
     cfg = dict(DEFAULTS)
+    if not variant.startswith("cand_"):
+        cfg.update(selected())
     cfg.update(METHODS[method])
     var = dict(VARIANTS[variant])
     mult = var.pop("steps_mult", 1.0)
@@ -96,8 +127,9 @@ def resolve(method: str, variant: str, steps_override: int | None) -> dict:
 
 def code_version() -> str:
     h = hashlib.sha1()
-    for f in sorted(Path(__file__).resolve().parent.glob("*.py")):
-        h.update(f.read_bytes())
+    for f in sorted(HERE.glob("*.py")):
+        if f.name != "select_config.py":
+            h.update(f.read_bytes())
     return h.hexdigest()[:10]
 
 
@@ -107,15 +139,30 @@ def cfg_hash(cfg: dict, seed: int) -> str:
     return hashlib.sha1(json.dumps(key, sort_keys=True).encode()).hexdigest()[:10]
 
 
+def pick_devices() -> list[str]:
+    """GPUs for this job: at most GLAV_MAX_GPUS (default 2, the job's request),
+    preferring the devices with the most free memory."""
+    if not torch.cuda.is_available():
+        return []
+    free = []
+    for i in range(torch.cuda.device_count()):
+        f, total = torch.cuda.mem_get_info(i)
+        print(f"[run] cuda:{i} free {f / 2**30:.1f} / {total / 2**30:.1f} GiB", flush=True)
+        if f >= 0.6 * total:
+            free.append((f, i))
+    limit = int(os.environ.get("GLAV_MAX_GPUS", "2"))
+    return [f"cuda:{i}" for _, i in sorted(free, reverse=True)[:limit]]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--plan", default="reference")
+    ap.add_argument("--plan", default="reference", help="plan name or comma-separated plans (run in priority order)")
     ap.add_argument("--steps", type=int, default=None, help="override optimisation steps (smoke tests)")
     ap.add_argument("--workers", type=int, default=None)
     ap.add_argument("--strict", action="store_true", help="exit non-zero if any run is incomplete")
     args = ap.parse_args()
 
-    runs = plan(args.plan)
+    runs = [r for name in args.plan.split(",") for r in plan(name.strip())]
     tasks = []
     for run in runs:
         cfg = resolve(run["method"], run["variant"], args.steps)
@@ -129,15 +176,7 @@ def main() -> None:
                 tasks.append(dict(cache=str(cache), cfg=cfg, seed=run["seed"], sid=sid, label=label))
 
     ncpu = len(os.sched_getaffinity(0))
-    devices = []
-    if torch.cuda.is_available():
-        # The container may expose GPUs that belong to other jobs; use only
-        # devices that are mostly free.
-        for i in range(torch.cuda.device_count()):
-            free, total = torch.cuda.mem_get_info(i)
-            print(f"[run] cuda:{i} free {free / 2**30:.1f} / {total / 2**30:.1f} GiB", flush=True)
-            if free >= 0.6 * total:
-                devices.append(f"cuda:{i}")
+    devices = pick_devices()
     ngpu = len(devices)
     if ngpu:
         per_gpu = int(os.environ.get("GLAV_WORKERS_PER_GPU", "6"))
@@ -148,13 +187,15 @@ def main() -> None:
         n_workers = args.workers or max(1, min(len(tasks), ncpu))
         threads = max(1, ncpu // max(1, n_workers))
     print(f"[run] plan={args.plan} runs={len(runs)} pending_tasks={len(tasks)} gpus={ngpu} cpus={ncpu} workers={n_workers}", flush=True)
+    for k in SELECT_KEYS:
+        print(f"[run] selected {k} = {selected().get(k, DEFAULTS[k])}", flush=True)
 
     if tasks:
         from method.worker import worker
 
         ctx = mp.get_context("spawn")
         queue = ctx.Queue()
-        for t in tasks:
+        for t in tasks:  # FIFO: earlier plans first
             queue.put(t)
         for _ in range(n_workers):
             queue.put(None)

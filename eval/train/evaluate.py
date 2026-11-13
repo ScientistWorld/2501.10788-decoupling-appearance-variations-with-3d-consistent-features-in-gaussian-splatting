@@ -6,17 +6,18 @@ every method the evaluator's roster requires, against evaluator-owned answers
 in ``eval/train/answers.pt``. The only thing read from a method directory is
 ``predictions.pt``::
 
-    {"novel_view":         {scene_id: [V, 3, H, W // 2] in [0, 1]},
-     "average_appearance": {scene_id: [V, 3, H, W // 2] in [0, 1]}}
+    {"novel_view":         {scene_id: [6, 3, H, W // 2] in [0, 1]},   # held-out captures, right halves
+     "average_appearance": {scene_id: [6, 3, H, W]      in [0, 1]}}   # canonical-only cameras, full frames
 
 * ``glav_novel_view``: the paper's main protocol. Held-out captures may be
   fitted on their left half; PSNR / SSIM / LPIPS are measured on the right half.
-* ``glav_average_appearance``: the paper's ablation protocol. The render made
-  without any per-capture appearance state is colour-corrected (mip-NeRF 360
-  procedure) to the average appearance of the camera over the training captures,
-  then scored on the right half (the left half is a visible input). It is also the decoupling constraint: a method
-  whose appearance-free render is worse than the evaluator's frozen vanilla-3DGS
-  render by more than the roster margin fails the run.
+* ``glav_average_appearance``: the paper's colour-corrected (average-appearance)
+  protocol. The scene rendered without any per-capture appearance state at six
+  canonical-only cameras (no capture exists there) is colour-corrected by the
+  evaluator (mip-NeRF 360 quadratic warp) to the camera's average appearance over
+  the training capture conditions and scored on the full frame. It is also the
+  decoupling constraint: a method whose appearance-free PSNR falls more than the
+  roster margin below the evaluator's frozen reference reconstruction fails the run.
 
 Comparison methods (baselines, ablations) are scored from evaluator-owned frozen
 predictions in ``eval/train/frozen/``; directories of the same name under
@@ -30,6 +31,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
 import traceback
 from pathlib import Path
@@ -45,7 +47,7 @@ EXPERIMENTS = ("glav_novel_view", "glav_average_appearance")
 METRICS = ("psnr", "ssim", "lpips")
 WORST = {"psnr": 0.0, "ssim": -1.0, "lpips": 1.0}
 RANGE_TOL = 1e-3
-SECTIONS = (("novel_view", "right"), ("average_appearance", "avg"))
+SECTIONS = (("novel_view", "right"), ("average_appearance", "canon"))
 
 
 class InvalidPrediction(Exception):
@@ -192,16 +194,17 @@ def score(pred: dict, answers: dict, lpips: LPIPSAlex):
     for sid in sorted(answers["scenes"]):
         ans = answers["scenes"][sid]
         gt_r = ans["right"].float() / 255.0
-        gt_a = ans["avg"].float()
+        gt_c = ans["canon"].float()
         p_r = pred["novel_view"][sid]
-        p_a = torch.stack([color_correct(p, g) for p, g in zip(pred["average_appearance"][sid], gt_a)])
-        lp_r, lp_a = lpips(p_r, gt_r), lpips(p_a, gt_a)
+        p_c = torch.stack([color_correct(p, g) for p, g in zip(pred["average_appearance"][sid], gt_c)])
+        lp_r, lp_c = lpips(p_r, gt_r), lpips(p_c, gt_c)
         for i in range(gt_r.shape[0]):
             rows["glav_novel_view"].append(
                 {"scene": sid, "view": i, "psnr": psnr(p_r[i], gt_r[i]), "ssim": ssim(p_r[i], gt_r[i]), "lpips": float(lp_r[i])}
             )
+        for i in range(gt_c.shape[0]):
             rows["glav_average_appearance"].append(
-                {"scene": sid, "view": i, "psnr": psnr(p_a[i], gt_a[i]), "ssim": ssim(p_a[i], gt_a[i]), "lpips": float(lp_a[i])}
+                {"scene": sid, "view": i, "psnr": psnr(p_c[i], gt_c[i]), "ssim": ssim(p_c[i], gt_c[i]), "lpips": float(lp_c[i])}
             )
     summary = {exp: {m: sum(r[m] for r in rs) / len(rs) for m in METRICS} for exp, rs in rows.items()}
     return summary, rows
@@ -224,8 +227,19 @@ def evaluate(outputs: Path, answers_path: Path, frozen_dir: Path, roster_path: P
         diagnostics[name] = {"status": "comparison: evaluator-owned frozen predictions"}
         details[name] = rows
 
+    # Decoupling constraint: evaluator-owned frozen reference reconstruction (never read from outputs/).
     gate = roster["gate"]
-    threshold = fixed[gate["reference_method"]][gate["experiment"]][gate["metric"]] - float(gate["margin"])
+    gate_pred = load_prediction_file(frozen_dir / f"{gate['reference_file']}.pt", answers)
+    gate_summary, _ = score(gate_pred, answers, lpips)
+    gate_value = gate_summary[gate["experiment"]][gate["metric"]]
+    threshold = gate_value - float(gate["margin"])
+    diagnostics["_gate"] = {
+        "status": "gate reference (evaluator-owned frozen predictions)",
+        "reference_file": gate["reference_file"],
+        "reference_value": gate_value,
+        "margin": float(gate["margin"]),
+        "threshold": threshold,
+    }
     on_disk = []
     if outputs.is_dir():
         on_disk = sorted(p.name for p in outputs.iterdir() if p.is_dir() and not p.name.startswith(("_", ".")))
@@ -241,7 +255,7 @@ def evaluate(outputs: Path, answers_path: Path, frozen_dir: Path, roster_path: P
                 diagnostics[name] = {"unscored_summary": summary}
                 raise InvalidPrediction(
                     f"constraint failed: {gate['experiment']}.{gate['metric']} = {value:.3f} < {threshold:.3f} "
-                    f"({gate['reference_method']} - {gate['margin']})"
+                    f"(frozen {gate['reference_file']} - {gate['margin']})"
                 )
             for exp in EXPERIMENTS:
                 results[exp][name] = summary[exp]
@@ -269,6 +283,7 @@ def main() -> None:
     ap.add_argument("--scores", type=Path, default=ROOT / "scoring" / "scores_train.json")
     ap.add_argument("--details", type=Path, default=None, help="optional per-view metric dump")
     args = ap.parse_args()
+    torch.set_num_threads(max(1, int(os.environ.get("GLAV_EVAL_THREADS", "2"))))
     payload, details = evaluate(
         args.outputs, HERE / "answers.pt", HERE / "frozen", HERE / "roster.json", ROOT / "data" / "downloads" / "lpips"
     )

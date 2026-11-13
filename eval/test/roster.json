@@ -1,15 +1,26 @@
 {
-  "_note": "Evaluator-owned scoring roster. 'required' methods are always scored and receive worst values when absent or invalid. 'comparisons' are scored only from evaluator-owned frozen predictions in this directory's frozen/ folder (produced by the reference pipeline), never from outputs/. 'gate' is the decoupling constraint: a scored method whose appearance-free render (average-appearance PSNR after colour correction) falls more than 'margin' dB below the frozen vanilla 3DGS render fails the whole run.",
-  "required": ["davigs"],
+  "_note": "Evaluator-owned scoring roster. 'required' methods are always scored and receive worst values when absent or invalid. 'comparisons' are scored only from evaluator-owned frozen predictions in this directory's frozen/ folder (produced by the reference pipeline), never from outputs/. 'gate' is the decoupling constraint: a scored method whose appearance-free render (average-appearance PSNR after colour correction, at the canonical-only cameras) falls more than 'margin' dB below that of the frozen reference reconstruction frozen/<reference_file>.pt (the paper's method, DAVIGS, from the reference run) fails the whole run.",
+  "required": [
+    "davigs"
+  ],
   "comparisons": {
-    "vanilla_3dgs": ["glav_novel_view", "glav_average_appearance"],
-    "davigs_uv_depth": ["glav_average_appearance"],
-    "davigs_no_id": ["glav_average_appearance"]
+    "vanilla_3dgs": [
+      "glav_novel_view",
+      "glav_average_appearance"
+    ],
+    "davigs_uv_depth": [
+      "glav_novel_view",
+      "glav_average_appearance"
+    ],
+    "davigs_no_id": [
+      "glav_novel_view",
+      "glav_average_appearance"
+    ]
   },
   "gate": {
     "experiment": "glav_average_appearance",
     "metric": "psnr",
-    "reference_method": "vanilla_3dgs",
+    "reference_file": "davigs_reference",
     "margin": 1.0
   }
 }
