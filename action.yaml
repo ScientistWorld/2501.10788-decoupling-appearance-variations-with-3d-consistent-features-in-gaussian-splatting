@@ -1,8 +1,8 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 2
+action: pending
+gpus: 0
 test: false
 milestone: secondary_claims
-notes: "Full hardening run (6000 steps): rebuild hidden benchmark, reference vanilla/DAVIGS/ablations on 9 scenes, freeze comparisons, both evaluators, 3-seed audit of reference and honest variants on the 6 test scenes, shortcut cases, validate."
+notes: ""

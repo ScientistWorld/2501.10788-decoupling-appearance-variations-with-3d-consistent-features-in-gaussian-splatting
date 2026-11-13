@@ -21,15 +21,30 @@ The paper addresses floaters and color distortions caused by inconsistent appear
 
 ## Research Question
 
-Novel-view synthesis systems built from casually captured photos assume that the same 3D point has consistent color across views. Real captures often violate that assumption because camera processing, time of day, weather, and local illumination vary between images. The task is to reconstruct and render a scene despite those per-image appearance changes, without leaving floaters or color artifacts in the average scene representation.
+Novel-view synthesis systems built from casually captured photos assume that the same 3D point has consistent colour across views. Real captures violate that assumption: camera processing (exposure, white balance, tone curves), time of day, weather, and local illumination (street lamps, moving cast shadows) change between images. The task is to reconstruct a scene from such a collection and
+
+1. render a held-out capture accurately once its appearance has been inferred from part of that capture, and
+2. keep the reconstructed scene itself clean (no floaters or colour distortions) so it can be rendered without any per-capture appearance state.
+
+## Benchmark Data
+
+`data/glav_syn/` holds nine scenes (`dev_00..02` for development, `test_00..05` for the held-out evaluation). Each is a walled courtyard with textured buildings and props, captured by 36 cameras on an arc, under four capture sessions per scene (day, golden hour, overcast, night) with per-capture camera-processing changes. Lamps and the sun produce spatially local changes that are consistent in 3D across captures of the same session.
+
+Per scene a method receives (see `data/glav_data.py`):
+
+- 30 training captures (96x128 RGB, uint8) with their cameras (world-to-camera `R`, `t`, intrinsics `K`, OpenCV convention),
+- 6 held-out cameras and the **left half** of each held-out capture,
+- a sparse, noisy point cloud with colours, like a structure-from-motion output.
+
+The right halves of the held-out captures and the evaluation targets are not available to methods.
 
 ## Why It Matters
 
-Robust appearance handling makes 3D reconstruction usable for outdoor and in-the-wild captures where strict photometric consistency is unrealistic, while preserving fast rendering for downstream visualization.
+Robust appearance handling makes 3D reconstruction usable for outdoor and in-the-wild captures where strict photometric consistency is unrealistic, while preserving fast, state-free rendering for downstream use.
 
 ## Success Criteria
 
-A successful solution should improve held-out rendering quality under global and local appearance variation, preserve multi-view 3D consistency, and avoid adding persistent rendering-time overhead once reconstruction is complete.
+Better held-out right-half quality (PSNR, SSIM, LPIPS) under global and local appearance variation, while the scene rendered without per-capture appearance state stays at least as clean as a plain reconstruction.
 
 ---
 
@@ -51,27 +66,52 @@ The primary claim is that 3D-consistent image-level appearance modeling improves
 
 Secondary claims are that the method adds little optimization memory/time overhead, works as a plug-in module for several Gaussian Splatting variants, and that 3D features plus identity regularization are both important.
 
+## Reproduction in this workspace (`method/`)
+
+- **Foundation:** 3D Gaussian Splatting in plain PyTorch (`method/gaussians.py`) with anisotropic covariances, SH degree 3 (raised progressively), EWA projection, depth-sorted alpha compositing, rendered mean depth, clone/split/prune densification with opacity resets, and the 3DGS per-parameter learning rates. Everything is scaled to 6,000 iterations: densify from 5% to 50% of training every 1/60 of training, reset opacity every 20%, and cap the model at 6,000 Gaussians.
+- **DAVIGS** (`method/appearance.py`): a 16-level × 2-feature hash grid (2^15 entries per level, resolutions 16 to 512) over the point-cloud bounding box, 32-d per-capture embeddings, an MLP with hidden widths 128 and 64 that outputs a 3×4 affine map (initialised to identity), and a cell-based query with bilinear interpolation of the matrices (cell size 2 px at 96×128, which is finer than the paper's 8 px at 1080p in absolute terms but coarser relative to the image).
+- **Loss:** (1−λ1)·L1 + λ1·D-SSIM with λ1 = 0.2, plus λ2·L_ID. λ2 warms up linearly from 0 to 0.3 over the first sixth of training (the paper's 5k of 30k) and then cosine-anneals to 0.2.
+- **Test protocol:** the held-out captures' left halves are used during training, interleaved after every 5 training steps, to optimise appearance-related parameters only (embedding, hash grid, MLP). Gaussians receive no gradient from them.
+- **Ablations:** `davigs_uv_depth` replaces the hash features with the raw values and 5-frequency sin/cos encodings of (u, v, depth); `davigs_no_id` sets λ2 = 0.
+
 ---
 
 # Evaluation
 
-## Metrics
+## What a method submits
 
-The main quality metrics are PSNR and SSIM, where higher is better, and a perceptual distance metric, where lower is better. The original paper reports LPIPS; this reduced environment uses a deterministic gradient-weighted LPIPS proxy to avoid external pretrained metric downloads while retaining a perceptual constraint.
+`outputs/<method>/predictions.pt`, a `torch.save`d dict of plain tensors:
 
-The main constraint metric is whether extra per-view correction machinery is required during final rendering. A value of zero means the learned scene can be rendered without persistent per-image appearance state. Training iterations are also tracked as a resource constraint.
+```
+{"novel_view":         {scene_id: float [6, 3, 96, 64]},    # right halves of the 6 held-out captures
+ "average_appearance": {scene_id: float [6, 3, 96, 64]}}    # right halves of each held-out camera rendered without any per-capture appearance state
+```
 
-## Baselines and Targets
+for every scene in `data/glav_syn/manifest.json`, values in [0, 1], held-out captures in file order. Nothing else in the file or directory is read: no self-reported metrics, flags, targets or iteration counts.
 
-The primary baseline is a plain scene representation optimized directly against appearance-varying images. A successful submission should outperform that baseline on the held-out right halves of test images while avoiding persistent per-view correction at final rendering.
+## Experiments and metrics
 
-Paper reference values in `scoring/reference.json` come from the GLAV dataset results reported in Table 1. The local reproduction uses a deterministic synthetic GLAV-style benchmark because the paper's captured GLAV dataset is not distributed in this workspace.
+- **glav_novel_view** (weight 0.7): PSNR, SSIM (11x11 Gaussian window) and LPIPS (v0.1, AlexNet) of the predicted right halves against the captured right halves. A held-out capture's appearance may be inferred only from its left half.
+- **glav_average_appearance** (weight 0.3): the appearance-free render of each held-out camera is colour-corrected by the evaluator (the mip-NeRF 360 per-image quadratic colour warp) to that camera's average appearance over the training capture conditions, then scored with PSNR, SSIM and LPIPS on the right half (the left half is a visible input). This measures whether the reconstructed scene itself is clean.
 
-## Evaluation Protocol
+Each metric is the mean over all held-out captures of the slice. Higher PSNR/SSIM and lower LPIPS are better.
 
-Evaluation reads prediction artifacts from `outputs/<method>/predictions.pt` and computes metrics independently in `eval/`. The evaluator never imports from `method/`.
+## Constraint
 
-For the reduced benchmark, methods train on a fixed procedural multi-view scene with global and local appearance variation. Test-view appearance fitting may use the left half of each test image, and metrics are computed only on the held-out right half, following the paper's half-image test adaptation protocol.
+The appearance-free render is also a gate. If a method's `glav_average_appearance` PSNR is more than 1 dB below that of the evaluator's frozen vanilla Gaussian-splatting reconstruction, the run counts as failed.
+
+## Failure handling
+
+A missing, unreadable or malformed `predictions.pt` fails the run. So does a missing scene, a wrong shape, non-finite values, values outside [0, 1] or a failed constraint. A failed run receives the worst value of every metric in every experiment: PSNR 0, SSIM −1, LPIPS 1.
+
+## Baselines and comparisons
+
+The plain Gaussian-splatting baseline (`vanilla_3dgs`) and two controlled degraded variants (`davigs_uv_depth`, `davigs_no_id`) are fixed comparison points. Their scores come from frozen predictions owned by the evaluator, so files under `outputs/` with those names are ignored.
+
+## Slices
+
+- `bash scripts/evaluate_train.sh` (and `scripts/evaluate.sh`) score the three development scenes, whose targets are visible. They write `scoring/scores_train.json` (`scoring/scores.json`).
+- The hidden test (`scripts/evaluate_test.sh`, no arguments) scores the six test scenes with the same metrics and writes `scoring/scores_test.json`. Both evaluators score every method directory under `outputs/`.
 
 ---
 
