@@ -1,9 +1,20 @@
 {
   "_diagnostics": {
     "davigs": {
-      "constraint_threshold": 23.44227621827835,
-      "constraint_value": 23.759787111823933,
-      "status": "ok"
+      "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 25.012 < 27.546 (vanilla_3dgs - 1.0)",
+      "status": "failed",
+      "unscored_summary": {
+        "glav_average_appearance": {
+          "lpips": 0.24348093341622087,
+          "psnr": 25.011510439062633,
+          "ssim": 0.6448883740235174
+        },
+        "glav_novel_view": {
+          "lpips": 0.3199159892068969,
+          "psnr": 21.197371697544956,
+          "ssim": 0.6219346663942216
+        }
+      }
     },
     "davigs_no_id": {
       "ignored_outputs_dir": true,
@@ -22,38 +33,38 @@
     "glav_average_appearance": {
       "results": {
         "davigs": {
-          "lpips": 0.45608295334710014,
-          "psnr": 23.759787111823933,
-          "ssim": 0.5729392585088479
+          "lpips": 1.0,
+          "psnr": 0.0,
+          "ssim": -1.0
         },
         "davigs_no_id": {
-          "lpips": 0.45481181061930126,
-          "psnr": 23.680344283932087,
-          "ssim": 0.5698762697827282
+          "lpips": 0.2525717674030198,
+          "psnr": 24.023701702693742,
+          "ssim": 0.6303163337411455
         },
         "davigs_uv_depth": {
-          "lpips": 0.4511240977380011,
-          "psnr": 23.82737382739989,
-          "ssim": 0.5940625873154614
+          "lpips": 0.09853540454059839,
+          "psnr": 29.3327084846009,
+          "ssim": 0.8316499012813235
         },
         "vanilla_3dgs": {
-          "lpips": 0.5271082984076606,
-          "psnr": 24.44227621827835,
-          "ssim": 0.6190845792608406
+          "lpips": 0.11923284559614128,
+          "psnr": 28.54606997274546,
+          "ssim": 0.8058431638732702
         }
       }
     },
     "glav_novel_view": {
       "results": {
         "davigs": {
-          "lpips": 0.6383104821046194,
-          "psnr": 18.64601769618254,
-          "ssim": 0.5792282907523195
+          "lpips": 1.0,
+          "psnr": 0.0,
+          "ssim": -1.0
         },
         "vanilla_3dgs": {
-          "lpips": 0.6316904524962107,
-          "psnr": 17.540796966783464,
-          "ssim": 0.5457014040498366
+          "lpips": 0.20846607204940584,
+          "psnr": 19.000169780721265,
+          "ssim": 0.7180990176509154
         }
       }
     }
