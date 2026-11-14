@@ -156,6 +156,17 @@ class GaussianModel:
         self.grad_accum = torch.zeros(self.n, device=self.device)
         self.denom = torch.zeros(self.n, device=self.device)
 
+    @torch.no_grad()
+    def export(self) -> dict:
+        """The scene as plain tensors (the format the evaluator renders itself)."""
+        return {
+            "means": self.p["means"].detach().float().cpu().contiguous(),
+            "scales": torch.exp(self.p["log_scales"].detach()).float().cpu().contiguous(),
+            "quats": self.p["quats"].detach().float().cpu().contiguous(),
+            "opacity": torch.sigmoid(self.p["opacity"].detach()).float().cpu().contiguous(),
+            "sh": self.sh().detach().float().cpu().contiguous(),
+        }
+
     # ------------------------------------------------------------------ rendering
     def render(self, cam: Camera, sh_degree: int, bg: torch.Tensor, track: bool = False):
         means = self.p["means"]

@@ -2,9 +2,11 @@
 """Run vanilla 3DGS, DAVIGS and its ablations/variants on the benchmark scenes.
 
 Each run writes ``<out>/predictions.pt`` with
-  {"novel_view": {scene_id: [6, 3, H, W // 2]},           # held-out right halves
-   "average_appearance": {scene_id: [6, 3, H, W]}}       # appearance-free renders, canonical cameras
-in [0, 1]; per-scene results are cached under ``<out>/scenes/`` so interrupted
+  {"novel_view": {scene_id: [6, 3, H, W // 2]},           # held-out right halves, in [0, 1]
+   "scene": {scene_id: {"means", "scales", "quats", "opacity", "sh"}},   # the 3D Gaussians
+   "average_appearance": {scene_id: [6, 3, H, W]}}       # own appearance-free renders (not scored)
+The evaluator renders "scene" at the canonical cameras itself. Per-scene
+results are cached under ``<out>/scenes/`` so interrupted
 jobs resume. Tasks are spread over the job's GPUs (several workers per GPU).
 
 Two appearance-module hyperparameters are not given in the paper: the hash
@@ -213,11 +215,12 @@ def main() -> None:
         if missing:
             incomplete.append((run["out"], missing))
             continue
-        preds = {"novel_view": {}, "average_appearance": {}}
+        preds = {"novel_view": {}, "scene": {}, "average_appearance": {}}
         logs = {}
         for sid, c in caches.items():
             r = torch.load(c, map_location="cpu", weights_only=True)
             preds["novel_view"][sid] = r["novel_view"]
+            preds["scene"][sid] = r["scene"]
             preds["average_appearance"][sid] = r["average_appearance"]
             logs[sid] = r["log"]
         torch.save(preds, out / "predictions.pt")

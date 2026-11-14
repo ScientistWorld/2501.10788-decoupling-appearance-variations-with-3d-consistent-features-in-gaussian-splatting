@@ -6,14 +6,17 @@ every method the evaluator's roster requires, against evaluator-owned answers
 in ``eval/train/answers.pt``. The only thing read from a method directory is
 ``predictions.pt``::
 
-    {"novel_view":         {scene_id: [6, 3, H, W // 2] in [0, 1]},   # held-out captures, right halves
-     "average_appearance": {scene_id: [6, 3, H, W]      in [0, 1]}}   # canonical-only cameras, full frames
+    {"novel_view": {scene_id: [6, 3, H, W // 2] in [0, 1]},   # held-out captures, right halves
+     "scene":      {scene_id: {"means": [N, 3], "scales": [N, 3] (> 0), "quats": [N, 4] (w, x, y, z),
+                               "opacity": [N] in [0, 1], "sh": [N, 16, 3] (degree-3 SH colour)}}}
 
 * ``glav_novel_view``: the paper's main protocol. Held-out captures may be
   fitted on their left half; PSNR / SSIM / LPIPS are measured on the right half.
 * ``glav_average_appearance``: the paper's colour-corrected (average-appearance)
-  protocol. The scene rendered without any per-capture appearance state at six
-  canonical-only cameras (no capture exists there) is colour-corrected by the
+  protocol. The evaluator itself renders the submitted 3D Gaussian scene (its
+  own 3DGS rasteriser, black background, no appearance model, so nothing
+  per-capture or coupled can enter) at six canonical-only cameras (no capture
+  exists there); each render is colour-corrected by the
   evaluator (mip-NeRF 360 quadratic warp) to the camera's average appearance over
   the training capture conditions and scored on the full frame. It is also the
   decoupling constraint: a method whose appearance-free PSNR falls more than the
@@ -47,7 +50,9 @@ EXPERIMENTS = ("glav_novel_view", "glav_average_appearance")
 METRICS = ("psnr", "ssim", "lpips")
 WORST = {"psnr": 0.0, "ssim": -1.0, "lpips": 1.0}
 RANGE_TOL = 1e-3
-SECTIONS = (("novel_view", "right"), ("average_appearance", "canon"))
+MAX_GAUSSIANS = 60000          # keeps the hidden test light (10x the reference budget)
+MAX_PAIRS_PER_IMAGE = 120_000_000  # Gaussian-pixel evaluations per render (guard against pathological scenes)
+SCENE_KEYS = {"means": (3,), "scales": (3,), "quats": (4,), "opacity": (), "sh": (16, 3)}
 
 
 class InvalidPrediction(Exception):
@@ -153,8 +158,185 @@ def color_correct(img: torch.Tensor, ref: torch.Tensor, num_iters: int = 5, eps:
     return cur.reshape(h, w, 3).permute(2, 0, 1).float()
 
 
+# --------------------------------------------------------------------------- scene rendering
+# Forward-only 3D Gaussian Splatting rasteriser (Kerbl et al. 2023): EWA projection
+# with the 0.3 px low-pass, degree-3 SH colour, depth-sorted front-to-back alpha
+# compositing over a black background. Evaluator-owned copy; nothing is imported
+# from method/.
+SH_C0 = 0.28209479177387814
+SH_C1 = 0.4886025119029199
+SH_C2 = (1.0925484305920792, -1.0925484305920792, 0.31539156525252005, -1.0925484305920792, 0.5462742152960396)
+SH_C3 = (-0.5900435899266435, 2.890611442640554, -0.4570457994644658, 0.3731763325901154,
+         -0.4570457994644658, 1.445305721320277, -0.5900435899266435)
+PATCH_BUCKETS = (3, 6, 12, 24, 48, 96)
+
+
+def _eval_sh(sh: torch.Tensor, dirs: torch.Tensor) -> torch.Tensor:
+    """sh: [N, 3, 16], dirs: [N, 3] -> [N, 3]."""
+    x, y, z = dirs[:, 0:1], dirs[:, 1:2], dirs[:, 2:3]
+    xx, yy, zz, xy, yz, xz = x * x, y * y, z * z, x * y, y * z, x * z
+    r = SH_C0 * sh[..., 0] - SH_C1 * y * sh[..., 1] + SH_C1 * z * sh[..., 2] - SH_C1 * x * sh[..., 3]
+    r = (r + SH_C2[0] * xy * sh[..., 4] + SH_C2[1] * yz * sh[..., 5] + SH_C2[2] * (2.0 * zz - xx - yy) * sh[..., 6]
+         + SH_C2[3] * xz * sh[..., 7] + SH_C2[4] * (xx - yy) * sh[..., 8])
+    r = (r + SH_C3[0] * y * (3 * xx - yy) * sh[..., 9] + SH_C3[1] * xy * z * sh[..., 10]
+         + SH_C3[2] * y * (4 * zz - xx - yy) * sh[..., 11] + SH_C3[3] * z * (2 * zz - 3 * xx - 3 * yy) * sh[..., 12]
+         + SH_C3[4] * x * (4 * zz - xx - yy) * sh[..., 13] + SH_C3[5] * z * (xx - yy) * sh[..., 14]
+         + SH_C3[6] * x * (xx - 3 * yy) * sh[..., 15])
+    return r
+
+
+def _quat_to_rotmat(q: torch.Tensor) -> torch.Tensor:
+    q = q / q.norm(dim=-1, keepdim=True).clamp_min(1e-12)
+    w, x, y, z = q.unbind(-1)
+    return torch.stack(
+        [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y),
+         2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x),
+         2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)], dim=-1,
+    ).reshape(*q.shape[:-1], 3, 3)
+
+
+@torch.no_grad()
+def render_scene(g: dict, R: torch.Tensor, t: torch.Tensor, K: torch.Tensor, height: int, width: int) -> torch.Tensor:
+    R, t = R.float(), t.float()
+    fx, fy, cx, cy = float(K[0, 0]), float(K[1, 1]), float(K[0, 2]), float(K[1, 2])
+    image = torch.zeros(3, height, width)
+    means = g["means"]
+    pc = means @ R.T + t
+    idx = torch.nonzero(pc[:, 2] > 0.2).squeeze(1)
+    if idx.numel() == 0:
+        return image
+    p = pc[idx]
+    z = p[:, 2]
+    u = fx * p[:, 0] / z + cx
+    v = fy * p[:, 1] / z + cy
+    rot = _quat_to_rotmat(g["quats"][idx])
+    m = rot * g["scales"][idx][:, None, :]
+    cov_c = R @ (m @ m.transpose(1, 2)) @ R.T
+    limx, limy = 1.3 * 0.5 * width / fx, 1.3 * 0.5 * height / fy
+    tx = (p[:, 0] / z).clamp(-limx, limx) * z
+    ty = (p[:, 1] / z).clamp(-limy, limy) * z
+    zero = torch.zeros_like(z)
+    jac = torch.stack([torch.stack([fx / z, zero, -fx * tx / (z * z)], -1), torch.stack([zero, fy / z, -fy * ty / (z * z)], -1)], 1)
+    cov2 = jac @ cov_c @ jac.transpose(1, 2)
+    a, b, c = cov2[:, 0, 0] + 0.3, cov2[:, 0, 1], cov2[:, 1, 1] + 0.3
+    det = (a * c - b * b).clamp_min(1e-10)
+    mid = 0.5 * (a + c)
+    radius = 3.0 * torch.sqrt(mid + torch.sqrt((mid * mid - det).clamp_min(0.1)))
+    on = (u + radius > -0.5) & (u - radius < width - 0.5) & (v + radius > -0.5) & (v - radius < height - 0.5)
+    keep = torch.nonzero(on).squeeze(1)
+    if keep.numel() == 0:
+        return image
+    vis = idx[keep]
+    center = -(R.T @ t)
+    dirs = means[vis] - center[None, :]
+    dirs = dirs / dirs.norm(dim=1, keepdim=True).clamp_min(1e-8)
+    rgb = (_eval_sh(g["sh"][vis].transpose(1, 2), dirs) + 0.5).clamp_min(0.0)
+    opac = g["opacity"][vis]
+    zk = z[keep]
+    order = torch.argsort(zk)
+    uk, vk = u[keep][order], v[keep][order]
+    ia, ib, ic = (c / det)[keep][order], (-b / det)[keep][order], (a / det)[keep][order]
+    zk, rgb, opac, rk = zk[order], rgb[order], opac[order], radius[keep][order]
+    need = torch.ceil(rk + 0.5)
+    cu, cv = torch.round(uk).long(), torch.round(vk).long()
+    assigned = torch.zeros_like(need, dtype=torch.bool)
+    budget = 0
+    g_list, p_list, a_list = [], [], []
+    for bi, rad in enumerate(PATCH_BUCKETS):
+        sel = ~assigned if bi == len(PATCH_BUCKETS) - 1 else (need <= rad) & ~assigned
+        assigned |= sel
+        gb_all = torch.nonzero(sel).squeeze(1)
+        area = (2 * rad + 1) ** 2
+        budget += gb_all.numel() * area
+        if budget > MAX_PAIRS_PER_IMAGE:
+            raise InvalidPrediction("scene too expensive to render (Gaussian footprints too large or too many)")
+        off = torch.arange(-rad, rad + 1)
+        oy, ox = torch.meshgrid(off, off, indexing="ij")
+        ox, oy = ox.reshape(1, -1), oy.reshape(1, -1)
+        chunk = max(1, 4_000_000 // area)
+        for s0 in range(0, gb_all.numel(), chunk):
+            gb = gb_all[s0:s0 + chunk]
+            px, py = cu[gb][:, None] + ox, cv[gb][:, None] + oy
+            inb = (px >= 0) & (px < width) & (py >= 0) & (py < height)
+            gi = gb[:, None].expand_as(px)[inb]
+            pxv, pyv = px[inb], py[inb]
+            dx, dy = pxv.float() - uk[gi], pyv.float() - vk[gi]
+            power = -0.5 * (ia[gi] * dx * dx + ic[gi] * dy * dy) - ib[gi] * dx * dy
+            alpha = (opac[gi] * torch.exp(power.clamp_max(0.0))).clamp(max=0.99)
+            ok = alpha >= 1.0 / 255.0
+            g_list.append(gi[ok])
+            p_list.append(pyv[ok] * width + pxv[ok])
+            a_list.append(alpha[ok])
+    gg, pix, al = torch.cat(g_list), torch.cat(p_list), torch.cat(a_list)
+    if gg.numel() == 0:
+        return image
+    srt = torch.argsort(pix * uk.shape[0] + gg)
+    gg, pix, al = gg[srt], pix[srt], al[srt]
+    log1m = torch.log1p(-al).double()
+    before = torch.cumsum(log1m, dim=0) - log1m
+    n = gg.shape[0]
+    is_start = torch.ones(n, dtype=torch.bool)
+    is_start[1:] = pix[1:] != pix[:-1]
+    start = torch.where(is_start, torch.arange(n), torch.zeros_like(pix)).cummax(dim=0).values
+    w = al * torch.exp(before - before[start]).float()
+    color = torch.zeros(height * width, 3).index_add(0, pix, w[:, None] * rgb[gg])
+    return color.T.reshape(3, height, width)
+
+
+def check_scene(sid: str, g) -> dict:
+    if not isinstance(g, dict):
+        raise InvalidPrediction(f"scene/{sid}: must be a dict of tensors")
+    out, n = {}, None
+    for key, tail in SCENE_KEYS.items():
+        x = g.get(key)
+        if not torch.is_tensor(x) or not x.is_floating_point():
+            raise InvalidPrediction(f"scene/{sid}: '{key}' must be a float tensor")
+        if n is None:
+            n = x.shape[0] if x.dim() > 0 else 0
+        if tuple(x.shape) != (n, *tail):
+            raise InvalidPrediction(f"scene/{sid}: '{key}' shape {tuple(x.shape)} != {(n, *tail)}")
+        x = x.float()
+        if not bool(torch.isfinite(x).all()):
+            raise InvalidPrediction(f"scene/{sid}: '{key}' has non-finite values")
+        out[key] = x
+    if not 1 <= n <= MAX_GAUSSIANS:
+        raise InvalidPrediction(f"scene/{sid}: {n} Gaussians (allowed 1..{MAX_GAUSSIANS})")
+    if float(out["opacity"].min()) < -RANGE_TOL or float(out["opacity"].max()) > 1 + RANGE_TOL:
+        raise InvalidPrediction(f"scene/{sid}: opacity outside [0, 1]")
+    out["opacity"] = out["opacity"].clamp(0.0, 1.0)
+    if float(out["scales"].min()) <= 0 or float(out["scales"].max()) > 1e3:
+        raise InvalidPrediction(f"scene/{sid}: scales must lie in (0, 1e3]")
+    if float(out["quats"].norm(dim=1).min()) < 1e-8:
+        raise InvalidPrediction(f"scene/{sid}: zero-norm quaternion")
+    return out
+
+
+def render_canonical(g: dict, ans: dict) -> torch.Tensor:
+    h, w = ans["canon"].shape[-2:]
+    imgs = [render_scene(g, ans["canon_R"][i], ans["canon_t"][i], ans["canon_K"][i], h, w) for i in range(ans["canon_R"].shape[0])]
+    return torch.stack(imgs).clamp(0.0, 1.0)
+
+
 # --------------------------------------------------------------------------- loading
-def load_prediction_file(path: Path, answers: dict) -> dict:
+def _check_images(name: str, t, shape) -> torch.Tensor:
+    if not torch.is_tensor(t):
+        raise InvalidPrediction(f"{name}: missing")
+    if tuple(t.shape) != tuple(shape):
+        raise InvalidPrediction(f"{name}: shape {tuple(t.shape)} != {tuple(shape)}")
+    if t.dtype == torch.uint8:
+        t = t.float() / 255.0
+    elif t.is_floating_point():
+        t = t.float()
+    else:
+        raise InvalidPrediction(f"{name}: dtype {t.dtype} not allowed")
+    if not bool(torch.isfinite(t).all()):
+        raise InvalidPrediction(f"{name}: non-finite values")
+    if float(t.min()) < -RANGE_TOL or float(t.max()) > 1 + RANGE_TOL:
+        raise InvalidPrediction(f"{name}: values outside [0, 1]")
+    return t.clamp(0.0, 1.0)
+
+
+def _read(path: Path):
     if not path.is_file():
         raise InvalidPrediction("missing predictions.pt")
     try:
@@ -163,29 +345,35 @@ def load_prediction_file(path: Path, answers: dict) -> dict:
         raise InvalidPrediction(f"unreadable predictions.pt ({type(exc).__name__})")
     if not isinstance(obj, dict):
         raise InvalidPrediction("predictions.pt must contain a dict")
-    out = {}
-    for section, key in SECTIONS:
-        part = obj.get(section)
-        if not isinstance(part, dict):
-            raise InvalidPrediction(f"missing '{section}' section")
-        out[section] = {}
-        for sid, ans in answers["scenes"].items():
-            t = part.get(sid)
-            if not torch.is_tensor(t):
-                raise InvalidPrediction(f"{section}: missing scene {sid}")
-            if tuple(t.shape) != tuple(ans[key].shape):
-                raise InvalidPrediction(f"{section}/{sid}: shape {tuple(t.shape)} != {tuple(ans[key].shape)}")
-            if t.dtype == torch.uint8:
-                t = t.float() / 255.0
-            elif t.is_floating_point():
-                t = t.float()
-            else:
-                raise InvalidPrediction(f"{section}/{sid}: dtype {t.dtype} not allowed")
-            if not bool(torch.isfinite(t).all()):
-                raise InvalidPrediction(f"{section}/{sid}: non-finite values")
-            if float(t.min()) < -RANGE_TOL or float(t.max()) > 1 + RANGE_TOL:
-                raise InvalidPrediction(f"{section}/{sid}: values outside [0, 1]")
-            out[section][sid] = t.clamp(0.0, 1.0)
+    return obj
+
+
+def load_prediction_file(path: Path, answers: dict) -> dict:
+    """A method's predictions: novel-view images plus its 3D Gaussian scene, which
+    the evaluator renders at the canonical cameras itself."""
+    obj = _read(path)
+    nv, sc = obj.get("novel_view"), obj.get("scene")
+    if not isinstance(nv, dict):
+        raise InvalidPrediction("missing 'novel_view' section")
+    if not isinstance(sc, dict):
+        raise InvalidPrediction("missing 'scene' section")
+    out = {"novel_view": {}, "average_appearance": {}}
+    for sid, ans in answers["scenes"].items():
+        out["novel_view"][sid] = _check_images(f"novel_view/{sid}", nv.get(sid), ans["right"].shape)
+        if sid not in sc:
+            raise InvalidPrediction(f"scene: missing scene {sid}")
+        out["average_appearance"][sid] = render_canonical(check_scene(sid, sc[sid]), ans)
+    return out
+
+
+def load_frozen(path: Path, answers: dict) -> dict:
+    """Evaluator-owned frozen comparison: images (canonical renders were made by
+    this evaluator's renderer when the comparison was frozen)."""
+    obj = _read(path)
+    out = {"novel_view": {}, "average_appearance": {}}
+    for sid, ans in answers["scenes"].items():
+        out["novel_view"][sid] = _check_images(f"frozen novel_view/{sid}", obj["novel_view"].get(sid), ans["right"].shape)
+        out["average_appearance"][sid] = _check_images(f"frozen average_appearance/{sid}", obj["average_appearance"].get(sid), ans["canon"].shape)
     return out
 
 
@@ -219,7 +407,7 @@ def evaluate(outputs: Path, answers_path: Path, frozen_dir: Path, roster_path: P
     diagnostics, details, fixed = {}, {}, {}
 
     for name, exps in roster["comparisons"].items():
-        pred = load_prediction_file(frozen_dir / f"{name}.pt", answers)  # evaluator asset: errors are fatal
+        pred = load_frozen(frozen_dir / f"{name}.pt", answers)  # evaluator asset: errors are fatal
         summary, rows = score(pred, answers, lpips)
         fixed[name] = summary
         for exp in exps:
@@ -229,7 +417,7 @@ def evaluate(outputs: Path, answers_path: Path, frozen_dir: Path, roster_path: P
 
     # Decoupling constraint: evaluator-owned frozen reference reconstruction (never read from outputs/).
     gate = roster["gate"]
-    gate_pred = load_prediction_file(frozen_dir / f"{gate['reference_file']}.pt", answers)
+    gate_pred = load_frozen(frozen_dir / f"{gate['reference_file']}.pt", answers)
     gate_summary, _ = score(gate_pred, answers, lpips)
     gate_value = gate_summary[gate["experiment"]][gate["metric"]]
     threshold = gate_value - float(gate["margin"])

@@ -47,7 +47,7 @@ N_VIEWS = 36
 HELDOUT_IDX = [2, 8, 14, 20, 26, 32]
 N_CANON = 6  # canonical-only cameras: appearance-free evaluation, no capture exists there
 CANON_SALT = 0x5EEDCA7015ED
-FORMAT_VERSION = 2
+FORMAT_VERSION = 3
 N_INIT = 3000
 EPS = 1e-6
 DT = torch.float64
@@ -591,6 +591,11 @@ def build_scene(sid, split, seed):
     answers = {
         "right": torch.stack([observed[h][:, :, W // 2:] for h in HELDOUT_IDX]).contiguous(),
         "canon": torch.stack(canon).to(torch.float16).contiguous(),
+        # evaluator-owned copy of the canonical cameras: the evaluator renders each
+        # method's submitted Gaussian scene here itself
+        "canon_R": ca_r,
+        "canon_t": ca_t,
+        "canon_K": ca_k,
     }
     means = [float(observed[v].float().mean() / 255.0) for v in range(N_VIEWS)]
     print(

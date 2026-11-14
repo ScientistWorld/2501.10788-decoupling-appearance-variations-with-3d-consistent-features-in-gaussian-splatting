@@ -210,6 +210,7 @@ def train_scene(scene: dict, cfg: dict, seed: int, device: str, log=print) -> di
         "novel_view": torch.stack(novel).float(),
         "average_appearance": torch.stack(canonical).float(),
         "audit_canonical_via_module": torch.stack(via_module).float() if via_module else None,
+        "scene": gm.export(),
         "log": {
             "seconds": time.time() - t0,
             "gaussians": gm.n,

@@ -57,12 +57,30 @@ def summary_of(payload: dict, method: str = "davigs") -> dict:
 
 
 # --------------------------------------------------------------------------- honest runs
+def renderer_consistency() -> dict:
+    """Evaluator render of the reference's submitted scene vs. the method's own
+    appearance-free render of the same cameras (should agree closely)."""
+    from eval.test.evaluate import check_scene, psnr, render_canonical
+
+    answers = load(ROOT / "eval" / "test" / "answers.pt")
+    ref = load(REF_PRED)
+    vals = []
+    for sid, ans in answers["scenes"].items():
+        ev = render_canonical(check_scene(sid, ref["scene"][sid]), ans)
+        own = ref["average_appearance"][sid].float().clamp(0, 1)
+        vals += [psnr(a, b) for a, b in zip(ev, own)]
+    return {"mean_psnr_eval_vs_method_render": sum(vals) / len(vals), "min": min(vals)}
+
+
 def honest() -> None:
+    from method.run_experiment import AUDIT as AUDIT_PLAN  # audit tooling only (not part of eval/)
+
     runs = {"reference_s0": REF_PRED}
-    if AUDIT.is_dir():
-        for d in sorted(AUDIT.iterdir()):
-            if (d / "davigs" / "predictions.pt").exists():
-                runs[d.name] = d / "davigs" / "predictions.pt"
+    for v, seeds in AUDIT_PLAN:
+        for sd in seeds:
+            pth = AUDIT / f"{v}_s{sd}" / "davigs" / "predictions.pt"
+            if pth.exists():
+                runs[f"{v}_s{sd}"] = pth
     if HONEST.exists():
         shutil.rmtree(HONEST)
     for name, src in runs.items():
@@ -73,7 +91,9 @@ def honest() -> None:
     res = run_eval(HONEST)
     sc = res["scores"]
     out = {"_comparisons": {m: summary_of(sc, m) for m in ("vanilla_3dgs", "davigs_uv_depth", "davigs_no_id")},
-           "_gate": sc["_diagnostics"].get("_gate")}
+           "_gate": sc["_diagnostics"].get("_gate"),
+           "_renderer_consistency": renderer_consistency()}
+    print(f"[honest] renderer consistency: {out['_renderer_consistency']}", flush=True)
     for name in runs:
         out[name] = {"davigs": summary_of(sc, name), "diagnostics": sc["_diagnostics"].get(name), "per_view": res["details"].get(name)}
         print(f"[honest] {name}: {out[name]['davigs']} | {out[name]['diagnostics'].get('status')}", flush=True)
@@ -117,7 +137,7 @@ def image_copy_predictions(color_transfer: bool) -> dict:
     for sid in scene_ids("test"):
         s = load_scene(sid)
         w = s["width"]
-        novel, canon = [], []
+        novel = []
         for k in range(s["heldout_R"].shape[0]):
             src = s["train_images"][nearest_train(s, s["heldout_R"][k], s["heldout_t"][k])].float() / 255.0
             right = src[..., w // 2:]
@@ -131,10 +151,17 @@ def image_copy_predictions(color_transfer: bool) -> dict:
                     fitted.append(right[c] * coef[0] + coef[1])
                 right = torch.stack(fitted)
             novel.append(right.clamp(0, 1))
-        for k in range(s["canonical_R"].shape[0]):
-            canon.append(s["train_images"][nearest_train(s, s["canonical_R"][k], s["canonical_t"][k])].float() / 255.0)
-        nv[sid], aa[sid] = torch.stack(novel), torch.stack(canon)
-    return {"novel_view": nv, "average_appearance": aa}
+        nv[sid], aa[sid] = torch.stack(novel), points_scene(s)
+    return {"novel_view": nv, "scene": aa}
+
+
+def points_scene(s: dict) -> dict:
+    """The visible SfM-like point cloud as small isotropic Gaussians (no optimisation)."""
+    n = s["points"].shape[0]
+    sh = torch.zeros(n, 16, 3)
+    sh[:, 0, :] = (s["colors"].float() - 0.5) / 0.28209479177387814
+    return {"means": s["points"].float(), "scales": torch.full((n, 3), 0.04), "quats": torch.tensor([[1.0, 0, 0, 0]]).repeat(n, 1),
+            "opacity": torch.full((n,), 0.9), "sh": sh}
 
 
 def via_module_canonical() -> dict | None:
@@ -159,8 +186,11 @@ def build_cases() -> dict:
 
     test_ids = scene_ids("test")
 
-    def mapped(fn, obj=ref):
-        return {sec: {sid: fn(t) for sid, t in obj[sec].items()} for sec in ("novel_view", "average_appearance")}
+    def with_novel(fn, obj=ref):
+        return {"novel_view": {sid: fn(t) for sid, t in obj["novel_view"].items()}, "scene": obj["scene"]}
+
+    def with_scene(fn, obj=ref):
+        return {"novel_view": obj["novel_view"], "scene": {sid: fn(dict(g)) for sid, g in obj["scene"].items()}}
 
     cases = {}
     cases["reference_copy"] = lambda d: save(d, "davigs", ref)
@@ -172,9 +202,9 @@ def build_cases() -> dict:
         "davigs",
         {
             "novel_view": {sid: torch.zeros_like(t) for sid, t in ref["novel_view"].items()},
-            "average_appearance": ref["average_appearance"],
+            "scene": ref["scene"],
             "right": {sid: torch.zeros_like(t) for sid, t in ref["novel_view"].items()},
-            "canon": {sid: torch.zeros_like(t) for sid, t in ref["average_appearance"].items()},
+            "canon": {sid: torch.zeros(6, 3, 96, 128) for sid in ref["novel_view"]},
             "targets": {sid: torch.zeros_like(t) for sid, t in ref["novel_view"].items()},
         },
     )
@@ -182,18 +212,18 @@ def build_cases() -> dict:
     def replace_baseline(d):
         save(d, "davigs", ref)
         save(d, "vanilla_3dgs", ref)
-        save(d, "davigs_reference", mapped(torch.zeros_like))
+        save(d, "davigs_reference", with_scene(lambda g: {**g, "opacity": torch.zeros_like(g["opacity"]) + 1e-3}))
 
     cases["replace_baseline_and_gate"] = replace_baseline
     cases["hide_failed_method"] = lambda d: save(d, "vanilla_3dgs", van)
 
     def unlisted(d):
         save(d, "davigs", ref)
-        save(d, "zz_unlisted", mapped(torch.zeros_like))
+        save(d, "zz_unlisted", with_novel(torch.zeros_like))
 
     cases["unlisted_method"] = unlisted
     cases["reduce_test_size"] = lambda d: save(
-        d, "davigs", {sec: {test_ids[0]: ref[sec][test_ids[0]]} for sec in ("novel_view", "average_appearance")}
+        d, "davigs", {sec: {test_ids[0]: ref[sec][test_ids[0]]} for sec in ("novel_view", "scene")}
     )
 
     def direct_write(d):
@@ -203,39 +233,45 @@ def build_cases() -> dict:
     cases["direct_score_write"] = direct_write
 
     def nan_case(d):
-        obj = mapped(lambda t: t.clone())
+        obj = with_novel(lambda t: t.clone())
         obj["novel_view"][test_ids[0]][0, 0, 0, 0] = float("nan")
         save(d, "davigs", obj)
 
     cases["nan_predictions"] = nan_case
-    cases["inf_predictions"] = lambda d: save(d, "davigs", mapped(lambda t: torch.full_like(t, float("inf"))))
-    cases["empty_predictions"] = lambda d: save(d, "davigs", {"novel_view": {}, "average_appearance": {}})
+
+    def nan_scene(d):
+        obj = with_scene(lambda g: {**g, "means": g["means"].clone()})
+        obj["scene"][test_ids[0]]["means"][0, 0] = float("nan")
+        save(d, "davigs", obj)
+
+    cases["nan_scene"] = nan_scene
+    cases["inf_predictions"] = lambda d: save(d, "davigs", with_novel(lambda t: torch.full_like(t, float("inf"))))
+    cases["empty_predictions"] = lambda d: save(d, "davigs", {"novel_view": {}, "scene": {}})
     cases["missing_artifact"] = lambda d: (d / "davigs").mkdir(parents=True, exist_ok=True)
-    cases["out_of_range"] = lambda d: save(d, "davigs", mapped(lambda t: t * 1.5 + 0.2))
+    cases["out_of_range"] = lambda d: save(d, "davigs", with_novel(lambda t: t * 1.5 + 0.2))
     cases["pickle_payload"] = lambda d: save(d, "davigs", {**ref, "extra": Payload()})
-    cases["gate_violation_flat_canonical"] = lambda d: save(
-        d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": {sid: torch.full_like(t, 0.5) for sid, t in ref["average_appearance"].items()}}
+    cases["images_instead_of_scene"] = lambda d: save(d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": ref["average_appearance"]})
+    cases["too_many_gaussians"] = lambda d: save(
+        d, "davigs", with_scene(lambda g: {k: torch.cat([v] * 11, 0) for k, v in g.items()})
     )
-    cases["canonical_from_vanilla"] = lambda d: save(
-        d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": van["average_appearance"]}
+    cases["gate_violation_transparent_scene"] = lambda d: save(
+        d, "davigs", with_scene(lambda g: {**g, "opacity": torch.full_like(g["opacity"], 0.004)})
     )
+    cases["canonical_from_vanilla"] = lambda d: save(d, "davigs", {"novel_view": ref["novel_view"], "scene": van["scene"]})
     vm = via_module_canonical()
     if vm is not None:
-        cases["canonical_via_module"] = lambda d: save(d, "davigs", {"novel_view": ref["novel_view"], "average_appearance": vm})
-    cases["nearest_view_copy"] = lambda d: save(d, "davigs", image_copy_predictions(False))
+        # The coupled render (appearance module kept, mean embedding) submitted as images:
+        # the evaluator renders the scene itself, so these images are ignored.
+        cases["canonical_via_module_images"] = lambda d: save(d, "davigs", {**ref, "average_appearance": vm})
+    cases["nearest_view_copy_points_scene"] = lambda d: save(d, "davigs", image_copy_predictions(False))
+    cases["2d_color_transfer_points_scene"] = lambda d: save(d, "davigs", image_copy_predictions(True))
 
-    def color_transfer(d):
+    def color_transfer_vanilla_scene(d):
         obj = image_copy_predictions(True)
+        obj["scene"] = van["scene"]
         save(d, "davigs", obj)
 
-    cases["2d_color_transfer"] = color_transfer
-
-    def color_transfer_vanilla_canon(d):
-        obj = image_copy_predictions(True)
-        obj["average_appearance"] = {sid: van["average_appearance"][sid] for sid in obj["novel_view"]}
-        save(d, "davigs", obj)
-
-    cases["2d_color_transfer_vanilla_canonical"] = color_transfer_vanilla_canon
+    cases["2d_color_transfer_vanilla_scene"] = color_transfer_vanilla_scene
     return cases
 
 
