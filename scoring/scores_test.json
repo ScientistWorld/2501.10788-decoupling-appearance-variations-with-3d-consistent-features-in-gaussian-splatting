@@ -1,20 +1,16 @@
 {
   "_diagnostics": {
+    "_gate": {
+      "margin": 1.0,
+      "reference_file": "davigs_reference",
+      "reference_value": 23.74045278434547,
+      "status": "gate reference (evaluator-owned frozen predictions)",
+      "threshold": 22.74045278434547
+    },
     "davigs": {
-      "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 25.012 < 27.546 (vanilla_3dgs - 1.0)",
-      "status": "failed",
-      "unscored_summary": {
-        "glav_average_appearance": {
-          "lpips": 0.24348093341622087,
-          "psnr": 25.011510439062633,
-          "ssim": 0.6448883740235174
-        },
-        "glav_novel_view": {
-          "lpips": 0.3199159892068969,
-          "psnr": 21.197371697544956,
-          "ssim": 0.6219346663942216
-        }
-      }
+      "constraint_threshold": 22.74045278434547,
+      "constraint_value": 23.74049037792904,
+      "status": "ok"
     },
     "davigs_no_id": {
       "ignored_outputs_dir": true,
@@ -33,38 +29,48 @@
     "glav_average_appearance": {
       "results": {
         "davigs": {
-          "lpips": 1.0,
-          "psnr": 0.0,
-          "ssim": -1.0
+          "lpips": 0.45647402107715607,
+          "psnr": 23.74049037792904,
+          "ssim": 0.5733536982058123
         },
         "davigs_no_id": {
-          "lpips": 0.2525717674030198,
-          "psnr": 24.023701702693742,
-          "ssim": 0.6303163337411455
+          "lpips": 0.4450068084730042,
+          "psnr": 23.69592190694715,
+          "ssim": 0.5713023523148528
         },
         "davigs_uv_depth": {
-          "lpips": 0.09853540454059839,
-          "psnr": 29.3327084846009,
-          "ssim": 0.8316499012813235
+          "lpips": 0.45940931306944954,
+          "psnr": 23.828289574141944,
+          "ssim": 0.5935428535962463
         },
         "vanilla_3dgs": {
-          "lpips": 0.11923284559614128,
-          "psnr": 28.54606997274546,
-          "ssim": 0.8058431638732702
+          "lpips": 0.5274349186155531,
+          "psnr": 24.44535186167934,
+          "ssim": 0.6115097991556673
         }
       }
     },
     "glav_novel_view": {
       "results": {
         "davigs": {
-          "lpips": 1.0,
-          "psnr": 0.0,
-          "ssim": -1.0
+          "lpips": 0.5518464859988954,
+          "psnr": 17.824045038893665,
+          "ssim": 0.5864081529784371
+        },
+        "davigs_no_id": {
+          "lpips": 0.5228256972299682,
+          "psnr": 17.735775870920385,
+          "ssim": 0.5910050800827773
+        },
+        "davigs_uv_depth": {
+          "lpips": 0.6104514507783784,
+          "psnr": 17.582817048361402,
+          "ssim": 0.5575804816654728
         },
         "vanilla_3dgs": {
-          "lpips": 0.20846607204940584,
-          "psnr": 19.000169780721265,
-          "ssim": 0.7180990176509154
+          "lpips": 0.6393932551145554,
+          "psnr": 17.449226408457168,
+          "ssim": 0.5430352237039036
         }
       }
     }

@@ -1,8 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "height": 96,
   "width": 128,
   "num_heldout": 6,
+  "num_canonical": 6,
   "num_train": 30,
   "scenes": [
     {

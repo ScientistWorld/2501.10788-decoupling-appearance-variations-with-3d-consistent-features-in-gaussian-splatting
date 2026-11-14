@@ -1,171 +1,380 @@
 {
  "reference_seed_metrics": {
-  "glav_novel_view": {
-   "psnr_by_seed": {
-    "0": 18.64601769618254
+  "glav_novel_view.psnr": {
+   "by_seed": {
+    "0": 17.824045038893665,
+    "1": 18.051948090481304,
+    "2": 17.00621057841866
    },
-   "psnr_sd": 0.0,
-   "psnr_range": 0.0,
-   "vanilla_gap_by_seed": {
-    "0": 1.1052207293990755
-   }
+   "range": 1.0457375120626438
   },
-  "glav_average_appearance": {
-   "psnr_by_seed": {
-    "0": 23.759787111823933
+  "glav_novel_view.ssim": {
+   "by_seed": {
+    "0": 0.5864081529784371,
+    "1": 0.589228864412521,
+    "2": 0.5800113194453407
    },
-   "psnr_sd": 0.0,
-   "psnr_range": 0.0,
-   "vanilla_gap_by_seed": {
-    "0": -0.682489106454419
-   }
+   "range": 0.009217544967180302
+  },
+  "glav_novel_view.lpips": {
+   "by_seed": {
+    "0": 0.5518464859988954,
+    "1": 0.5451759546995163,
+    "2": 0.5531078916456964
+   },
+   "range": 0.007931936946180107
+  },
+  "glav_average_appearance.psnr": {
+   "by_seed": {
+    "0": 23.74049037792904,
+    "1": 23.774455480379128,
+    "2": 23.7085749793028
+   },
+   "range": 0.06588050107632881
+  },
+  "glav_average_appearance.ssim": {
+   "by_seed": {
+    "0": 0.5733536982058123,
+    "1": 0.5762604108704156,
+    "2": 0.5739077364596814
+   },
+   "range": 0.002906712664603295
+  },
+  "glav_average_appearance.lpips": {
+   "by_seed": {
+    "0": 0.45647402107715607,
+    "1": 0.4479149066739612,
+    "2": 0.4528336690531837
+   },
+   "range": 0.008559114403194845
   }
  },
  "variants": {
   "cell1": {
-   "glav_novel_view": {
-    "paired_psnr_diff_by_seed": {
-     "0": -0.03934469044243727
+   "glav_novel_view.psnr": {
+    "paired_diff_by_seed": {
+     "0": -17.824045038893665,
+     "1": -18.051948090481304,
+     "2": -17.00621057841866
     },
-    "mean_paired_psnr_diff": -0.03934469044243727,
-    "per_view_mean_diff": -0.03934469044243327,
-    "per_view_paired_t": -0.47620371311501297
+    "per_view_paired_mean": NaN,
+    "per_view_paired_t": NaN
    },
-   "glav_average_appearance": {
-    "paired_psnr_diff_by_seed": {
-     "0": 0.00941010974006673
+   "glav_novel_view.ssim": {
+    "paired_diff_by_seed": {
+     "0": -1.586408152978437,
+     "1": -1.589228864412521,
+     "2": -1.5800113194453407
     },
-    "mean_paired_psnr_diff": 0.00941010974006673,
-    "per_view_mean_diff": 0.009410109740076895,
-    "per_view_paired_t": 0.26810108989582127
+    "per_view_paired_mean": NaN,
+    "per_view_paired_t": NaN
+   },
+   "glav_novel_view.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.4481535140011046,
+     "1": 0.4548240453004837,
+     "2": 0.4468921083543036
+    },
+    "per_view_paired_mean": NaN,
+    "per_view_paired_t": NaN
+   },
+   "glav_average_appearance.psnr": {
+    "paired_diff_by_seed": {
+     "0": -23.74049037792904,
+     "1": -23.774455480379128,
+     "2": -23.7085749793028
+    },
+    "per_view_paired_mean": NaN,
+    "per_view_paired_t": NaN
+   },
+   "glav_average_appearance.ssim": {
+    "paired_diff_by_seed": {
+     "0": -1.5733536982058123,
+     "1": -1.5762604108704155,
+     "2": -1.5739077364596814
+    },
+    "per_view_paired_mean": NaN,
+    "per_view_paired_t": NaN
+   },
+   "glav_average_appearance.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.5435259789228439,
+     "1": 0.5520850933260388,
+     "2": 0.5471663309468163
+    },
+    "per_view_paired_mean": NaN,
+    "per_view_paired_t": NaN
    },
    "delta_rank_by_seed": {
-    "0": 0.8904812544370196,
-    "1": 1.614407701331577,
-    "2": 0.9799653498898773
+    "0": -172.73205614753311,
+    "1": -172.73205614753311,
+    "2": -172.73205614753311
    }
   },
   "long": {
-   "glav_novel_view": {
-    "paired_psnr_diff_by_seed": {
-     "0": 0.29474240956092146
+   "glav_novel_view.psnr": {
+    "paired_diff_by_seed": {
+     "0": 0.36113815465110477,
+     "1": -18.051948090481304,
+     "2": -17.00621057841866
     },
-    "mean_paired_psnr_diff": 0.29474240956092146,
-    "per_view_mean_diff": 0.29474240956091946,
-    "per_view_paired_t": 1.3414970316718402
+    "per_view_paired_mean": 0.36113815465111054,
+    "per_view_paired_t": 1.66501577030558
    },
-   "glav_average_appearance": {
-    "paired_psnr_diff_by_seed": {
-     "0": -0.10752172940403426
+   "glav_novel_view.ssim": {
+    "paired_diff_by_seed": {
+     "0": 0.011775098825241748,
+     "1": -1.589228864412521,
+     "2": -1.5800113194453407
     },
-    "mean_paired_psnr_diff": -0.10752172940403426,
-    "per_view_mean_diff": -0.10752172940402824,
-    "per_view_paired_t": -2.212702900688936
+    "per_view_paired_mean": 0.011775098825242143,
+    "per_view_paired_t": 2.336499782566581
+   },
+   "glav_novel_view.lpips": {
+    "paired_diff_by_seed": {
+     "0": -0.06431582073370612,
+     "1": 0.4548240453004837,
+     "2": 0.4468921083543036
+    },
+    "per_view_paired_mean": -0.06431582073370616,
+    "per_view_paired_t": -8.88511781758612
+   },
+   "glav_average_appearance.psnr": {
+    "paired_diff_by_seed": {
+     "0": -0.12354104576379754,
+     "1": -23.774455480379128,
+     "2": -23.7085749793028
+    },
+    "per_view_paired_mean": -0.12354104576378984,
+    "per_view_paired_t": -2.3148216245413993
+   },
+   "glav_average_appearance.ssim": {
+    "paired_diff_by_seed": {
+     "0": -0.00593220545795714,
+     "1": -1.5762604108704155,
+     "2": -1.5739077364596814
+    },
+    "per_view_paired_mean": -0.005932205457957313,
+    "per_view_paired_t": -2.896474364421625
+   },
+   "glav_average_appearance.lpips": {
+    "paired_diff_by_seed": {
+     "0": -0.025821062425772368,
+     "1": 0.5520850933260388,
+     "2": 0.5471663309468163
+    },
+    "per_view_paired_mean": -0.02582106242577235,
+    "per_view_paired_t": -4.801858868770371
    },
    "delta_rank_by_seed": {
-    "0": 0.6168286840732151,
-    "1": 0.8325438157736418,
-    "2": -0.08356680974581367
+    "0": 0.5334432243340305,
+    "1": -172.73205614753311,
+    "2": -172.73205614753311
    }
   },
   "module_cosine": {
-   "glav_novel_view": {
-    "paired_psnr_diff_by_seed": {
-     "0": 0.37783023136594807
+   "glav_novel_view.psnr": {
+    "paired_diff_by_seed": {
+     "0": 1.1997457552296744,
+     "1": 0.9391512983766859,
+     "2": 2.1275050840243885
     },
-    "mean_paired_psnr_diff": 0.37783023136594807,
-    "per_view_mean_diff": 0.3778302313659503,
-    "per_view_paired_t": 1.8373970605115462
+    "per_view_paired_mean": 1.4221340458769167,
+    "per_view_paired_t": 4.892173624254238
    },
-   "glav_average_appearance": {
-    "paired_psnr_diff_by_seed": {
-     "0": 0.04926206176635617
+   "glav_novel_view.ssim": {
+    "paired_diff_by_seed": {
+     "0": 0.006293611521860143,
+     "1": 0.007709338251255082,
+     "2": 0.019659223072137078
     },
-    "mean_paired_psnr_diff": 0.04926206176635617,
-    "per_view_mean_diff": 0.04926206176636781,
-    "per_view_paired_t": 1.2741790840031746
+    "per_view_paired_mean": 0.011220724281750825,
+    "per_view_paired_t": 3.514303196372388
+   },
+   "glav_novel_view.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.0279544674687916,
+     "1": 0.03410522722535658,
+     "2": 0.016079287562105415
+    },
+    "per_view_paired_mean": 0.026046327418751188,
+    "per_view_paired_t": 6.664466192336881
+   },
+   "glav_average_appearance.psnr": {
+    "paired_diff_by_seed": {
+     "0": 0.07534670573813074,
+     "1": 0.06209527646470647,
+     "2": 0.06058803093338838
+    },
+    "per_view_paired_mean": 0.06601000437874367,
+    "per_view_paired_t": 2.70631703937155
+   },
+   "glav_average_appearance.ssim": {
+    "paired_diff_by_seed": {
+     "0": 0.00797599556437878,
+     "1": 0.0037235966777795504,
+     "2": 0.004064221252568001
+    },
+    "per_view_paired_mean": 0.005254604498242083,
+    "per_view_paired_t": 5.34593199487319
+   },
+   "glav_average_appearance.lpips": {
+    "paired_diff_by_seed": {
+     "0": -0.0004570889804098588,
+     "1": -0.0007433576716316947,
+     "2": -0.0012508009870847436
+    },
+    "per_view_paired_mean": -0.000817082546375416,
+    "per_view_paired_t": -0.518191014015445
    },
    "delta_rank_by_seed": {
-    "0": 0.8895616239866497,
-    "1": 0.9515981876916206,
-    "2": 0.7564912132326999
+    "0": 0.932417272716686,
+    "1": 1.0519058351960038,
+    "2": 0.9232912251724853
    }
   },
   "noadapt": {
-   "glav_novel_view": {
-    "paired_psnr_diff_by_seed": {
-     "0": -0.9036837740531389
+   "glav_novel_view.psnr": {
+    "paired_diff_by_seed": {
+     "0": -3.4997815177005016
     },
-    "mean_paired_psnr_diff": -0.9036837740531389,
-    "per_view_mean_diff": -0.903683774053142,
-    "per_view_paired_t": -2.1359384514525055
+    "per_view_paired_mean": -3.499781517700497,
+    "per_view_paired_t": -7.5767739114026655
    },
-   "glav_average_appearance": {
-    "paired_psnr_diff_by_seed": {
-     "0": 0.014156604451109445
+   "glav_novel_view.ssim": {
+    "paired_diff_by_seed": {
+     "0": -0.07670559217622086
     },
-    "mean_paired_psnr_diff": 0.014156604451109445,
-    "per_view_mean_diff": 0.014156604451109445,
-    "per_view_paired_t": 0.3663386616807907
+    "per_view_paired_mean": -0.07670559217622085,
+    "per_view_paired_t": -11.611812366095336
+   },
+   "glav_novel_view.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.00018285794390571208
+    },
+    "per_view_paired_mean": 0.00018285794390572442,
+    "per_view_paired_t": 0.034127054931437556
+   },
+   "glav_average_appearance.psnr": {
+    "paired_diff_by_seed": {
+     "0": 0.005799049895333752
+    },
+    "per_view_paired_mean": 0.005799049895341351,
+    "per_view_paired_t": 0.5579890473485198
+   },
+   "glav_average_appearance.ssim": {
+    "paired_diff_by_seed": {
+     "0": -0.00033973213432936245
+    },
+    "per_view_paired_mean": -0.0003397321343293964,
+    "per_view_paired_t": -0.9155795046544675
+   },
+   "glav_average_appearance.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.0025149352020687465
+    },
+    "per_view_paired_mean": 0.0025149352020687526,
+    "per_view_paired_t": 1.9853873901375385
    },
    "delta_rank_by_seed": {
-    "0": -1.7891733692888092
+    "0": -2.578710352224514
    }
   },
   "short": {
-   "glav_novel_view": {
-    "paired_psnr_diff_by_seed": {
-     "0": -0.32074817332666683
+   "glav_novel_view.psnr": {
+    "paired_diff_by_seed": {
+     "0": 0.2541245697070451,
+     "1": -18.051948090481304,
+     "2": -17.00621057841866
     },
-    "mean_paired_psnr_diff": -0.32074817332666683,
-    "per_view_mean_diff": -0.3207481733266713,
-    "per_view_paired_t": -1.239927492864792
+    "per_view_paired_mean": 0.2541245697070517,
+    "per_view_paired_t": 0.7856649793286252
    },
-   "glav_average_appearance": {
-    "paired_psnr_diff_by_seed": {
-     "0": 0.25704836182427115
+   "glav_novel_view.ssim": {
+    "paired_diff_by_seed": {
+     "0": -0.06784105323353051,
+     "1": -1.589228864412521,
+     "2": -1.5800113194453407
     },
-    "mean_paired_psnr_diff": 0.25704836182427115,
-    "per_view_mean_diff": 0.25704836182427393,
-    "per_view_paired_t": 2.9847834824981634
+    "per_view_paired_mean": -0.06784105323353028,
+    "per_view_paired_t": -9.346504359204053
+   },
+   "glav_novel_view.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.07016832298702669,
+     "1": 0.4548240453004837,
+     "2": 0.4468921083543036
+    },
+    "per_view_paired_mean": 0.07016832298702663,
+    "per_view_paired_t": 7.265033235432625
+   },
+   "glav_average_appearance.psnr": {
+    "paired_diff_by_seed": {
+     "0": 0.2265658876311285,
+     "1": -23.774455480379128,
+     "2": -23.7085749793028
+    },
+    "per_view_paired_mean": 0.22656588763113264,
+    "per_view_paired_t": 2.744861048106669
+   },
+   "glav_average_appearance.ssim": {
+    "paired_diff_by_seed": {
+     "0": 0.003640868680890863,
+     "1": -1.5762604108704155,
+     "2": -1.5739077364596814
+    },
+    "per_view_paired_mean": 0.003640868680890741,
+    "per_view_paired_t": 0.9498627124925193
+   },
+   "glav_average_appearance.lpips": {
+    "paired_diff_by_seed": {
+     "0": 0.05089898738596177,
+     "1": 0.5520850933260388,
+     "2": 0.5471663309468163
+    },
+    "per_view_paired_mean": 0.05089898738596174,
+    "per_view_paired_t": 10.810026307539065
    },
    "delta_rank_by_seed": {
-    "0": -0.849347493842614,
-    "1": -1.0339705712443044,
-    "2": -0.36867037293999516
+    "0": -0.8200261244819658,
+    "1": -172.73205614753311,
+    "2": -172.73205614753311
    }
   }
  },
  "sd": {
-  "glav_novel_view.psnr": 0.3683796010538873,
-  "glav_novel_view.ssim": 0.026313075840403957,
-  "glav_novel_view.lpips": 0.03261410130609586,
-  "glav_average_appearance.psnr": 0.13875009715446593,
-  "glav_average_appearance.ssim": 0.00812892421130922,
-  "glav_average_appearance.lpips": 0.02257255918008174
+  "glav_novel_view.psnr": 1.4014425868007319,
+  "glav_novel_view.ssim": 0.03290635379881318,
+  "glav_novel_view.lpips": 0.0339004286430639,
+  "glav_average_appearance.psnr": 0.09054380902093395,
+  "glav_average_appearance.ssim": 0.003965662374956866,
+  "glav_average_appearance.lpips": 0.019609738770784063
  },
  "reference_delta_rank_by_seed": {
-  "0": 0.0
+  "0": 0.0,
+  "1": 0.5006583855092354,
+  "2": -0.5465011652862137
  },
  "shortcut_delta_rank": {
   "reference_copy": 0.0,
   "metadata_injection": 0.0,
-  "replace_targets": -30.60587077898725,
-  "replace_baseline": 0.0,
-  "hide_failed_method": -144.33060757873784,
+  "replace_targets": -14.468560276320439,
+  "replace_baseline_and_gate": 0.0,
+  "hide_failed_method": -172.73205614753311,
   "unlisted_method": 0.0,
-  "reduce_test_size": -144.33060757873784,
+  "reduce_test_size": -172.73205614753311,
   "direct_score_write": 0.0,
-  "nan_predictions": -144.33060757873784,
-  "inf_predictions": -144.33060757873784,
-  "empty_predictions": -144.33060757873784,
-  "missing_artifact": -144.33060757873784,
-  "out_of_range": -144.33060757873784,
-  "pickle_payload": -144.33060757873784,
-  "gate_violation": -144.33060757873784,
-  "canonical_from_adapted": 6.766658927704087,
-  "canonical_from_vanilla": 1.8547556442207886,
-  "nearest_view_copy": -144.33060757873784,
-  "2d_color_transfer": 3.826378987114184
+  "nan_predictions": -172.73205614753311,
+  "inf_predictions": -172.73205614753311,
+  "empty_predictions": -172.73205614753311,
+  "missing_artifact": -172.73205614753311,
+  "out_of_range": -172.73205614753311,
+  "pickle_payload": -172.73205614753311,
+  "gate_violation_flat_canonical": -172.73205614753311,
+  "canonical_from_vanilla": 3.235759391340396,
+  "canonical_via_module": 8.194783257497656,
+  "nearest_view_copy": -172.73205614753311,
+  "2d_color_transfer": -172.73205614753311,
+  "2d_color_transfer_vanilla_canonical": 4.1668343860065145
  }
 }
