@@ -29,6 +29,7 @@ import json
 import multiprocessing as mp
 import os
 import sys
+import time
 from pathlib import Path
 
 import torch
@@ -77,12 +78,13 @@ VARIANTS = {
     "noadapt": {"heldout_adapt": False},
     **{f"cand_{k}": dict(v) for k, v in CANDIDATES.items()},
 }
-AUDIT = [
-    ("long", [0]),
+AUDIT = [  # priority order: seed noise first, then the variants
     ("reference", [1, 2]),
-    ("module_cosine", [0, 1, 2]),
-    ("noadapt", [0]),
+    ("module_cosine", [0, 1]),
+    ("long", [0]),
     ("short", [0]),
+    ("noadapt", [0]),
+    ("module_cosine", [2]),
 ]
 
 
@@ -162,6 +164,7 @@ def main() -> None:
     ap.add_argument("--steps", type=int, default=None, help="override optimisation steps (smoke tests)")
     ap.add_argument("--workers", type=int, default=None)
     ap.add_argument("--strict", action="store_true", help="exit non-zero if any run is incomplete")
+    ap.add_argument("--deadline", type=float, default=None, help="unix time: stop workers then and keep what finished")
     args = ap.parse_args()
 
     runs = [r for name in args.plan.split(",") for r in plan(name.strip())]
@@ -204,6 +207,13 @@ def main() -> None:
         procs = [ctx.Process(target=worker, args=(i, devices[i % len(devices)], threads, queue)) for i in range(n_workers)]
         for p in procs:
             p.start()
+        while any(p.is_alive() for p in procs):
+            if args.deadline is not None and time.time() > args.deadline:
+                print("[run] deadline reached: stopping workers (finished scenes are cached)", flush=True)
+                for p in procs:
+                    p.terminate()
+                break
+            time.sleep(10)
         for p in procs:
             p.join()
 

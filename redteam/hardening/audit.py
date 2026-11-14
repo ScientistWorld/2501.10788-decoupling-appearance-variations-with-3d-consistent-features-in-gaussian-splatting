@@ -302,7 +302,7 @@ def report() -> None:
     ref_json = json.loads((ROOT / "scoring" / "reference.json").read_text())["experiments"]
     honest_runs = json.loads((REPORT / "honest_runs.json").read_text())
     comps = honest_runs.pop("_comparisons")
-    honest_runs.pop("_gate", None)
+    meta = {k: honest_runs.pop(k) for k in list(honest_runs) if k.startswith("_")}
     short = json.loads((REPORT / "shortcut_runs.json").read_text()) if (REPORT / "shortcut_runs.json").exists() else {}
     ref = honest_runs["reference_s0"]["davigs"]
 
@@ -353,7 +353,7 @@ def report() -> None:
         return out
 
     ref_seeds = per_seed("reference")
-    stats = {"reference_seed_metrics": {}, "variants": {}, "sd": {f"{e}.{m}": v for (e, m), v in sds.items()}}
+    stats = {"reference_seed_metrics": {}, "variants": {}, "sd": {f"{e}.{m}": v for (e, m), v in sds.items()}, **meta}
     for exp in EXPS:
         for m in METRICS:
             vals = [r["davigs"][exp][m] for r in ref_seeds.values()]
