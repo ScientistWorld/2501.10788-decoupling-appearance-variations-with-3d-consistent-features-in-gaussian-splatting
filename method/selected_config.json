@@ -4,40 +4,40 @@
   "chosen": "r128_lr1",
   "candidates_dev_scores": {
     "r512_lr1": {
-      "criterion": 17.54222049242618,
-      "glav_novel_view.psnr": 16.726668712749525,
-      "glav_novel_view.ssim": 0.502610726108607,
-      "glav_novel_view.lpips": 0.5908579097853767,
-      "glav_average_appearance.psnr": 23.243659656891282,
-      "glav_average_appearance.ssim": 0.5386987397040891,
-      "glav_average_appearance.lpips": 0.48472804493374294
+      "criterion": 17.49509700454279,
+      "glav_novel_view.psnr": 16.711760126212805,
+      "glav_novel_view.ssim": 0.5018604164250177,
+      "glav_novel_view.lpips": 0.59116516676214,
+      "glav_average_appearance.psnr": 23.182774924215344,
+      "glav_average_appearance.ssim": 0.536146044990608,
+      "glav_average_appearance.lpips": 0.48216396901342606
     },
     "r128_lr1": {
-      "criterion": 18.09702343604748,
-      "glav_novel_view.psnr": 16.709562438387334,
-      "glav_novel_view.ssim": 0.510281678001077,
-      "glav_novel_view.lpips": 0.5712934517198138,
-      "glav_average_appearance.psnr": 23.28581624290129,
-      "glav_average_appearance.ssim": 0.5436630398178007,
-      "glav_average_appearance.lpips": 0.47935758696662056
+      "criterion": 18.15944468285511,
+      "glav_novel_view.psnr": 16.70108778549296,
+      "glav_novel_view.ssim": 0.5093439793950193,
+      "glav_novel_view.lpips": 0.5666353387965096,
+      "glav_average_appearance.psnr": 23.27245800441198,
+      "glav_average_appearance.ssim": 0.5427535906239676,
+      "glav_average_appearance.lpips": 0.4774809744622972
     },
     "r512_lr02": {
-      "criterion": 16.676355627627597,
-      "glav_novel_view.psnr": 16.841367600992783,
-      "glav_novel_view.ssim": 0.5026168370052032,
-      "glav_novel_view.lpips": 0.6586690644423167,
-      "glav_average_appearance.psnr": 23.556212393900605,
-      "glav_average_appearance.ssim": 0.5802260942209566,
-      "glav_average_appearance.lpips": 0.5066996183660295
+      "criterion": 16.66175619898427,
+      "glav_novel_view.psnr": 16.837340444665877,
+      "glav_novel_view.ssim": 0.5025592063391289,
+      "glav_novel_view.lpips": 0.6590303149488237,
+      "glav_average_appearance.psnr": 23.552956548843536,
+      "glav_average_appearance.ssim": 0.5800312654360241,
+      "glav_average_appearance.lpips": 0.5069678889380561
     },
     "r128_lr02": {
-      "criterion": 16.85831030388455,
-      "glav_novel_view.psnr": 16.849507665026266,
-      "glav_novel_view.ssim": 0.5041552165469355,
-      "glav_novel_view.lpips": 0.6512511107656691,
-      "glav_average_appearance.psnr": 23.592526488982884,
-      "glav_average_appearance.ssim": 0.5808657187889763,
-      "glav_average_appearance.lpips": 0.5061890333890915
+      "criterion": 16.856644260275104,
+      "glav_novel_view.psnr": 16.849511360896706,
+      "glav_novel_view.ssim": 0.5041641585357591,
+      "glav_novel_view.lpips": 0.6513515611489614,
+      "glav_average_appearance.psnr": 23.592732244037457,
+      "glav_average_appearance.ssim": 0.5808845368732896,
+      "glav_average_appearance.lpips": 0.5062250461843278
     }
   },
   "note": "chosen on the development scenes by method/select_config.py; see its docstring"

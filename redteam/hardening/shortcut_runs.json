@@ -2,26 +2,26 @@
  "reference_copy": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.45647402107715607,
-    "psnr": 23.74049037792904,
-    "ssim": 0.5733536982058123
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -42,13 +42,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 23.74049037792904,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -65,26 +65,26 @@
  "metadata_injection": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.45647402107715607,
-    "psnr": 23.74049037792904,
-    "ssim": 0.5733536982058123
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -105,13 +105,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 23.74049037792904,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -133,21 +133,21 @@
     "ssim": 0.0006075010367461077
    },
    "glav_average_appearance": {
-    "lpips": 0.45647402107715607,
-    "psnr": 23.74049037792904,
-    "ssim": 0.5733536982058123
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -168,13 +168,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 23.74049037792904,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -191,26 +191,26 @@
  "replace_baseline_and_gate": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.45647402107715607,
-    "psnr": 23.74049037792904,
-    "ssim": 0.5733536982058123
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -233,20 +233,20 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 23.74049037792904,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
     "status": "comparison: evaluator-owned frozen predictions"
    },
    "davigs_reference": {
-    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 7.679 < 22.740 (frozen davigs_reference - 1.0)",
+    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 7.679 < 22.734 (frozen davigs_reference - 1.0)",
     "status": "failed",
     "unscored_summary": {
      "glav_average_appearance": {
@@ -255,9 +255,9 @@
       "ssim": 0.0004536257353552161
      },
      "glav_novel_view": {
-      "lpips": 0.8693776230017344,
-      "psnr": 7.894747969316405,
-      "ssim": 0.0006075010367461077
+      "lpips": 0.5495094897018539,
+      "psnr": 17.81082027367412,
+      "ssim": 0.5869495305876098
      }
     }
    },
@@ -285,14 +285,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -313,9 +313,9 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
     "reason": "InvalidPrediction: missing predictions.pt",
@@ -336,26 +336,26 @@
  "unlisted_method": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.45647402107715607,
-    "psnr": 23.74049037792904,
-    "ssim": 0.5733536982058123
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -378,13 +378,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 23.74049037792904,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -397,20 +397,9 @@
     "status": "comparison: evaluator-owned frozen predictions"
    },
    "zz_unlisted": {
-    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 7.679 < 22.740 (frozen davigs_reference - 1.0)",
-    "status": "failed",
-    "unscored_summary": {
-     "glav_average_appearance": {
-      "lpips": 0.9324688431289461,
-      "psnr": 7.678885599645773,
-      "ssim": 0.0004536257353552161
-     },
-     "glav_novel_view": {
-      "lpips": 0.8693776230017344,
-      "psnr": 7.894747969316405,
-      "ssim": 0.0006075010367461077
-     }
-    }
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
+    "status": "ok"
    }
   }
  },
@@ -429,14 +418,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -457,12 +446,12 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "reason": "InvalidPrediction: novel_view: missing scene test_01",
+    "reason": "InvalidPrediction: novel_view/test_01: missing",
     "status": "failed"
    },
    "davigs_no_id": {
@@ -479,26 +468,26 @@
  "direct_score_write": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.45647402107715607,
-    "psnr": 23.74049037792904,
-    "ssim": 0.5733536982058123
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -519,13 +508,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 23.74049037792904,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -554,14 +543,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -582,12 +571,74 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
     "reason": "InvalidPrediction: novel_view/test_00: non-finite values",
+    "status": "failed"
+   },
+   "davigs_no_id": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   },
+   "davigs_uv_depth": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   },
+   "vanilla_3dgs": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   }
+  }
+ },
+ "nan_scene": {
+  "davigs": {
+   "glav_novel_view": {
+    "lpips": 1.0,
+    "psnr": 0.0,
+    "ssim": -1.0
+   },
+   "glav_average_appearance": {
+    "lpips": 1.0,
+    "psnr": 0.0,
+    "ssim": -1.0
+   }
+  },
+  "vanilla_3dgs": {
+   "glav_novel_view": {
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
+   },
+   "glav_average_appearance": {
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
+   }
+  },
+  "methods": {
+   "glav_novel_view": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+   ],
+   "glav_average_appearance": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+   ]
+  },
+  "diagnostics": {
+   "_gate": {
+    "margin": 1.0,
+    "reference_file": "davigs_reference",
+    "reference_value": 23.733774210974005,
+    "status": "gate reference (evaluator-owned frozen predictions)",
+    "threshold": 22.733774210974005
+   },
+   "davigs": {
+    "reason": "InvalidPrediction: scene/test_00: 'means' has non-finite values",
     "status": "failed"
    },
    "davigs_no_id": {
@@ -616,14 +667,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -644,9 +695,9 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
     "reason": "InvalidPrediction: novel_view/test_00: non-finite values",
@@ -678,14 +729,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -706,12 +757,12 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "reason": "InvalidPrediction: novel_view: missing scene test_00",
+    "reason": "InvalidPrediction: novel_view/test_00: missing",
     "status": "failed"
    },
    "davigs_no_id": {
@@ -740,14 +791,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -768,9 +819,9 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
     "reason": "InvalidPrediction: missing predictions.pt",
@@ -802,14 +853,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -830,9 +881,9 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
     "reason": "InvalidPrediction: novel_view/test_00: values outside [0, 1]",
@@ -864,14 +915,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -892,9 +943,9 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
     "reason": "InvalidPrediction: unreadable predictions.pt (UnpicklingError)",
@@ -911,7 +962,7 @@
    }
   }
  },
- "gate_violation_flat_canonical": {
+ "images_instead_of_scene": {
   "davigs": {
    "glav_novel_view": {
     "lpips": 1.0,
@@ -926,14 +977,14 @@
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -954,23 +1005,147 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 20.230 < 22.740 (frozen davigs_reference - 1.0)",
+    "reason": "InvalidPrediction: missing 'scene' section",
+    "status": "failed"
+   },
+   "davigs_no_id": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   },
+   "davigs_uv_depth": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   },
+   "vanilla_3dgs": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   }
+  }
+ },
+ "too_many_gaussians": {
+  "davigs": {
+   "glav_novel_view": {
+    "lpips": 1.0,
+    "psnr": 0.0,
+    "ssim": -1.0
+   },
+   "glav_average_appearance": {
+    "lpips": 1.0,
+    "psnr": 0.0,
+    "ssim": -1.0
+   }
+  },
+  "vanilla_3dgs": {
+   "glav_novel_view": {
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
+   },
+   "glav_average_appearance": {
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
+   }
+  },
+  "methods": {
+   "glav_novel_view": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+   ],
+   "glav_average_appearance": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+   ]
+  },
+  "diagnostics": {
+   "_gate": {
+    "margin": 1.0,
+    "reference_file": "davigs_reference",
+    "reference_value": 23.733774210974005,
+    "status": "gate reference (evaluator-owned frozen predictions)",
+    "threshold": 22.733774210974005
+   },
+   "davigs": {
+    "reason": "InvalidPrediction: scene/test_00: 66000 Gaussians (allowed 1..60000)",
+    "status": "failed"
+   },
+   "davigs_no_id": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   },
+   "davigs_uv_depth": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   },
+   "vanilla_3dgs": {
+    "status": "comparison: evaluator-owned frozen predictions"
+   }
+  }
+ },
+ "gate_violation_transparent_scene": {
+  "davigs": {
+   "glav_novel_view": {
+    "lpips": 1.0,
+    "psnr": 0.0,
+    "ssim": -1.0
+   },
+   "glav_average_appearance": {
+    "lpips": 1.0,
+    "psnr": 0.0,
+    "ssim": -1.0
+   }
+  },
+  "vanilla_3dgs": {
+   "glav_novel_view": {
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
+   },
+   "glav_average_appearance": {
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
+   }
+  },
+  "methods": {
+   "glav_novel_view": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+   ],
+   "glav_average_appearance": [
+    "davigs",
+    "davigs_no_id",
+    "davigs_uv_depth",
+    "vanilla_3dgs"
+   ]
+  },
+  "diagnostics": {
+   "_gate": {
+    "margin": 1.0,
+    "reference_file": "davigs_reference",
+    "reference_value": 23.733774210974005,
+    "status": "gate reference (evaluator-owned frozen predictions)",
+    "threshold": 22.733774210974005
+   },
+   "davigs": {
+    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 14.807 < 22.734 (frozen davigs_reference - 1.0)",
     "status": "failed",
     "unscored_summary": {
      "glav_average_appearance": {
-      "lpips": 0.7922758807738622,
-      "psnr": 20.23014890314155,
-      "ssim": 0.5522947279712722
+      "lpips": 0.8954664303196801,
+      "psnr": 14.806598322873397,
+      "ssim": 0.2755256526974294
      },
      "glav_novel_view": {
-      "lpips": 0.5518464859988954,
-      "psnr": 17.824045038893665,
-      "ssim": 0.5864081529784371
+      "lpips": 0.5495094897018539,
+      "psnr": 17.81082027367412,
+      "ssim": 0.5869495305876098
      }
     }
    },
@@ -988,26 +1163,26 @@
  "canonical_from_vanilla": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.5275260491503609,
-    "psnr": 24.445369476441286,
-    "ssim": 0.6115237173339216
+    "lpips": 0.5275265259875191,
+    "psnr": 24.445362373765406,
+    "ssim": 0.6115232801766369
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -1028,13 +1203,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 24.445369476441286,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 24.445362373765406,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -1048,29 +1223,29 @@
    }
   }
  },
- "canonical_via_module": {
+ "canonical_via_module_images": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.5518464859988954,
-    "psnr": 17.824045038893665,
-    "ssim": 0.5864081529784371
+    "lpips": 0.5495094897018539,
+    "psnr": 17.81082027367412,
+    "ssim": 0.5869495305876098
    },
    "glav_average_appearance": {
-    "lpips": 0.3642297006315655,
-    "psnr": 25.18528884906331,
-    "ssim": 0.6447914716982062
+    "lpips": 0.45903968976603615,
+    "psnr": 23.73371683712034,
+    "ssim": 0.5732762192882984
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -1091,13 +1266,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 25.18528884906331,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.73371683712034,
     "status": "ok"
    },
    "davigs_no_id": {
@@ -1111,29 +1286,29 @@
    }
   }
  },
- "nearest_view_copy": {
+ "nearest_view_copy_points_scene": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 1.0,
-    "psnr": 0.0,
-    "ssim": -1.0
+    "lpips": 0.3439987463255723,
+    "psnr": 16.148968192673838,
+    "ssim": 0.35280424266249555
    },
    "glav_average_appearance": {
-    "lpips": 1.0,
-    "psnr": 0.0,
-    "ssim": -1.0
+    "lpips": 0.42504114740424687,
+    "psnr": 23.240362678240743,
+    "ssim": 0.511858526449112
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -1154,25 +1329,14 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 22.700 < 22.740 (frozen davigs_reference - 1.0)",
-    "status": "failed",
-    "unscored_summary": {
-     "glav_average_appearance": {
-      "lpips": 0.3314625513222482,
-      "psnr": 22.699592090163353,
-      "ssim": 0.5012848205930265
-     },
-     "glav_novel_view": {
-      "lpips": 0.3439987463255723,
-      "psnr": 16.148968192673838,
-      "ssim": 0.35280424266249555
-     }
-    }
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.240362678240743,
+    "status": "ok"
    },
    "davigs_no_id": {
     "status": "comparison: evaluator-owned frozen predictions"
@@ -1185,29 +1349,29 @@
    }
   }
  },
- "2d_color_transfer": {
+ "2d_color_transfer_points_scene": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 1.0,
-    "psnr": 0.0,
-    "ssim": -1.0
+    "lpips": 0.41562586401899654,
+    "psnr": 19.111864521138557,
+    "ssim": 0.48124313596809987
    },
    "glav_average_appearance": {
-    "lpips": 1.0,
-    "psnr": 0.0,
-    "ssim": -1.0
+    "lpips": 0.42504114740424687,
+    "psnr": 23.240362678240743,
+    "ssim": 0.511858526449112
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -1228,25 +1392,14 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "reason": "InvalidPrediction: constraint failed: glav_average_appearance.psnr = 22.700 < 22.740 (frozen davigs_reference - 1.0)",
-    "status": "failed",
-    "unscored_summary": {
-     "glav_average_appearance": {
-      "lpips": 0.3314625513222482,
-      "psnr": 22.699592090163353,
-      "ssim": 0.5012848205930265
-     },
-     "glav_novel_view": {
-      "lpips": 0.41562587602270973,
-      "psnr": 19.11186395052836,
-      "ssim": 0.48124313221381165
-     }
-    }
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 23.240362678240743,
+    "status": "ok"
    },
    "davigs_no_id": {
     "status": "comparison: evaluator-owned frozen predictions"
@@ -1259,29 +1412,29 @@
    }
   }
  },
- "2d_color_transfer_vanilla_canonical": {
+ "2d_color_transfer_vanilla_scene": {
   "davigs": {
    "glav_novel_view": {
-    "lpips": 0.41562601634197766,
-    "psnr": 19.11186517198543,
-    "ssim": 0.48124315961088826
+    "lpips": 0.4156258698138926,
+    "psnr": 19.11186434798628,
+    "ssim": 0.48124312360193106
    },
    "glav_average_appearance": {
-    "lpips": 0.5275260491503609,
-    "psnr": 24.445369476441286,
-    "ssim": 0.6115237173339216
+    "lpips": 0.5275265259875191,
+    "psnr": 24.445362373765406,
+    "ssim": 0.6115232801766369
    }
   },
   "vanilla_3dgs": {
    "glav_novel_view": {
-    "lpips": 0.6393932551145554,
-    "psnr": 17.449226408457168,
-    "ssim": 0.5430352237039036
+    "lpips": 0.6393957253959444,
+    "psnr": 17.44922553297737,
+    "ssim": 0.5430351807219999
    },
    "glav_average_appearance": {
-    "lpips": 0.5274349186155531,
-    "psnr": 24.44535186167934,
-    "ssim": 0.6115097991556673
+    "lpips": 0.5274339036809074,
+    "psnr": 24.445352907762313,
+    "ssim": 0.6115094459644781
    }
   },
   "methods": {
@@ -1302,13 +1455,13 @@
    "_gate": {
     "margin": 1.0,
     "reference_file": "davigs_reference",
-    "reference_value": 23.74045278434547,
+    "reference_value": 23.733774210974005,
     "status": "gate reference (evaluator-owned frozen predictions)",
-    "threshold": 22.74045278434547
+    "threshold": 22.733774210974005
    },
    "davigs": {
-    "constraint_threshold": 22.74045278434547,
-    "constraint_value": 24.445369476441286,
+    "constraint_threshold": 22.733774210974005,
+    "constraint_value": 24.445362373765406,
     "status": "ok"
    },
    "davigs_no_id": {

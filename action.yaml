@@ -5,4 +5,4 @@ action: submit
 gpus: 1
 test: true
 milestone: secondary_claims
-notes: "Smoke test (150 steps/task) of the hardened pipeline: rebuild benchmark with canonical-only cameras, dev selection, reference, freeze, both evaluators, audit runs + shortcut audit, validate"
+notes: "Smoke test 2 (150 steps/task): evaluator-rendered Gaussian scenes for the appearance-free experiment, rebuilt benchmark (format 3), selection, reference, freeze, both evaluators, audit + shortcuts, validate"
