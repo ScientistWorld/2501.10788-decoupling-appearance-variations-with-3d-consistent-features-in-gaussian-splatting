@@ -2,7 +2,7 @@
   "experiments": {
     "glav_novel_view": {
       "description": "Held-out novel-view synthesis under global and local appearance variation (paper Table 1 protocol): each held-out capture's appearance may be fitted on its left half only; quality is measured on its right half. Scored on the 6 hidden test scenes x 6 held-out captures.",
-      "weight": 0.7,
+      "weight": 0.85,
       "primary_metric": "psnr",
       "metrics": {
         "psnr": {
@@ -165,7 +165,7 @@
     },
     "glav_average_appearance": {
       "description": "Quality of the reconstructed scene itself, rendered without any appearance model (paper Table 4 protocol: colour correction before metrics to evaluate the average appearance). The evaluator renders each method's submitted 3D Gaussian scene with its own 3DGS rasteriser at six canonical-only cameras per scene (no capture exists at these viewpoints), colour-corrects each render (mip-NeRF 360 quadratic warp) to that camera's average appearance over the training capture conditions, and scores the full frame. It doubles as the decoupling constraint: a method more than 1 dB PSNR below the evaluator's frozen reference reconstruction (the paper's method from the reference run) fails the run.",
-      "weight": 0.3,
+      "weight": 0.15,
       "primary_metric": "psnr",
       "metrics": {
         "psnr": {
@@ -226,7 +226,8 @@
             0.317
           ]
         }
-      }
+      },
+      "_weight_note": "Weight 0.15 (was 0.3): the paper's quantitative claims are on the novel-view protocol (Tables 1-3); the colour-corrected protocol appears only for the Table 4 ablations, and the decoupling constraint is enforced by the gate. At 0.3 the secondary protocol let the uv+depth ablation (2.0 dB worse on the main metric) outrank the full method; see HARDENING.md."
     }
   }
 }

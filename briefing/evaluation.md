@@ -17,8 +17,8 @@ for every scene in `data/glav_syn/manifest.json`, held-out captures in file orde
 
 ## Experiments and metrics
 
-- **glav_novel_view** (weight 0.7): PSNR, SSIM (11x11 Gaussian window) and LPIPS (v0.1, AlexNet) of the predicted right halves against the captured right halves. A held-out capture's appearance may be inferred only from its left half.
-- **glav_average_appearance** (weight 0.3): the evaluator renders the submitted Gaussian scene itself, with its own 3D Gaussian Splatting rasteriser (EWA projection, depth-sorted alpha compositing, black background, no appearance model of any kind), at six canonical-only cameras per scene (`canonical_R/t/K` in each scene file). No capture exists at these viewpoints. Each render is colour-corrected by the evaluator (the mip-NeRF 360 per-image quadratic colour warp) to that camera's average appearance over the training capture conditions, then scored with PSNR, SSIM and LPIPS on the full frame. This measures whether the reconstructed scene itself is clean.
+- **glav_novel_view** (weight 0.85): PSNR, SSIM (11x11 Gaussian window) and LPIPS (v0.1, AlexNet) of the predicted right halves against the captured right halves. A held-out capture's appearance may be inferred only from its left half.
+- **glav_average_appearance** (weight 0.15): the evaluator renders the submitted Gaussian scene itself, with its own 3D Gaussian Splatting rasteriser (EWA projection, depth-sorted alpha compositing, black background, no appearance model of any kind), at six canonical-only cameras per scene (`canonical_R/t/K` in each scene file). No capture exists at these viewpoints. Each render is colour-corrected by the evaluator (the mip-NeRF 360 per-image quadratic colour warp) to that camera's average appearance over the training capture conditions, then scored with PSNR, SSIM and LPIPS on the full frame. This measures whether the reconstructed scene itself is clean.
 
 Each metric is the mean over the slice's held-out captures (novel view) or canonical views (average appearance). Higher PSNR/SSIM and lower LPIPS are better.
 

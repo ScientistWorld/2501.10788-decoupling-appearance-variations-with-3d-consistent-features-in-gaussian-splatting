@@ -26,7 +26,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-import torch
+try:  # the report stage only needs the JSON results
+    import torch
+except ImportError:  # pragma: no cover
+    torch = None
 
 ROOT = Path(__file__).resolve().parents[2]
 AUDIT = ROOT / "outputs" / "_audit"
@@ -312,42 +315,43 @@ def report() -> None:
     short = json.loads((REPORT / "shortcut_runs.json").read_text()) if (REPORT / "shortcut_runs.json").exists() else {}
     ref = honest_runs["reference_s0"]["davigs"]
 
-    sds = {}
-    for exp in EXPS:
-        for m in METRICS:
-            vals = [
-                r["davigs"][exp][m]
-                for r in honest_runs.values()
-                if r["davigs"][exp] is not None and (r.get("diagnostics") or {}).get("status") == "ok"
-            ]
-            sds[(exp, m)] = statistics.pstdev(vals) if len(vals) > 1 else 0.0
+    ok_runs = [r["davigs"] for r in honest_runs.values() if (r.get("diagnostics") or {}).get("status") == "ok"]
 
-    def delta_rank(summary: dict) -> float:
+    def cohort_sds(cohort):
+        return {(exp, m): (statistics.pstdev([c[exp][m] for c in cohort]) if len(cohort) > 1 else 0.0) for exp in EXPS for m in METRICS}
+
+    # Narrow cohort: the reference's own seeds and honest variants (pessimistic: small spreads).
+    sds = cohort_sds(ok_runs)
+    # Broad cohort: additionally the fixed comparison methods, closer to a diverse field of attempts.
+    sds_broad = cohort_sds(ok_runs + [c for c in comps.values() if c["glav_novel_view"] is not None])
+
+    def delta_rank(summary: dict, which=None) -> float:
+        which = sds if which is None else which
         total = 0.0
         for exp in EXPS:
             spec = ref_json[exp]
             for m, mdef in spec["metrics"].items():
-                sd = sds[(exp, m)]
+                sd = which[(exp, m)]
                 if sd <= 0 or summary.get(exp) is None or ref.get(exp) is None:
                     continue
                 sign = 1.0 if mdef["higher_is_better"] else -1.0
                 total += spec["weight"] * abs(mdef["coefficient"]) * sign * (summary[exp][m] - ref[exp][m]) / sd
         return total
 
-    def row(name, s, dr=True):
+    def row(name, s):
         nv, aa = s["glav_novel_view"], s["glav_average_appearance"]
-        tail = f"{delta_rank(s):+.3f}" if dr else "-"
         return (
             f"| {name} | {nv['psnr']:.3f} | {nv['ssim']:.4f} | {nv['lpips']:.4f} | "
-            f"{aa['psnr']:.3f} | {aa['ssim']:.4f} | {aa['lpips']:.4f} | {tail} |"
+            f"{aa['psnr']:.3f} | {aa['ssim']:.4f} | {aa['lpips']:.4f} | {delta_rank(s):+.3f} | {delta_rank(s, sds_broad):+.3f} |"
         )
 
-    lines = ["| run | NV PSNR | NV SSIM | NV LPIPS | AA PSNR | AA SSIM | AA LPIPS | dR |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    lines = ["| run | NV PSNR | NV SSIM | NV LPIPS | AA PSNR | AA SSIM | AA LPIPS | dR (narrow SD) | dR (broad SD) |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for name, r in honest_runs.items():
         lines.append(row(name, r["davigs"]))
     for name, s in comps.items():
         if s["glav_novel_view"] is not None:
-            lines.append(row(f"{name} (frozen comparison)", s, dr=False) + f" dR if submitted: {delta_rank(s):+.3f}")
+            lines.append(row(f"{name} (frozen comparison, as if submitted)", s))
 
     def per_seed(prefix):
         out = {}
@@ -359,7 +363,8 @@ def report() -> None:
         return out
 
     ref_seeds = per_seed("reference")
-    stats = {"reference_seed_metrics": {}, "variants": {}, "sd": {f"{e}.{m}": v for (e, m), v in sds.items()}, **meta}
+    stats = {"reference_seed_metrics": {}, "variants": {}, "sd": {f"{e}.{m}": v for (e, m), v in sds.items()},
+             "sd_broad": {f"{e}.{m}": v for (e, m), v in sds_broad.items()}, **meta}
     for exp in EXPS:
         for m in METRICS:
             vals = [r["davigs"][exp][m] for r in ref_seeds.values()]
@@ -387,10 +392,11 @@ def report() -> None:
                     "per_view_paired_t": mean_view / se if se == se and se > 0 else float("nan"),
                 }
         entry["delta_rank_by_seed"] = {s: delta_rank(vs[s]["davigs"]) for s in vs}
+        entry["delta_rank_by_seed_broad"] = {s: delta_rank(vs[s]["davigs"], sds_broad) for s in vs}
         stats["variants"][v] = entry
     stats["reference_delta_rank_by_seed"] = {s: delta_rank(r["davigs"]) for s, r in ref_seeds.items()}
 
-    sc_lines = ["| shortcut | davigs status | NV PSNR | AA PSNR | dR |", "|---|---|---:|---:|---:|"]
+    sc_lines = ["| shortcut | davigs status | NV PSNR | AA PSNR | dR (narrow SD) | dR (broad SD) |", "|---|---|---:|---:|---:|---:|"]
     for name, r in short.items():
         diag = r["diagnostics"].get("davigs", {})
         s = r["davigs"]
@@ -402,12 +408,14 @@ def report() -> None:
         if unscored:
             extra = f" [unscored: NV {unscored['glav_novel_view']['psnr']:.3f}, AA {unscored['glav_average_appearance']['psnr']:.3f}]"
         if s["glav_novel_view"] is None:
-            sc_lines.append(f"| {name} | {status}{extra} | - | - | - |")
+            sc_lines.append(f"| {name} | {status}{extra} | - | - | - | - |")
         else:
             sc_lines.append(
-                f"| {name} | {status}{extra} | {s['glav_novel_view']['psnr']:.3f} | {s['glav_average_appearance']['psnr']:.3f} | {delta_rank(s):+.3f} |"
+                f"| {name} | {status}{extra} | {s['glav_novel_view']['psnr']:.3f} | {s['glav_average_appearance']['psnr']:.3f} | "
+                f"{delta_rank(s):+.3f} | {delta_rank(s, sds_broad):+.3f} |"
             )
     stats["shortcut_delta_rank"] = {n: (delta_rank(r["davigs"]) if r["davigs"]["glav_novel_view"] else None) for n, r in short.items()}
+    stats["shortcut_delta_rank_broad"] = {n: (delta_rank(r["davigs"], sds_broad) if r["davigs"]["glav_novel_view"] else None) for n, r in short.items()}
     (REPORT / "summary.json").write_text(json.dumps(stats, indent=1) + "\n")
     (REPORT / "summary.md").write_text("\n".join(lines) + "\n\n" + "\n".join(sc_lines) + "\n")
     print("\n".join(lines))
@@ -419,7 +427,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("stage", choices=["honest", "shortcuts", "report", "all"])
     args = ap.parse_args()
-    torch.set_num_threads(2)
+    if torch is not None:
+        torch.set_num_threads(2)
     if args.stage in ("honest", "all"):
         honest()
     if args.stage in ("shortcuts", "all"):
