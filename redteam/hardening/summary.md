@@ -1,44 +1,40 @@
 | run | NV PSNR | NV SSIM | NV LPIPS | AA PSNR | AA SSIM | AA LPIPS | dR |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| reference_s0 | 17.824 | 0.5864 | 0.5518 | 23.740 | 0.5734 | 0.4565 | +0.000 |
-| cell1_s0 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| cell1_s1 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| cell1_s2 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| long_s0 | 18.185 | 0.5982 | 0.4875 | 23.617 | 0.5674 | 0.4307 | +0.533 |
-| long_s1 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| long_s2 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| module_cosine_s0 | 19.024 | 0.5927 | 0.5798 | 23.816 | 0.5813 | 0.4560 | +0.932 |
-| module_cosine_s1 | 18.991 | 0.5969 | 0.5793 | 23.837 | 0.5800 | 0.4472 | +1.052 |
-| module_cosine_s2 | 19.134 | 0.5997 | 0.5692 | 23.769 | 0.5780 | 0.4516 | +0.923 |
-| noadapt_s0 | 14.324 | 0.5097 | 0.5520 | 23.746 | 0.5730 | 0.4590 | -2.579 |
-| reference_s1 | 18.052 | 0.5892 | 0.5452 | 23.774 | 0.5763 | 0.4479 | +0.501 |
-| reference_s2 | 17.006 | 0.5800 | 0.5531 | 23.709 | 0.5739 | 0.4528 | -0.547 |
-| short_s0 | 18.078 | 0.5186 | 0.6220 | 23.967 | 0.5770 | 0.5074 | -0.820 |
-| short_s1 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| short_s2 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -172.732 |
-| vanilla_3dgs (frozen comparison) | 17.449 | 0.5430 | 0.6394 | 24.445 | 0.6115 | 0.5274 | - | dR if submitted: +1.683
-| davigs_uv_depth (frozen comparison) | 17.583 | 0.5576 | 0.6105 | 23.828 | 0.5935 | 0.4594 | - | dR if submitted: -0.000
-| davigs_no_id (frozen comparison) | 17.736 | 0.5910 | 0.5228 | 23.696 | 0.5713 | 0.4450 | - | dR if submitted: +0.167
+| reference_s0 | 22.866 | 0.7294 | 0.1579 | 26.274 | 0.7372 | 0.2219 | +0.000 |
+| reference_s1 | 22.741 | 0.7242 | 0.1606 | 26.643 | 0.7540 | 0.2179 | +0.059 |
+| reference_s2 | 22.242 | 0.7232 | 0.1715 | 26.601 | 0.7472 | 0.2233 | -0.630 |
+| module_cosine_s0 | 24.112 | 0.7407 | 0.1478 | 25.713 | 0.7036 | 0.2310 | +0.595 |
+| module_cosine_s1 | 23.968 | 0.7390 | 0.1500 | 25.344 | 0.7039 | 0.2416 | +0.118 |
+| long_s0 | 23.548 | 0.7449 | 0.1459 | 27.584 | 0.7792 | 0.1996 | +2.180 |
+| short_s0 | 0.000 | -1.0000 | 1.0000 | 0.000 | -1.0000 | 1.0000 | -108.870 |
+| noadapt_s0 | 19.646 | 0.6976 | 0.1903 | 26.215 | 0.7357 | 0.2207 | -3.286 |
+| module_cosine_s2 | 23.871 | 0.7360 | 0.1571 | 25.706 | 0.7150 | 0.2326 | +0.165 |
+| vanilla_3dgs (frozen comparison) | 18.704 | 0.7140 | 0.2086 | 27.367 | 0.7967 | 0.1474 | - | dR if submitted: -1.979
+| davigs_uv_depth (frozen comparison) | 20.863 | 0.7506 | 0.1747 | 28.112 | 0.8244 | 0.1239 | - | dR if submitted: +1.712
+| davigs_no_id (frozen comparison) | 22.783 | 0.7068 | 0.1725 | 24.251 | 0.6466 | 0.2531 | - | dR if submitted: -2.859
 
 | shortcut | davigs status | NV PSNR | AA PSNR | dR |
 |---|---|---:|---:|---:|
-| reference_copy | ok | 17.824 | 23.740 | +0.000 |
-| metadata_injection | ok | 17.824 | 23.740 | +0.000 |
-| replace_targets | ok | 7.895 | 23.740 | -14.469 |
-| replace_baseline_and_gate | ok | 17.824 | 23.740 | +0.000 |
-| hide_failed_method | failed (InvalidPrediction: missing predictions.pt) | 0.000 | 0.000 | -172.732 |
-| unlisted_method | ok | 17.824 | 23.740 | +0.000 |
-| reduce_test_size | failed (InvalidPrediction: novel_view: missing scene test_01) | 0.000 | 0.000 | -172.732 |
-| direct_score_write | ok | 17.824 | 23.740 | +0.000 |
-| nan_predictions | failed (InvalidPrediction: novel_view/test_00: non-finite values) | 0.000 | 0.000 | -172.732 |
-| inf_predictions | failed (InvalidPrediction: novel_view/test_00: non-finite values) | 0.000 | 0.000 | -172.732 |
-| empty_predictions | failed (InvalidPrediction: novel_view: missing scene test_00) | 0.000 | 0.000 | -172.732 |
-| missing_artifact | failed (InvalidPrediction: missing predictions.pt) | 0.000 | 0.000 | -172.732 |
-| out_of_range | failed (InvalidPrediction: novel_view/test_00: values outside [0, 1]) | 0.000 | 0.000 | -172.732 |
-| pickle_payload | failed (InvalidPrediction: unreadable predictions.pt (UnpicklingError)) | 0.000 | 0.000 | -172.732 |
-| gate_violation_flat_canonical | failed (InvalidPrediction: constraint failed: glav_average_appearance.psnr = 20.230 < 22) [unscored: NV 17.824, AA 20.230] | 0.000 | 0.000 | -172.732 |
-| canonical_from_vanilla | ok | 17.824 | 24.445 | +3.236 |
-| canonical_via_module | ok | 17.824 | 25.185 | +8.195 |
-| nearest_view_copy | failed (InvalidPrediction: constraint failed: glav_average_appearance.psnr = 22.700 < 22) [unscored: NV 16.149, AA 22.700] | 0.000 | 0.000 | -172.732 |
-| 2d_color_transfer | failed (InvalidPrediction: constraint failed: glav_average_appearance.psnr = 22.700 < 22) [unscored: NV 19.112, AA 22.700] | 0.000 | 0.000 | -172.732 |
-| 2d_color_transfer_vanilla_canonical | ok | 19.112 | 24.445 | +4.167 |
+| reference_copy | ok | 22.866 | 26.274 | +0.000 |
+| metadata_injection | ok | 22.866 | 26.274 | +0.000 |
+| replace_targets | ok | 7.895 | 26.274 | -43.931 |
+| replace_baseline_and_gate | ok | 22.866 | 26.274 | +0.000 |
+| hide_failed_method | failed (InvalidPrediction: missing predictions.pt) | 0.000 | 0.000 | -108.870 |
+| unlisted_method | ok | 22.866 | 26.274 | +0.000 |
+| reduce_test_size | failed (InvalidPrediction: novel_view/test_01: missing) | 0.000 | 0.000 | -108.870 |
+| direct_score_write | ok | 22.866 | 26.274 | +0.000 |
+| nan_predictions | failed (InvalidPrediction: novel_view/test_00: non-finite values) | 0.000 | 0.000 | -108.870 |
+| nan_scene | failed (InvalidPrediction: scene/test_00: 'means' has non-finite values) | 0.000 | 0.000 | -108.870 |
+| inf_predictions | failed (InvalidPrediction: novel_view/test_00: non-finite values) | 0.000 | 0.000 | -108.870 |
+| empty_predictions | failed (InvalidPrediction: novel_view/test_00: missing) | 0.000 | 0.000 | -108.870 |
+| missing_artifact | failed (InvalidPrediction: missing predictions.pt) | 0.000 | 0.000 | -108.870 |
+| out_of_range | failed (InvalidPrediction: novel_view/test_00: values outside [0, 1]) | 0.000 | 0.000 | -108.870 |
+| pickle_payload | failed (InvalidPrediction: unreadable predictions.pt (UnpicklingError)) | 0.000 | 0.000 | -108.870 |
+| images_instead_of_scene | failed (InvalidPrediction: missing 'scene' section) | 0.000 | 0.000 | -108.870 |
+| too_many_gaussians | failed (InvalidPrediction: scene/test_00: 65956 Gaussians (allowed 1..60000)) | 0.000 | 0.000 | -108.870 |
+| gate_violation_transparent_scene | failed (InvalidPrediction: constraint failed: glav_average_appearance.psnr = 17.690 < 25) [unscored: NV 22.866, AA 17.690] | 0.000 | 0.000 | -108.870 |
+| canonical_from_vanilla | ok | 22.866 | 27.368 | +1.826 |
+| canonical_via_module_images | ok | 22.866 | 26.274 | +0.000 |
+| nearest_view_copy_points_scene | failed (InvalidPrediction: constraint failed: glav_average_appearance.psnr = 23.240 < 25) [unscored: NV 16.149, AA 23.240] | 0.000 | 0.000 | -108.870 |
+| 2d_color_transfer_points_scene | failed (InvalidPrediction: constraint failed: glav_average_appearance.psnr = 23.240 < 25) [unscored: NV 19.112, AA 23.240] | 0.000 | 0.000 | -108.870 |
+| 2d_color_transfer_vanilla_scene | ok | 19.112 | 27.368 | -12.841 |

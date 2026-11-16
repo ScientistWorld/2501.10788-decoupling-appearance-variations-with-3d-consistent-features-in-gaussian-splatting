@@ -2,7 +2,7 @@
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
 action: submit
-gpus: 1
-test: true
+gpus: 2
+test: false
 milestone: secondary_claims
-notes: "Smoke test 2 (150 steps/task): evaluator-rendered Gaussian scenes for the appearance-free experiment, rebuilt benchmark (format 3), selection, reference, freeze, both evaluators, audit + shortcuts, validate"
+notes: "Full hardened run (6k steps): dev selection of hash res / module lr, reference (vanilla, DAVIGS cell 1, two ablations) on 9 scenes, freeze, both evaluators, audit seeds + honest variants + shortcut audit, validate"

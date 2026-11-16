@@ -73,14 +73,20 @@ def renderer_consistency() -> dict:
 
 
 def honest() -> None:
-    from method.run_experiment import AUDIT as AUDIT_PLAN  # audit tooling only (not part of eval/)
+    from method.run_experiment import AUDIT as AUDIT_PLAN, resolve  # audit tooling only (not part of eval/)
 
     runs = {"reference_s0": REF_PRED}
     for v, seeds in AUDIT_PLAN:
         for sd in seeds:
             pth = AUDIT / f"{v}_s{sd}" / "davigs" / "predictions.pt"
-            if pth.exists():
-                runs[f"{v}_s{sd}"] = pth
+            info_path = pth.parent / "run_info.json"
+            if not (pth.exists() and info_path.exists()):
+                continue
+            info = json.loads(info_path.read_text())
+            if info.get("config") != resolve("davigs", v, None) or int(info.get("seed", -1)) != sd:
+                print(f"[honest] skip stale {v}_s{sd} (assembled from another configuration)", flush=True)
+                continue
+            runs[f"{v}_s{sd}"] = pth
     if HONEST.exists():
         shutil.rmtree(HONEST)
     for name, src in runs.items():
