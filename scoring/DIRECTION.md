@@ -10,7 +10,7 @@ The relevant contribution family is appearance-variation modelling for Gaussian-
 
 ## Approach Scope
 
-Scientist agents may redesign the appearance conditioning, feature representation, regularisation, test-time appearance inference, the optimisation schedule and density control, as long as the scene is a 3D Gaussian representation optimised on the provided captures and submitted in the evaluator's 3DGS parameterisation.
+Scientist agents may redesign the appearance conditioning, feature representation, regularisation, test-time appearance inference, the optimisation schedule and density control (within the fixed budget in `scoring/CONSTRAINTS.md`), as long as the scene is a 3D Gaussian representation optimised on the provided captures and submitted in the evaluator's 3DGS parameterisation.
 
 ## Out of Bounds
 

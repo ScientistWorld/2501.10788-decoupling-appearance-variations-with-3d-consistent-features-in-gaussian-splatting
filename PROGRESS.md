@@ -1,5 +1,32 @@
 # Progress
 
+## Current state (iteration 11, final handoff)
+
+The gym was rebuilt during this iteration. Everything below "History" describes earlier versions of the gym (a different synthetic benchmark and evaluator) and is kept only as a record.
+
+- **Benchmark:**
+  - `eval/test/build_benchmark.py` ray-traces nine procedural courtyard scenes (3 dev, 6 test) with hidden test seeds, under global and local appearance variation.
+  - Method-visible inputs are in `data/glav_syn/`. The targets are in `eval/{train,test}/answers.pt`.
+- **Method (`method/`):**
+  - Plain-PyTorch 3D Gaussian Splatting plus DAVIGS: depth back-projection, 16-level hash grid (finest resolution 128, chosen on dev scenes), 32-d per-capture embeddings, 128/64 MLP to a 3x4 affine, per-pixel cell query, and the paper's identity regulariser and lambda schedule.
+  - 6,000 iterations, at most 6,000 Gaussians.
+  - Held-out left halves fit only that capture's embedding.
+  - Outputs: novel-view right halves plus the Gaussian scene.
+- **Evaluation:**
+  - Novel-view PSNR/SSIM/LPIPS on held-out right halves (weight 0.85).
+  - The submitted Gaussian scene, rendered by the evaluator itself at six canonical-only cameras, colour-corrected to the average appearance (weight 0.15). The same render is also a gate: within 1 dB of the frozen reference.
+- **Hidden-test reference:** novel view 22.87 / 0.729 / 0.158 vs vanilla 18.70 / 0.714 / 0.209; scene 26.27 / 0.737 / 0.222.
+- **Audit:** `HARDENING.md` and `redteam/hardening/` hold the seed noise, honest variants and shortcut results.
+- **Reproduce:**
+  - `bash scripts/run.sh` (selection, reference, freeze, both slices, audit, validate);
+  - `bash scripts/reproduce.sh` (reference only, using `method/selected_config.json`).
+- **Open items:** see "Not fixed" in `HARDENING.md`.
+  - Scene-provenance shortcut left for the grader.
+  - The DAVIGS scene is less clean than vanilla's and uv+depth's at this scale.
+  - The `long` variant has one seed.
+
+## History
+
 ## What Works
 
 - Audited the inherited workspace and found no real implementation in `method/` or `eval/`.

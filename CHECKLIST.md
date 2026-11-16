@@ -30,7 +30,7 @@
 - [x] `environment/container.def` + `environment/setup.sh`
 
 ## Data
-- [x] Dataset generator in `data/`
+- [x] Benchmark inputs in `data/glav_syn/` (generator with hidden test seeds in `eval/test/build_benchmark.py`)
 - [x] No pretrained models required
 
 ## Milestones

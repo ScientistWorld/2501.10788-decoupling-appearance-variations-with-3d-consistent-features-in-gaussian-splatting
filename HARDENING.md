@@ -19,8 +19,8 @@ No `REVIEW.md` existed. This pass started from the state the earlier hardening a
 | **weaker:** no held-out appearance inference (`noadapt`, s0) | 19.646 | 0.6976 | 0.1903 | 26.215 | 0.7357 | 0.2207 | −3.98 | −3.20 |
 | **weaker:** 0.25× steps (`short`, s0) | fails the gate (unscored AA 23.56 < 25.27; NV 19.89) → worst values | | | | | | −108.9 | −85.3 |
 
-- **`long`** is better on all six metrics. Per-view paired t-statistics over 36 views: NV PSNR +0.68 dB (t = 3.1), NV SSIM t = 3.6, NV LPIPS t = −2.4; AA PSNR +1.31 dB (t = 5.9). Its dR exceeds the reference's whole seed spread.
-- **`module_cosine`**, paired by seed, gains +1.25 / +1.23 / +1.63 dB NV PSNR (mean over views +1.37 dB, t = 7.6). It gives up 0.56–1.30 dB on the appearance-free scene. Paired dR differences are +1.14, +0.93 and +1.48, all above the seed spread.
+- **`long`** is better on all six metrics. It uses 1.5x the iteration budget, which `scoring/CONSTRAINTS.md` now fixes at the reference's 6,000. So it shows the test can resolve a genuinely better result, not an allowed route to a higher rank. Per-view paired t-statistics over 36 views: NV PSNR +0.68 dB (t = 3.1), NV SSIM t = 3.6, NV LPIPS t = −2.4; AA PSNR +1.31 dB (t = 5.9). Its dR exceeds the reference's whole seed spread.
+- **`module_cosine`** keeps the reference's budget and representation. Paired by seed, it gains +1.25 / +1.23 / +1.63 dB NV PSNR (mean over views +1.37 dB, t = 7.6). It gives up 0.56–1.30 dB on the appearance-free scene. Paired dR differences are +1.14, +0.93 and +1.48, all above the seed spread.
 - **Weaker variants** score lower.
 
 **Before.**

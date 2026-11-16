@@ -31,3 +31,19 @@
 - Reproduction restored toward the paper's settings: per-pixel cell query (the paper's 8 px at 1080p is sub-pixel at 96 px), hash-grid finest resolution and module learning rates (unspecified in the paper) chosen on development scenes.
 - Hidden test: DAVIGS beats vanilla 3DGS on all three novel-view metrics (PSNR 22.87 vs 18.70, SSIM 0.729 vs 0.714, LPIPS 0.158 vs 0.209) and the no-L_ID ablation on all six metrics; the uv+depth ablation keeps a cleaner appearance-free scene (not reproduced at this scale).
 - Appearance-free experiment now renders each method's submitted Gaussian scene inside the evaluator at canonical-only cameras; gate relative to the frozen reference reconstruction. See HARDENING.md.
+
+## Stop Justification
+
+Final milestone: **secondary_claims**. Iteration 11 (hardening) ended with the GPU budget exhausted (16.3 GPU-hours) after one full run and two smoke runs.
+
+**Reproduced on the hidden test (6 scenes, 36 held-out captures):**
+- **Paper Table 1 direction:** DAVIGS beats vanilla 3D Gaussian Splatting on all three novel-view metrics (PSNR 22.87 vs 18.70, SSIM 0.729 vs 0.714, LPIPS 0.158 vs 0.209).
+- **Paper Table 4, identity regulariser:** removing it degrades every metric in both experiments.
+
+**Not reproduced:**
+- **3D features vs uv+depth (Table 4):** reproduced only in novel-view PSNR and LPIPS. With uv+depth features, the scene rendered without the appearance module is cleaner (AA 28.11 vs 26.27 dB).
+- **"Fewer floaters than vanilla":** the reproduced DAVIGS scene renders less cleanly than vanilla's under the colour-corrected protocol.
+- **Likely cause:** the scaled budget (6k instead of 30k iterations, 96x128 images, 6,000-Gaussian cap). A 1.5x-steps variant improves all six metrics, including +1.31 dB on the scene, but a rerun at a larger budget no longer fit the compute.
+- **Not scored:** efficiency (training time, VRAM, FPS), PhotoTourism and plug-and-play (Tables 2-3). They need real captures, other renderers or wall-clock measurements, so they stop the milestone at secondary_claims.
+
+**The gym** rewards better research: two honest variants beat the reference beyond seed noise, weaker ones score lower, and all REDTEAM shortcuts are closed. One scene-provenance shortcut remains for the grader. See HARDENING.md.

@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 2
-test: false
+action: done
 milestone: secondary_claims
-notes: "Full hardened run (6k steps): dev selection of hash res / module lr, reference (vanilla, DAVIGS cell 1, two ablations) on 9 scenes, freeze, both evaluators, audit seeds + honest variants + shortcut audit, validate"
+notes: "Hardened gym: DAVIGS beats vanilla 3DGS on all novel-view metrics on the hidden test; appearance-free scene rendered by the evaluator from submitted Gaussians at canonical-only cameras with a gate vs the frozen reference; better variants separate from seed noise; REDTEAM shortcuts closed, scene-provenance shortcut left for the grader (HARDENING.md)."
